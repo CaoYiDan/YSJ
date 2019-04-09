@@ -5,6 +5,7 @@
 #import "YSJMulticourseModel.h"
 #import "YSJCompanyCourseVC.h"
 #import "SPUser.h"
+#import "YSJPayForOrderVC.h"
 #import "YSJCompanysModel.h"
 #import "YSJAddressCell.h"
 #import "YSJCompanyNavView.h"
@@ -461,6 +462,7 @@
         //        vc.code = @"fdf";
         //        [self.navigationController pushViewController:vc animated:YES];
     }
+    
 }
 
 - (void)navViewSelectedBtn:(UIButton *)btn{
@@ -475,8 +477,12 @@
 }
 
 #pragma  mark - --------- -action -----------------
--(void)connect{
-    
+-(void)buyClick{
+    YSJPayForOrderVC *vc = [[YSJPayForOrderVC alloc]init];
+    self.M.multi_price = self.M.price;
+    vc.model = self.M;
+    vc.type = 2;
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 -(void)share{
@@ -573,7 +579,7 @@
     [connectBtn setTitle:@"立即购买" forState:0];
     connectBtn.layer.cornerRadius = 5;
     connectBtn.clipsToBounds = YES;
-    [connectBtn addTarget:self action:@selector(connect) forControlEvents:UIControlEventTouchDown];
+    [connectBtn addTarget:self action:@selector(buyClick) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:connectBtn];
     [connectBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(20);

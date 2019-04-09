@@ -6,6 +6,8 @@
 //  Copyright © 2019年 lisen. All rights reserved.
 //
 #import "WXApi.h"
+#import "YSJTagLabel.h"
+#import "YSJCourseModel.h"
 #import "YSJPayForOrderVC.h"
 #import <AlipaySDK/AlipaySDK.h>
 @interface YSJPayForOrderVC ()<WXApiDelegate,UITextFieldDelegate>
@@ -14,6 +16,8 @@
 
 @implementation YSJPayForOrderVC
 {
+    double _singlePrice;
+    
     UIScrollView *_scrollView;
     
     UIView *_section0View;
@@ -22,11 +26,11 @@
     UIView *_section3View;
 
     UIImageView *_img;
-    UILabel *_distance;
+    YSJTagLabel*_spellUserTag;
     UILabel *_name;
     UILabel *_teacherType;
     UIButton *renzheng;
-    UILabel *_getOrderCount;//接单数量 和评分
+    
     UILabel *_price;
     UILabel *_oldPrice;
     UILabel *_introductionView;
@@ -37,6 +41,7 @@
     
     UILabel *_orderPrice;
     UILabel *_needPayPrice;
+    UILabel *_resultNeedPay;
     UILabel *_youHuiQuan;
     
     UIImageView *_zhiImg;
@@ -51,7 +56,11 @@
     [super viewDidLoad];
     
     self.title = @"订单支付";
+    
+    _singlePrice = [self.model.multi_price doubleValue];
+    
     _payType = @"zhi";
+    
     _scrollView = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     _scrollView.backgroundColor = KWhiteColor;
     [self.view addSubview:_scrollView];
@@ -135,19 +144,22 @@
         make.top.equalTo(_img).offset(0);
     }];
     
+    //拼单特有
+    
+    if (self.type == 0 || self.type == 1) {
+        
+        _spellUserTag = [[YSJTagLabel alloc]init];
+        
+        [_section0View addSubview:_spellUserTag];
+        [_spellUserTag mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.right.offset(-12);
+            make.width.offset(70);
+            make.centerY.equalTo(_name);
+            make.height.offset(30);
+        }];
+        
+    }
    
-    
-    _distance = [[UILabel alloc]init];
-    _distance.font = Font(12);
-    _distance.textColor = gray999999;
-    _distance.textAlignment = NSTextAlignmentRight;
-    [_section0View addSubview:_distance];
-    [_distance mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.offset(-10);
-        make.centerY.equalTo(_name);
-        make.height.offset(30);
-    }];
-    
     
     //上课类型
     _teacherType = [[UILabel alloc]init];
@@ -182,8 +194,23 @@
     [_section0View addSubview:_oldPrice];
     [_oldPrice mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(_price.mas_right).offset(10);
-        make.bottom.equalTo(_price).offset(0);
+        make.centerY.equalTo(_price).offset(0);
     }];
+    
+   
+    [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,self.model.pic_url2[0]]]placeholderImage:[UIImage imageNamed:@"placeholder2"]];
+    
+    _name.text = self.model.title;
+    
+    _teacherType.text = [NSString stringWithFormat:@"%@ | %@ | %d-%ld人",self.model.coursetype,self.model.coursetypes,self.model.min_user,(long)self.model.max_user];
+    
+    _spellUserTag.text = [NSString stringWithFormat:@"%d人拼单价",self.model.min_user];
+    
+    _price.text = self.model.multi_price;
+    
+    _oldPrice.text = [NSString stringWithFormat:@"¥%@",self.model.old_price];
+    [_oldPrice addMiddleLine];
+    
 }
 
 -(void)setSection1{
@@ -208,8 +235,9 @@
     
     UITextField *countFiled = [[UITextField alloc]init];
     _countTextFiled = countFiled;
+    countFiled.userInteractionEnabled = NO;
     countFiled.backgroundColor = RGB(242, 242, 242);
-    countFiled.text = @"1";
+    countFiled.text = self.model.min_times;
     countFiled.textAlignment = NSTextAlignmentCenter;
     [_section1View addSubview:countFiled];
     [countFiled mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -256,7 +284,7 @@
     //订单总价
    UILabel *_leftText = [[UILabel alloc]initWithFrame:CGRectMake(kMargin,55*2, 140,55)];
     _leftText.font = font(16);
-    _leftText.text = @"订单总价";
+    _leftText.text = @"小计";
     [_section1View addSubview:_leftText];
     
    UILabel *_rightText = [[UILabel alloc]initWithFrame:CGRectMake(kWindowW-100 , 55*2, 88,55)];
@@ -264,7 +292,7 @@
     _rightText.textAlignment = NSTextAlignmentRight;
     _rightText.textColor = yellowEE9900;
     _rightText.font = font(16);
-    _rightText.text = @"388";
+    _rightText.text = [NSString stringWithFormat:@"¥%.1f",_singlePrice * [self.model.min_times integerValue]];
     [_section1View addSubview:_rightText];
     
     
@@ -301,10 +329,40 @@
 
 -(void)add{
     
+    if (self.type == 1) {
+        Toast(@"拼单不可修改课时数量");
+        return;
+    }
+    
+    int count = [_countTextFiled.text integerValue]+1;
+    
+   _countTextFiled.text = intToStringFormar(count);
+    
+    _orderPrice.text = [NSString stringWithFormat:@"¥%.1f",_singlePrice * count];
+    _needPayPrice.text = [NSString stringWithFormat:@"¥%.1f",_singlePrice * count];
+    _resultNeedPay.text = [NSString stringWithFormat:@"实付款: ¥%.1f",_singlePrice * count];
+    [_resultNeedPay setAttributeTextWithString:_resultNeedPay.text range:NSMakeRange(0, 4) WithColour:black666666 andFont:12];
 }
 
 -(void)minus{
     
+    if (self.type == 1) {
+        Toast(@"拼单不可修改课时数量");
+        return;
+    }
+    
+    if ([_countTextFiled.text integerValue]<=[self.model.min_times integerValue]) {
+        return;
+    }
+    
+    int count = [_countTextFiled.text integerValue]-1;
+    
+     _countTextFiled.text = intToStringFormar(count);
+    
+    _orderPrice.text = [NSString stringWithFormat:@"¥%.1f",_singlePrice * count];
+    _needPayPrice.text = [NSString stringWithFormat:@"¥%.1f",_singlePrice * count];
+    _resultNeedPay.text = [NSString stringWithFormat:@"实付款: ¥%.1f",_singlePrice * count];
+    [_resultNeedPay setAttributeTextWithString:_resultNeedPay.text range:NSMakeRange(0, 4) WithColour:black666666 andFont:12];
 }
 
 -(void)setSection2{
@@ -317,11 +375,11 @@
     [_section2View addSubview:_leftText];
     
     UILabel *_rightText = [[UILabel alloc]initWithFrame:CGRectMake(kWindowW-100 , 0, 88,55)];
-    _orderPrice = _rightText;
+    
     _rightText.textAlignment = NSTextAlignmentRight;
-    _rightText.textColor = yellowEE9900;
+    _rightText.textColor = gray999999;
     _rightText.font = font(16);
-    _rightText.text = @"388";
+    _rightText.text = @"暂无可用 >";
     [_section2View addSubview:_rightText];
     
     
@@ -336,19 +394,19 @@
     }];
     }
     
-    //小计
+    //订单总价
     {
         UILabel *_leftText = [[UILabel alloc]initWithFrame:CGRectMake(kMargin,55, 140,55)];
         _leftText.font = font(16);
-        _leftText.text = @"小计";
+        _leftText.text = @"订单总价";
         [_section2View addSubview:_leftText];
         
         UILabel *_rightText = [[UILabel alloc]initWithFrame:CGRectMake(kWindowW-100 , 55, 88,55)];
-        _orderPrice = _rightText;
+        _needPayPrice = _rightText;
         _rightText.textAlignment = NSTextAlignmentRight;
         _rightText.textColor = yellowEE9900;
         _rightText.font = font(16);
-        _rightText.text = @"388";
+        _rightText.text = [NSString stringWithFormat:@"¥%.1f",_singlePrice * [self.model.min_times integerValue]];
         [_section2View addSubview:_rightText];
         
         UIView *bottomLine0 = [[UIView alloc]init];
@@ -469,18 +527,36 @@
     _weiImg.image  = [UIImage imageNamed:@"选中"];
     _zhiImg.image  = [UIImage imageNamed:@"未选择"];
 }
+
+
 -(void)setPayBtn{
+    
+   
     UIButton *btn = [FactoryUI createButtonWithFrame:CGRectZero title:@"确认支付" titleColor:nil imageName:nil backgroundImageName:nil target:self selector:@selector(payClick)];
     btn.backgroundColor = KMainColor;
-
+    btn.titleLabel.font = font(16);
     btn.layer.cornerRadius = 5;
     btn.clipsToBounds = YES;
     [self.view addSubview:btn];
     [btn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.offset(20);
-        make.width.offset(kWindowW-40);
+        make.right.offset(-kMargin);
+        make.width.offset(140);
         make.height.offset(50);
         make.bottom.offset(-KBottomHeight-5);
+    }];
+    
+    
+    UILabel *resultNeedPay = [[UILabel alloc]init];
+    resultNeedPay.text = [NSString stringWithFormat:@"实付款: ¥%.1f",_singlePrice * [self.model.min_times integerValue]];
+    resultNeedPay.font = font(18);
+    _resultNeedPay = resultNeedPay;
+    resultNeedPay.textColor = KMainColor;
+    [resultNeedPay setAttributeTextWithString:resultNeedPay.text range:NSMakeRange(0, 4) WithColour:black666666 andFont:12];
+    [self.view addSubview:resultNeedPay];
+    [resultNeedPay mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(btn.mas_left).offset(-15);
+        make.height.offset(50);
+        make.top.equalTo(btn).offset(0);
     }];
 }
 

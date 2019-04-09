@@ -1,11 +1,14 @@
 #import "CZHCountDownCell.h"
-#import "CZHCountDownModel.h"
+#import "YSJSpellListModel.h"
 #import "YSJTeacherCourseDetailVC.h"
 #import "YSJTeacherCourseCell.h"
 #import "YSJTeacherPinDanCell.h"
 #import "YSJMulticourseModel.h"
 #import "YSJSpellListDetailVC.h"
 #import "SPUser.h"
+#import "YSJPayForOrderVC.h"
+#import "YSJSpellListModel.h"
+#import "YSJSpellPersonModel.h"
 #import "YSJAddressCell.h"
 #import "YSJCompanyNavView.h"
 #import "SPAuthenticationView.h"
@@ -49,7 +52,9 @@
 @property(nonatomic,strong)YSJCompanyCourse_HeaderView *header;
 @property (nonatomic, strong) NSTimer *timer;
 ///<#注释#>
-@property (nonatomic, strong) NSMutableArray *timeArrays;
+@property (nonatomic, strong) NSMutableArray *spellListArr;
+
+@property (nonatomic,strong) YSJSpellListModel *listModel;
 @end
 
 @implementation YSJSpellListDetailVC
@@ -72,16 +77,17 @@
 }
 
 #pragma mark - 生命周期
-- (NSMutableArray *)timeArrays {
-    if (!_timeArrays) {
-        _timeArrays = [NSMutableArray array];
+- (NSMutableArray *)spellListArr {
+    if (!_spellListArr) {
+        _spellListArr = [NSMutableArray array];
         for (NSInteger i = 0; i < 2; i++) {
-            CZHCountDownModel *timeModel = [[CZHCountDownModel alloc] init];
-            [_timeArrays addObject:timeModel];
+            YSJSpellListModel *timeModel = [[YSJSpellListModel alloc] init];
+            [_spellListArr addObject:timeModel];
         }
     }
-    return _timeArrays;
+    return _spellListArr;
 }
+
 - (void)viewDidLoad {
     
     [super viewDidLoad];
@@ -92,19 +98,18 @@
     
     [self setBottomView];
     
-    [self setUpTimer];
-    
+   
     self.header.model = self.M;
     
     [self.view addSubview:self.navView];
     
     [self startAllRequest];
     
-    [self.tableView reloadData];
-    
+
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    
     [super viewWillAppear:animated];
     
     [self.navigationController setNavigationBarHidden:YES animated:YES];
@@ -123,9 +128,9 @@
         dispatch_group_leave(group);
     }];
     
-    //私教基本信息
+    //获取拼单信息
     dispatch_group_enter(group);
-    [self getTeacherBaseRequestisScu:^(BOOL isScu) {
+    [self getSpellBaseRequestisScu:^(BOOL isScu) {
         
         //设置navigationView
         [self.view addSubview:self.navView];
@@ -149,6 +154,9 @@
     
     
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        
+        
+        [self setUpTimer];
         
         [weakSelf.tableView reloadData];
         
@@ -185,18 +193,20 @@
     }];
 }
 
-#pragma mark - 获取私教信息
+#pragma mark - 获取拼单list
 
--(void)getTeacherBaseRequestisScu:(void(^)(BOOL isScu))requestisScu{
+-(void)getSpellBaseRequestisScu:(void(^)(BOOL isScu))requestisScu{
     NSMutableDictionary *dic = @{}.mutableCopy;
-    [dic setObject:isEmptyString([StorageUtil getId])?@"":[StorageUtil getId] forKey:@"token"];
-    [dic setObject:[SPCommon getLoncationDic] forKey:@"locate"];
+    [dic setObject:[StorageUtil getId] forKey:@"token"];
     [dic setObject:self.courseID forKey:@"courseID"];
     NSLog(@"%@",dic);
     
-    [[HttpRequest sharedClient]httpRequestPOST:YTeacherbaseinfo parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+    [[HttpRequest sharedClient]httpRequestPOST:YPinDanList parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         
         NSLog(@"%@",responseObject);
+        
+       
+        self.spellListArr = [YSJSpellListModel mj_objectArrayWithKeyValuesArray:responseObject];
         
         requestisScu(YES);
         
@@ -279,9 +289,9 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (section==1) {
-         return self.timeArrays.count;
+        return self.spellListArr.count;
     }else if (section==2){
-       
+        return 0;
     }
     return 1;
 }
@@ -289,18 +299,19 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = nil;
-    if (indexPath.section!=6 && indexPath.section!=1) {
+    if (indexPath.section!=5 && indexPath.section!=1) {
         cell = [UITableViewCell loadCode:tableView];
     }else if(indexPath.section==1) {
         
         CZHCountDownCell *cell = [CZHCountDownCell loadCode:tableView];
         cell.delegate = self;
-        //    cell.timeModel = self.timeArrays[indexPath.row];
-        [cell setCellWithTimeModel:self.timeArrays[indexPath.row] indexPath:indexPath];
+        cell.min_Count = self.M.min_user;
+        //    cell.timeModel = self.spellListArr[indexPath.row];
+        [cell setCellWithTimeModel:self.spellListArr[indexPath.row] indexPath:indexPath];
         return cell;
         
     }else if(indexPath.section==2){
-       
+        
     }else{
         
         FFDifferentWidthTagCell *cell = [FFDifferentWidthTagCell loadCode:tableView];
@@ -317,11 +328,9 @@
     }else  if (indexPath.section==1) {
         
     }else if(indexPath.section==3) {
-        cell.textLabel.text = self.M.course_time;
-    }else if(indexPath.section==4) {
         cell.textLabel.text = self.M.describe;
     }else if(indexPath.section==4) {
-        cell.textLabel.text = self.M.describe;
+        cell.textLabel.text = [NSString stringWithFormat:@"  %@课时",self.M.min_times];
     }
     
     return cell;
@@ -335,12 +344,13 @@
         return size.height+20;
     }else if (indexPath.section==1) {
         
-        return 120;
-    }else if (indexPath.section==4) {
+        return 96;
+        
+    }else if (indexPath.section==3) {
         
         CGSize size =[self.M.describe sizeWithFont:font(13) maxW:kWindowW-100];
-        return size.height;
-    }else if(indexPath.section==6){
+        return size.height+20;
+    }else if(indexPath.section==5){
         return _commentModel.cellHeight;
     }
     
@@ -350,7 +360,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     
-    if (section==2 || section==3 || section==4) {
+    if (section==2 || section==3) {
         return 0.01;
     }
     return 6;
@@ -359,7 +369,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    if (section==6) {
+    if (section==5) {
         return 120;
     }
     return 50;
@@ -368,13 +378,13 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     
-    NSArray *arr = @[@" 课程特色",@" 拼单详情",@" 课程详情",@" 上课时间",@" 课程介绍",@" 课时数",@" 用户评价"];
-    NSArray *imgArr = @[@"kechengtese",@"pingdan",@"kechengxiangqing",@"",@"",@"",@"yonghupingjia"];
+    NSArray *arr = @[@" 课程特色",@" 拼单详情",@" 课程详情",@" 课程介绍",@" 课时数",@" 用户评价"];
+    NSArray *imgArr = @[@"kechengtese",@"pingdan",@"kechengxiangqing",@"",@"",@"yonghupingjia"];
     UIView *base = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, 50)];
     base.backgroundColor = KWhiteColor;
     
     UIButton *title = [[UIButton alloc]init];
-    if (section==5 || section==3 || section==4) {
+    if (section==3 || section==4) {
         title.titleLabel.font = font(15);
         [title setTitleColor:KBlack333333 forState:0];
     }else{
@@ -395,7 +405,7 @@
     
     //@"随时退",@"过期自动退"
     if (section==2) {
-        NSArray *arr = @[@"过期自动退",@"随时退"];
+        NSArray *arr = @[@" 过期自动退",@" 随时退"];
         int i=0;
         for (NSString *str in arr) {
             UIButton *btn = [[UIButton alloc]init];
@@ -405,8 +415,8 @@
             btn.titleLabel.font= font(12);
             [base addSubview:btn];
             [btn mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.right.offset(-kMargin-80*i);
-                make.width.offset(80);
+                make.right.offset(-kMargin-90*i);
+                make.width.offset(90);
                 make.height.offset(20);
                 make.centerY.equalTo(title).offset(0);
                 
@@ -416,7 +426,7 @@
     }
     
     //用户评价
-    if (section==6) {
+    if (section==5) {
         
         UIView *baseScoreView = [[UIView alloc]initWithFrame:CGRectMake(kWindowW/2-75, 50, 150, 60)];
         baseScoreView.backgroundColor = KWhiteColor;
@@ -464,15 +474,24 @@
     }
     return base;
 }
+
 -(void)more{
     
 }
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section==1) {
-        //        YSJTeacherCourseDetailVC *vc = [[YSJTeacherCourseDetailVC alloc]init];
-        //        vc.code = @"fdf";
-        //        [self.navigationController pushViewController:vc animated:YES];
+        
+        YSJSpellListModel *model = _spellListArr[indexPath.row];
+        
+        YSJPayForOrderVC *vc = [[YSJPayForOrderVC alloc]init];
+        self.M.min_times = intToStringFormar(model.creater.times);
+        
+        vc.model = self.M;
+        
+        vc.type = 1;
+        [self.navigationController pushViewController:vc animated:YES];
     }
 }
 
@@ -491,10 +510,19 @@
 //单独购买
 -(void)singleBuy{
     
+    YSJPayForOrderVC *vc = [[YSJPayForOrderVC alloc]init];
+    self.M.multi_price = self.M.price;
+    vc.model = self.M;
+    vc.type = 2;
+    [self.navigationController pushViewController:vc animated:YES];
 }
+
 //发起拼单
 -(void)beginSpell{
     
+    YSJPayForOrderVC *vc = [[YSJPayForOrderVC alloc]init];
+    vc.model = self.M;
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 -(void)share{
@@ -577,6 +605,7 @@
 }
 
 -(void)setNav{
+    
     UIButton *shareButton = [FactoryUI createButtonWithFrame:CGRectMake(0, 0, 44, 44) title:nil titleColor:nil imageName:@"fenxiang" backgroundImageName:nil target:self selector:@selector(share)];
     UIButton *careButton = [FactoryUI createButtonWithFrame:CGRectMake(0, 0, 44, 44) title:nil titleColor:nil imageName:@"guanzhu_0" backgroundImageName:nil target:self selector:@selector(care:)];
     [careButton setImage:[UIImage imageNamed:@"guanzhu_1"] forState:UIControlStateSelected];
@@ -592,12 +621,14 @@
     //单独购买
     UIButton *singleBuyBtn = [[UIButton alloc]init];
     singleBuyBtn.backgroundColor = KWhiteColor;
-    [singleBuyBtn setTitle:@"单独购买" forState:0];
-    [singleBuyBtn setTitleColor:KMainColor forState:0];
+    [singleBuyBtn setTitle:[NSString stringWithFormat:@"¥%@ 单独购买",self.M.price] forState:0];
+    [singleBuyBtn setTitleColor:[UIColor hexColor:@"FE8600"] forState:0];
     singleBuyBtn.layer.cornerRadius = 5;
     singleBuyBtn.clipsToBounds = YES;
-    singleBuyBtn.layer.borderColor = KMainColor.CGColor;
+    singleBuyBtn.titleLabel.font = font(24);
+    singleBuyBtn.layer.borderColor = [UIColor hexColor:@"FE8600"].CGColor;
     singleBuyBtn.layer.borderWidth = 1.0;
+    [singleBuyBtn.titleLabel setAttributeTextWithString:singleBuyBtn.titleLabel.text range:NSMakeRange(self.M.price.length+2, 4) WithColour:[UIColor hexColor:@"FE8600"] andFont:16];
     [singleBuyBtn addTarget:self action:@selector(singleBuy) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:singleBuyBtn];
     [singleBuyBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -607,13 +638,15 @@
         make.bottom.offset(-KBottomHeight-5);
     }];
     
- //发起拼单
+    //发起拼单
     UIButton *beginSpellBtn = [[UIButton alloc]init];
     beginSpellBtn.backgroundColor = KMainColor;
-    [beginSpellBtn setTitle:@"发起拼单" forState:0];
+    [beginSpellBtn setTitle:[NSString stringWithFormat:@"¥%@ 发起拼单",self.M.multi_price] forState:0];
     beginSpellBtn.layer.cornerRadius = 5;
     beginSpellBtn.clipsToBounds = YES;
+    beginSpellBtn.titleLabel.font = font(24);
     [beginSpellBtn addTarget:self action:@selector(beginSpell) forControlEvents:UIControlEventTouchDown];
+    [beginSpellBtn.titleLabel setAttributeTextWithString:beginSpellBtn.titleLabel.text range:NSMakeRange(self.M.price.length+2, 4) WithColour:KWhiteColor andFont:16];
     [self.view addSubview:beginSpellBtn];
     [beginSpellBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(singleBuyBtn.mas_right).offset(10);
@@ -640,8 +673,8 @@
     if (!_navView) {
         _navView = [[YSJCompanyNavView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_W, SafeAreaTopHeight)];
         _navView.backgroundColor = [UIColor clearColor];
-        //        _navView.care = self.M.is_fan;
-        //        _navView.title = self.M.realname;
+        _navView.care = self.M.is_fan;
+        _navView.title = self.M.title;
         _navView.delegate = self;
         
     }
@@ -649,11 +682,15 @@
 }
 
 #pragma mark -- 代理
-- (void)cell:(CZHCountDownCell *)cell countDownDidFinishedWithTimeModel:(CZHCountDownModel *)timeModel indexPath:(NSIndexPath *)indexPath {
+- (void)cell:(CZHCountDownCell *)cell countDownDidFinishedWithTimeModel:(YSJSpellListModel *)timeModel indexPath:(NSIndexPath *)indexPath {
     
-    CZHCountDownModel *arrayTimeModel = self.timeArrays[indexPath.row];
+    YSJSpellListModel *arrayTimeModel = self.spellListArr[indexPath.row];
     
     arrayTimeModel.isFinished = timeModel.isFinished;
+    
+    [self.spellListArr removeObject:arrayTimeModel];
+    
+    [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:0];
     
 }
 
@@ -665,7 +702,7 @@
 
 - (void)timerEvent {
     
-    for (CZHCountDownModel *timeModel in self.timeArrays) {
+    for (YSJSpellListModel *timeModel in self.spellListArr) {
         
         if (timeModel.startTime - timeModel.currentTime <= 0) {
             continue;

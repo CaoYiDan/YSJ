@@ -1,30 +1,35 @@
 //
-//  CZHCountDownModel.m
-//  倒计时重用
+//  YSJSpellListModel.m
+//  SmallPig
 //
-//  Created by 程召华 on 2017/12/20.
-//  Copyright © 2017年 程召华. All rights reserved.
+//  Created by xujf on 2019/4/9.
+//  Copyright © 2019年 lisen. All rights reserved.
 //
 
-#import "CZHCountDownModel.h"
+#import "YSJSpellListModel.h"
 
-@implementation CZHCountDownModel
+@implementation YSJSpellListModel
 
++(NSDictionary*)mj_replacedKeyFromPropertyName{
+    return @{@"startTime":@"end_time"};
+}
+
++ (NSDictionary *)mj_objectClassInArray{
+    return @{@"member" : @"YSJSpellPersonModel"};//前边，是属性数组的名字，后边就是类名
+}
 - (instancetype)init {
     if (self = [super init]) {
         
         self.currentTime = [self getTime];
-        
-        self.startTime = self.currentTime + arc4random() % 100;
-        
+       
     }
     return self;
 }
 
 - (void)countDown {
-
+    
     self.startTime--;
-
+    
     if (self.startTime - self.currentTime <= 0) {
         
         [[NSNotificationCenter defaultCenter] postNotificationName:CZHCountDownFinishNotification object:nil];
@@ -38,8 +43,7 @@
     NSDate *senddate = [NSDate date];
     
     NSString *date2 = [NSString stringWithFormat:@"%ld", (long)[senddate timeIntervalSince1970]];
-    
+     NSLog(@"%@",date2);
     return [date2 integerValue];
 }
-
 @end

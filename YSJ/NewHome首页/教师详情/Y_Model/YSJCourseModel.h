@@ -35,10 +35,11 @@
 @property (nonatomic,copy) NSString *course_time;
 @property (nonatomic,copy) NSString *surplus;
 @property (nonatomic,assign)NSInteger max_user;
-@property (nonatomic,assign)NSInteger min_user;
-@property (nonatomic,assign)NSInteger success;
+@property (nonatomic,assign)int min_user;
+@property (nonatomic,assign)int success;
 @property (nonatomic,copy) NSString *dealcount;
 @property (nonatomic,copy) NSString *price;
+@property (nonatomic,copy) NSString *multi_price;
 @property (nonatomic,copy) NSString *old_price;
 @property (nonatomic,copy) NSString *describe;
 @property (nonatomic,copy) NSString *feaature;
@@ -46,8 +47,8 @@
 @property (nonatomic,assign)double distance;
 @property (nonatomic,copy) NSString *suitable_range;
 
-
 @property (nonatomic,copy) NSString *title;
+
 @property (nonatomic,strong) NSMutableArray *course_display;
 @property (nonatomic,copy) NSString *address;
 @property (nonatomic,assign) BOOL is_fan;

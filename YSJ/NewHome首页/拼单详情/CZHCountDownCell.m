@@ -7,7 +7,9 @@
 //
 
 #import "CZHCountDownCell.h"
-
+#import "YSJSpellPersonModel.h"
+#import "YSJSpellListModel.h"
+#import "YSJTagLabel.h"
 @interface CZHCountDownCell ()
 
 /**小时*/
@@ -23,7 +25,7 @@
 ///<#注释#>
 @property (nonatomic, weak) UILabel *indexLabel;
 ///<#注释#>
-@property (nonatomic, strong) CZHCountDownModel *timeModel;
+@property (nonatomic, strong) YSJSpellListModel *timeModel;
 ///<#注释#>
 @property (nonatomic, strong) NSIndexPath *indexPath;
 
@@ -32,13 +34,14 @@
 static NSString *const ID = @"CZHCountDownCell";
 @implementation CZHCountDownCell
 {
-  
+
     UIImageView *_img;
     UILabel *_leftCount;
     UILabel *_name;
     
     UIButton *goToSpell;
-    UILabel *_getOrderCount;//接单数量 和评分
+    
+    YSJTagLabel *courseTimes;//拼单课时数
     
     UIView *_leftTimeView;
     
@@ -65,14 +68,37 @@ static NSString *const ID = @"CZHCountDownCell";
         [self setCell];
         
     }
+    
+
     return self;
 }
 
+#pragma mark - SetModel
 
-- (void)setCellWithTimeModel:(CZHCountDownModel *)timeModel indexPath:(NSIndexPath *)indexPath {
+- (void)setCellWithTimeModel:(YSJSpellListModel *)timeModel indexPath:(NSIndexPath *)indexPath {
     
     self.timeModel = timeModel;
     self.indexPath = indexPath;
+    
+    [self refreshTimeWithModel:self.timeModel];
+    
+    
+    [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,self.timeModel.creater.photo]]placeholderImage:[UIImage imageNamed:@"placeholder2"]];
+
+    _name.text = self.timeModel.creater.nickname;
+
+    courseTimes.tagText = [NSString stringWithFormat:@"%d课时",self.timeModel.creater.times];
+    
+    //剩余人数大于0 则显示，小于等于0 不显示
+    int leftNum = self.min_Count - self.timeModel.count;
+    if (leftNum >0) {
+        _leftCount.text = [NSString stringWithFormat:@"还差%d人拼成",leftNum];
+        [_leftCount setAttributeTextWithString:_leftCount.text range:NSMakeRange(2, intToStringFormar(leftNum).length+1) WithColour:KMainColor];
+    }
+
+}
+#pragma mark - 刷新时间
+-(void)refreshTimeWithModel:(YSJSpellListModel*)timeModel{
     
     NSInteger countDownTime = timeModel.startTime - timeModel.currentTime;
     
@@ -85,15 +111,11 @@ static NSString *const ID = @"CZHCountDownCell";
         self.miniteLabel.text = [NSString stringWithFormat:@"%02ld", countDownTime%3600/60];
         self.secondLabel.text = [NSString stringWithFormat:@"%02ld", countDownTime%60];
     }
-    
-    self.indexLabel.text = [NSString stringWithFormat:@"位置:%ld",self.indexPath.row];
 }
-
 //刷新时间
 - (void)updateTime {
     
-    [self setCellWithTimeModel:self.timeModel indexPath:self.indexPath];
-    
+    [self refreshTimeWithModel:self.timeModel];
 }
 
 //倒计时完成
@@ -136,18 +158,24 @@ static NSString *const ID = @"CZHCountDownCell";
         make.top.equalTo(_img).offset(10);
     }];
     
-    
+    courseTimes = [[YSJTagLabel alloc]init];
+    [self.contentView addSubview:courseTimes];
+    [courseTimes mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(_name.mas_right).offset(10);
+        make.height.offset(20);
+        make.width.offset(50);
+        make.centerY.equalTo(_name);
+    }];
     
     _leftCount = [[UILabel alloc]init];
     _leftCount.font = Font(12);
     _leftCount.textColor = gray999999;
-    _leftCount.text = @"43";
+    _leftCount.text = @"";
     _leftCount.textAlignment = NSTextAlignmentRight;
     [self.contentView addSubview:_leftCount];
     [_leftCount mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.offset(-10);
         make.centerY.equalTo(_name);
-        make.height.offset(30);
     }];
     
     UILabel *leftTimeTitle = [[UILabel alloc]init];
@@ -188,20 +216,19 @@ static NSString *const ID = @"CZHCountDownCell";
         make.right.equalTo(self).offset(-kMargin);
         make.width.offset(66);
         make.height.offset(24);
-        make.centerY.equalTo(self);
+        make.top.equalTo(_leftCount.mas_bottom).offset(5);
     }];
-//    _getOrderCount = [[UILabel alloc]init];
-//    _getOrderCount.font = font(12);
-//    _getOrderCount.textAlignment = NSTextAlignmentCenter;
-//    _getOrderCount.textColor = gray999999;
-//    _getOrderCount.backgroundColor = [UIColor whiteColor];
-//    [self.contentView addSubview:_getOrderCount];
-//    [_getOrderCount mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(_starRateView.mas_right).offset(5);
-//        make.height.offset(20);
-//        make.centerY.equalTo(_starRateView);
-//    }];
+
     
+    UIView *bottomLine = [[UIView alloc]init];
+    bottomLine.backgroundColor = grayF2F2F2;
+    [self addSubview:bottomLine];
+    [bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.offset(10);
+        make.right.offset(0);
+        make.height.offset(1);
+        make.bottom.offset(0);
+    }];
     
     UILabel *hourLabel = [self quickSetUpLabel];
     self.hourLabel = hourLabel;
@@ -226,7 +253,7 @@ static NSString *const ID = @"CZHCountDownCell";
     
     [super layoutSubviews];
     
-    CGFloat w = 30;
+    CGFloat w = 25;
     CGFloat h = 20;
     
     self.hourLabel.frame = CGRectMake(0, 0, w,h);

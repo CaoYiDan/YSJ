@@ -22,7 +22,7 @@
    
     UILabel *_price;
     UILabel *_introduction;
-    UIView *_introductionView;
+    YSJTagsView *_introductionView;
 }
 
 #pragma mark - init
@@ -104,16 +104,17 @@
 //        make.height.offset(20);
 //        make.top.equalTo(xuqiu.mas_bottom).offset(7);
 //    }];
-    //介绍
-    _introductionView = [[UILabel alloc]init];
     
-    _introductionView.backgroundColor = KWhiteColor;
+    //介绍
+    _introductionView = [[YSJTagsView alloc]init];
+
     [self.contentView addSubview:_introductionView];
     [_introductionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(_name).offset(0);
         make.height.offset(30);
         make.top.equalTo(xuqiu.mas_bottom).offset(5);
     }];
+    
     UIView *bottomLine = [[UIView alloc]init];
     bottomLine.backgroundColor = grayF2F2F2;
     [self.contentView addSubview:bottomLine];
@@ -135,31 +136,10 @@
     _requestType.text = [NSString stringWithFormat:@"%@ | %@ ",model.coursetype,model.coursetypes];
     [xuqiu setTitle:[NSString stringWithFormat:@" %@",model.title] forState:0];
     
-    NSArray *arr = [model.userlables componentsSeparatedByString:@","];
-    int i = 0 ;
-    for (NSString *labelStr in arr) {
-        if (i>2) {
-            return;
-        }
-        UILabel *label = [UILabel new];
-        label.textAlignment = NSTextAlignmentCenter;
-        label.textColor = [UIColor hexColor:@"E8541E"];
-        label.font = Font(12);
-        label.layer.cornerRadius = 8;
-        label.clipsToBounds = YES;
-        label.text = labelStr;
-        label.backgroundColor = RGBA(253, 135, 197, 0.08);
-        [_introductionView addSubview:label];
-        label.text = arr[i];
-        [label mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.offset(i*100);
-            
-            make.height.offset(20);
-            make.bottom.offset(-5);
-        }];
-        i++;
-    }
+    _introductionView.tagsArr = [model.userlables componentsSeparatedByString:@","];
+    
 }
+
 -(void)prepareForReuse
 {
     [super prepareForReuse];

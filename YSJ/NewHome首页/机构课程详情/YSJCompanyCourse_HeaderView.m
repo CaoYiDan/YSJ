@@ -10,7 +10,7 @@
 #import "XHStarRateView.h"
 #import "YSJCompanyInfoView.h"
 #import "YSJCommonBottomView.h"
-
+#import "YSJPayForOrderVC.h"
 @implementation YSJCompanyCourse_HeaderView
 {
     UIImageView *_img;
@@ -172,7 +172,11 @@
 }
 
 -(void)buyClick{
-  
+    YSJPayForOrderVC *vc = [[YSJPayForOrderVC alloc]init];
+    self.model.multi_price = self.model.price;
+    vc.model = self.model;
+    vc.type = 2;
+    [[SPCommon getCurrentVC].navigationController pushViewController:vc animated:YES];
 }
 
 @end

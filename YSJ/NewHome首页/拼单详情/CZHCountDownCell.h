@@ -7,14 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CZHCountDownModel.h"
+#import "YSJSpellListModel.h"
 
 @class CZHCountDownCell;
 @protocol CZHCountDownCellDelegate <NSObject>
 
 @optional
 
-- (void)cell:(CZHCountDownCell *)cell countDownDidFinishedWithTimeModel:(CZHCountDownModel *)timeModel indexPath:(NSIndexPath *)indexPath;
+- (void)cell:(CZHCountDownCell *)cell countDownDidFinishedWithTimeModel:(YSJSpellListModel *)timeModel indexPath:(NSIndexPath *)indexPath;
 
 @end
 
@@ -23,8 +23,11 @@
 ///代理
 @property (nonatomic, weak) id<CZHCountDownCellDelegate> delegate;
 
+//最少需要的人
+@property (nonatomic,assign) int min_Count;
+
 + (instancetype)cellWithTableView:(UITableView *)tableView;
 
-- (void)setCellWithTimeModel:(CZHCountDownModel *)timeModel indexPath:(NSIndexPath *)indexPath;
+- (void)setCellWithTimeModel:(YSJSpellListModel *)timeModel indexPath:(NSIndexPath *)indexPath;
 
 @end

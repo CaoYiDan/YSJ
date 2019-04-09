@@ -26,7 +26,7 @@
     UILabel *_introduction;
     XHStarRateView *_starRateView;
     
-    UIView *_introductionView;
+    YSJTagsView *_introductionView;
 }
 
 #pragma mark - init
@@ -145,9 +145,7 @@
     }];
     
     //介绍
-    _introductionView = [[UILabel alloc]init];
-    
-    _introductionView.backgroundColor = KWhiteColor;
+    _introductionView = [[YSJTagsView alloc]init];
     [self.contentView addSubview:_introductionView];
     [_introductionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(_name).offset(0);
@@ -182,31 +180,9 @@
     [_price setAttributeTextWithString:_price.text range:NSMakeRange(_price.text.length-1, 1) WithColour:gray999999 andFont:12];
      _introduction.text = [NSString stringWithFormat:@"%@ | %@ | %@",model.coursetype,model.coursetypes,model.sex];
     
-    NSArray *arr = [model.lables componentsSeparatedByString:@","];
-    int i = 0 ;
-    for (NSString *labelStr in arr) {
-        if (i>2) {
-            return;
-        }
-        UILabel *label = [UILabel new];
-        label.textAlignment = NSTextAlignmentCenter;
-        label.textColor = [UIColor hexColor:@"E8541E"];
-        label.font = Font(11);
-        label.layer.cornerRadius = 4;
-        label.clipsToBounds = YES;
-        label.text = [NSString stringWithFormat:@" %@ ",labelStr];
-        label.backgroundColor = RGBA(253, 135, 197, 0.08);
-        [_introductionView addSubview:label];
-        label.text = arr[i];
-        [label mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.offset(i*100);
-            
-            make.height.offset(25);
-            make.bottom.offset(-5);
-        }];
-        i++;
-    }
+   _introductionView.tagsArr = [model.lables componentsSeparatedByString:@","];
 }
+
 -(void)prepareForReuse
 {
     [super prepareForReuse];
