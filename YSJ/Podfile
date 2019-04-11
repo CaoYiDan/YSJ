@@ -1,0 +1,14 @@
+platform :ios, '7.0'
+target 'SmallPig' do
+pod 'MJExtension'
+pod 'Masonry'
+pod 'SDWebImage'
+pod 'AFNetworking'
+pod 'MBProgressHUD'
+pod 'VTMagic'
+pod 'AMapSearch'
+pod 'WechatOpenSDK'
+pod 'MJRefresh'
+pod 'WechatOpenSDK'
+pod 'IQKeyboardManager'
+end
