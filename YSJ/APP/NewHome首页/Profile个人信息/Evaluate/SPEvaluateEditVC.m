@@ -127,7 +127,7 @@
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
     if ([self countWord:textView.text]>=500) {
         
-        [[[iToast makeText:(@"您已超出了最大输入字符限制")] setGravity:iToastGravityTop]                      show];
+        
         return NO;
     }
     return YES;

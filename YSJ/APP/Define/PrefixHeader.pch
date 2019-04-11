@@ -1,0 +1,143 @@
+//
+//  PrefixHeader.pch
+//  SmallPig
+//
+//  Created by 李智帅 on 2017/5/31.
+//  Copyright © 2017年 李智帅. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+#ifdef __OBJC__
+
+//一. 全局的头文件
+// 地图
+#import <CoreLocation/CoreLocation.h>
+
+#define kScreenWidth ([UIScreen mainScreen].bounds.size.width)
+#define kScreenHeight ([UIScreen mainScreen].bounds.size.height)
+#define kScreenW [UIScreen mainScreen].bounds.size.width
+#define kScreenH [UIScreen mainScreen].bounds.size.height
+
+
+#define kScrollViewBeginTopInset 240
+
+#import "SPLZSHeader.h"
+#import "SPApi.h"
+#import "YSJTagsView.h"
+#import "UILabel+Extension.h"
+#import "SPCommon.h"
+#import "Notification.h"
+#import "MJExtension.h"
+#import "UIView+SPAnimation.h"
+#import "UILabel+SPText.h"
+#import "NSObject+Block.h"
+#import "MBProgressHUD.h"
+#import "MBProgressHUD+MJ.h"
+#import "AFNetworking.h"//网络请求
+#import "UIKit+AFNetworking.h"
+#import "SDImageCache.h"
+#import "StorageUtil.h"
+#import "UIImageView+WebCache.h"//给Imageview加图片
+#import "UIViewController+SPViewController.h"
+#import "FactoryUI.h"
+#import "SDCycleScrollView.h"
+#import "MJRefresh.h"//刷新
+
+#import "Constant.h"
+#import "Masonry.h"
+#import "YSJEnum.h"
+#import "UIView+SCFrame.h"
+#import "UITableViewCell+Extension.h"
+//图片标签位置
+#import "LabelAndImage.h"
+#import "NSObject+propertyCode.h"
+#import "UIView+SPAnimation.h"
+#import "HttpRequest.h"
+//字体
+//#define Font(x) [UIFont systemFontOfSize:x]
+#import "UIColor+LGhex.h"
+#import "YSJ_Api.h"
+#import "UIView+BlockGesture.h"
+//颜色
+#define WC [UIColor whiteColor]
+
+#define KProgressColor [UIColor colorWithRed:34/255.0 green:114/255.0 blue:201/255.0 alpha:1]
+
+//标题颜色
+#define TitleColor [UIColor colorWithRed:46/255.0 green:46/255.0 blue:46/255.0 alpha:1]
+#define MAINCOLOR [UIColor colorWithRed:0.93 green:0.93 blue:0.93 alpha:1];
+#define AlphaBack  [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]
+#define KMainColor [UIColor hexColor:@"FF8960"]
+//空集
+#define isNull(x) (!x || [x isKindOfClass:[NSNull class]])
+
+#define isEmptyString(x) (isNull(x) || [x isEqual:@""] || [x isEqual:@"(null)"])
+
+//wekself 防止死循环
+#define WeakSelf __weak typeof(self) weakSelf = self;
+#define weakSelf(x) __weak typeof(x) weakSelf = x;
+
+#define weakify(...) \
+rac_keywordify \
+metamacro_foreach_cxt(rac_weakify_,, __weak, __VA_ARGS__)
+
+#define strongify(...) \
+rac_keywordify \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wshadow\"") \
+metamacro_foreach(rac_strongify_,, __VA_ARGS__) \
+_Pragma("clang diagnostic pop")
+
+//屏幕坐标
+#define kWindowW [UIScreen mainScreen].bounds.size.width
+#define kWindowH ([UIScreen mainScreen].bounds.size.height)
+#define SCREEN_W [UIScreen mainScreen].bounds.size.width
+#define SCREEN_H ([UIScreen mainScreen].bounds.size.height)
+
+#define SCREEN_H3 ([UIScreen mainScreen].bounds.size.height)
+
+#define SCREEN_B [UIScreen mainScreen].bounds
+
+#define SCREEN_H2 ([UIScreen mainScreen].bounds.size.height)
+
+//别直接写64了，也别直接写88,写宏吧
+ #define SafeAreaTopHeight ( SCREEN_H2 == 812.0 ? 88 : 64)
+//状态栏高度
+ #define SafeAreaStateHeight ( SCREEN_H2 == 812.0 ? 44 : 20)
+
+// 判断是否是iPhone X
+#define iPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
+// 状态栏高度
+#define STATUS_BAR_HEIGHT (iPhoneX ? 44.f : 20.f)
+// 导航栏高度
+#define NAVIGATION_BAR_HEIGHT (iPhoneX ? 88.f : 64.f)
+// tabBar高度
+#define TAB_BAR_HEIGHT (iPhoneX ? (49.f+34.f) : 49.f)
+// home indicator
+#define HOME_INDICATOR_HEIGHT (iPhoneX ? 34.f : 0.f
+
+/// 底部宏，吃一见长一智吧，别写数字了
+#define SafeAreaBottomHeight (SCREEN_H2 == 812.0 ? 34 : 0)
+/// 底部宏，吃一见长一智吧，别写数字了
+#define KBottomHeight (SCREEN_H2 == 812.0 ? 34 : 0)
+
+#define HudShow  [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+
+#define HudHidden  [MBProgressHUD hideHUD];
+
+//提示语 Toast
+#define Toast(msg) [MBProgressHUD showError:msg];
+
+////测试Base接口
+//#define BaseTextUrl @"http://192.168.1.227:8080"
+//#define BaseUrl @""
+
+/**小猪约 AppId*/
+#define STOREAPPID @"1289529575"
+
+#endif
+#endif /* PrefixHeader_pch */
