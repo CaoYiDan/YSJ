@@ -461,13 +461,15 @@
 -(void)setForPriceWithRow:(DOPIndexPath *)indexPath{
     
     if (indexPath.row==0) {
-        [_siftingDic setObject:@{@"low":@"0",@"high":@"1000000"} forKey:@"priceorder"];
+        [_siftingDic setObject:@{@"low":@(0),@"high":@(1000000)} forKey:@"priceorder"];
     }else if (indexPath.row==1){
-        [_siftingDic setObject:@{@"low":@"0",@"high":@"1000"} forKey:@"priceorder"];
+        [_siftingDic setObject:@{@"low":@(0),@"high":@(200)} forKey:@"priceorder"];
     }else if (indexPath.row==2){
-        [_siftingDic setObject:@{@"low":@"1000",@"high":@"2000"} forKey:@"priceorder"];
+        [_siftingDic setObject:@{@"low":@(200),@"high":@(300)} forKey:@"priceorder"];
     }else if (indexPath.row==3){
-        [_siftingDic setObject:@{@"low":@"2000",@"high":@"1000000"} forKey:@"priceorder"];
+        [_siftingDic setObject:@{@"low":@(300),@"high":@(400)} forKey:@"priceorder"];
+    }else if (indexPath.row==4){
+        [_siftingDic setObject:@{@"low":@(400),@"high":@(1000000)} forKey:@"priceorder"];
     }
 }
 
@@ -613,7 +615,7 @@
 #pragma mark 设置下拉菜单
 -(void)setMenuView{
     
-    self.prices = @[@"不限",@"1000以下",@"1000以上",@"2000以上"];
+    self.prices = @[@"不限",@"200以下",@"200-300",@"300-400",@"400以上"];
     self.sorts = @[@"智能排序",@"离我最近",@"好评优先",@"人气优先"];
     self.sorts = @[@"智能排序",@"离我最近",@"好评优先",@"人气优先"];
     

@@ -6,7 +6,9 @@
 //  Copyright © 2019年 lisen. All rights reserved.
 //
 #import "WXApi.h"
+#import "YSJFinshedPayShareVC.h"
 #import "YSJTagLabel.h"
+#import "YSJSpellListModel.h"
 #import "YSJCourseModel.h"
 #import "YSJPayForOrderVC.h"
 #import <AlipaySDK/AlipaySDK.h>
@@ -592,12 +594,22 @@
 }
 
 -(void)payClick{
+    
 //    [self WXPayWithDict:@{}];
     
 //    [[AlipaySDK defaultService] payOrder:@"fd" fromScheme:@"smallpigalipay" callback:^(NSDictionary *resultDic)
 //     {
 //
 //     }];
+    
+    YSJFinshedPayShareVC *vc = [[YSJFinshedPayShareVC alloc]init];
+    //拼单 需要传递拼单人员的信息model
+    if (!isNull(self.spellModel)) {
+        vc.needNum = self.model.min_user;
+        vc.model = self.spellModel;
+    }
+    
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 #pragma  mark  从后台获取签名String

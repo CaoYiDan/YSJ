@@ -32,6 +32,8 @@
     
     [_leftItem addTarget:self action:@selector(homeNavClick:) forControlEvents:UIControlEventTouchDown];
     _leftItem.titleLabel.font = font(16);
+    [_leftItem setTitle:@"     " forState:0];
+    
     [_leftItem setImage:[UIImage imageNamed:@"return"] forState:0];
     [self addSubview:_leftItem];
     [_leftItem mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -47,7 +49,6 @@
 
     [shareBtn addTarget:self action:@selector(homeNavClick:) forControlEvents:UIControlEventTouchDown];
     [self addSubview:shareBtn];
-    
     
     UIButton *careBtn = [[UIButton alloc]initWithFrame:CGRectMake(SCREEN_W-50, SafeAreaStateHeight, 40, 40)];
     [careBtn setImage:[UIImage imageNamed:@"guanzhu_1"] forState:UIControlStateSelected];
@@ -75,7 +76,7 @@
 - (void)setTittleHiden:(BOOL)tittleHiden{
     _tittleHiden = tittleHiden;
     if (tittleHiden) {
-        [_leftItem setTitle:@"" forState:0];
+        [_leftItem setTitle:@"     " forState:0];
     }else{
         [_leftItem setTitle:[NSString stringWithFormat:@"  %@",self.title] forState:0];
     }

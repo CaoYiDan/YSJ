@@ -7,6 +7,7 @@
 //
 #import "YSJTagLabel.h"
 #import "YSJTagsView.h"
+#import "NSString+getSize.h"
 
 @implementation YSJTagsView
 - (instancetype)init
@@ -52,14 +53,16 @@
         label.tagText = labelStr;
         
         [self addSubview:label];
-    
+        
+        CGFloat width= [labelStr sizeWithFont:font(11) maxW:120].width+20;
+        
         [label mas_makeConstraints:^(MASConstraintMaker *make) {
             if (i==0) {
                 make.left.offset(0);
             }else{
             make.left.equalTo(leftLabel.mas_right).offset(15);
             }
-            make.width.offset(80);
+            make.width.offset(width);
             make.height.offset(20);
             make.bottom.offset(-5);
         }];

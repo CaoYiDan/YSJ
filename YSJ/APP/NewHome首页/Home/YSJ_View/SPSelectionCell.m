@@ -1,8 +1,6 @@
 //
 //  SPSelectionCell.m
 //  SmallPig
-//
-
 
 #import "SPSelectionCell.h"
 #import "SPUser.h"
@@ -111,7 +109,6 @@
 -(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
 {
     return 10;
-
 }
 
 -(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
@@ -125,12 +122,13 @@
     
     
     if (self.cellType == HomeCellCompany) {
+        
         YSJCompanysModel *model  = self.listArr[indexPath.row];
         
         YSJCompany_DetailVC *vc = [[YSJCompany_DetailVC alloc]init];
         
-//        vc.companyID = model.companyID;
-        vc.companyID =  @"13800300028";
+        vc.companyID = model.companyID;
+        
         [[SPCommon getCurrentVC].navigationController  pushViewController:vc animated:YES];
     }else if (self.cellType == HomeCellTeacher){
         YSJTeacherModel *model  = self.listArr[indexPath.row];

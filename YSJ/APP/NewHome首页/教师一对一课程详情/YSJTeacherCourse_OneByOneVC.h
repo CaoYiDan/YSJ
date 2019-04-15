@@ -7,15 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+
 typedef void(^profileBlock) (NSDictionary *profileDic);
+
 @class YSJCourseModel;
+
 #import "BaseViewController.h"
 
 @interface YSJTeacherCourse_OneByOneVC: BaseViewController
+
 @property (nonatomic,strong) YSJCourseModel *M;
 /**<##>courseID*/
 @property(nonatomic,copy)NSString *courseID;
-
 /**block*/
 @property(nonatomic,copy)profileBlock  block;
 @end

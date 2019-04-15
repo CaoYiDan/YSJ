@@ -48,7 +48,7 @@
     self.magicView.sliderColor = KMainColor;
     
     self.magicView.backgroundColor = KWhiteColor;
-   
+    
     [self.magicView  reloadData];
     
     [self addNotification];
@@ -65,7 +65,7 @@
     [super viewWillAppear:animated];
     
     [self.navigationController setNavigationBarHidden:NO animated:YES];
-
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -131,15 +131,17 @@
     
     NSString *gridId = @"identifer";
     gridId =  [NSString stringWithFormat:@"%ld---identifier",pageIndex];
-   
-        YSJCommentVC *viewController = [magicView dequeueReusablePageWithIdentifier:gridId];
-        if (!viewController) {
-            viewController = [[YSJCommentVC alloc] init];
-        }
-        viewController.code = self.code;
-        viewController.type = self.type;
-        viewController.menuInfo = menuInfo;
-        return viewController;
+    
+    YSJCommentVC *viewController = [magicView dequeueReusablePageWithIdentifier:gridId];
+    if (!viewController) {
+        viewController = [[YSJCommentVC alloc] init];
+        viewController.commentModel = self.commentModel;
+    }
+    
+    viewController.code = self.code;
+    viewController.type = self.type;
+    viewController.menuInfo = menuInfo;
+    return viewController;
 }
 
 #pragma mark - VTMagicViewDelegate
@@ -182,7 +184,7 @@
 
 //设置我的账户
 -(void)setMyAccount{
-
+    
 }
 
 - (void)integrateComponents {

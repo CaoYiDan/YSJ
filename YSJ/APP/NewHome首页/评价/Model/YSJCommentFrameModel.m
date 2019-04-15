@@ -54,9 +54,8 @@
     
     NSArray *photoArr = [self.status.photo_urls componentsSeparatedByString:@","];
     
-    /** 配图 */
-    if (photoArr.count) { // 有配图
-
+    /** 有配图 */
+   if (!isEmptyString(self.status.photo_urls)) {
         self.photosViewF = (CGRect){{contentX,  CGRectGetMaxY(self.tagLabelF)}, CGSizeMake(SCREEN_W-contentX-kMargin,[self heigtForPhoto:photoArr.count])};
         NSLog(@"%@",self.status.photo_urls);
     } else { // 没配图

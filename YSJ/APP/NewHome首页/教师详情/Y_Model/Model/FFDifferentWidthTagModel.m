@@ -24,7 +24,7 @@ static CGFloat cellMarginY = 16;
     CGFloat basedWidth = 37;
     CGFloat basedHeight = 30;
     //x坐标的边距
-    CGFloat marginX = 16;
+    CGFloat marginX = 12;
     //y坐标的边距
     CGFloat marginY = cellMarginY;
     
@@ -42,7 +42,7 @@ static CGFloat cellMarginY = 16;
         
         //计算标签内容的大小
 
-        CGSize size =[str sizeWithFont:font(15) maxW:kWindowW];
+        CGSize size =[str sizeWithFont:font(13) maxW:kWindowW];
         w = basedWidth + size.width;
         CGFloat maxX = x + w;
         

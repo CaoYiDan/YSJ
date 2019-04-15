@@ -1,5 +1,5 @@
 
-#import "YSJTeacherCourseDetailVC.h"
+
 #import "YSJTeacherCourseCell.h"
 #import "YSJTeacherPinDanCell.h"
 #import "YSJMulticourseModel.h"

@@ -1,5 +1,5 @@
 
-#import "YSJTeacherCourseDetailVC.h"
+
 #import "YSJTeacherCourseCell.h"
 #import "YSJTeacherPinDanCell.h"
 #import "YSJMulticourseModel.h"
@@ -144,11 +144,16 @@
 }
 
 #pragma mark - 获取评价
+
 - (void)getPingjiaRequestisScu:(void(^)(BOOL isScu))requestisScu{
+    
     NSLog(@"%@",self.companyID);
+    
     [[HttpRequest sharedClient]httpRequestGET:[NSString stringWithFormat:@"%@?teacherid=%@",YTeacherPingJia,self.companyID] parameters:nil progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         
         NSLog(@"%@",responseObject);
+        
+        _evaluateDic = responseObject;
         
         NSArray *arr = responseObject[@"label_count"];
         
@@ -159,7 +164,7 @@
         NSMutableArray *tagsArrM = [NSMutableArray array];
         for (int j = 0; j < arr.count; j++){
             
-            [tagsArrM addObject:[NSString stringWithFormat:@"%@ %@",arr[j][@"lable"],arr[j][@"count"]]];
+            [tagsArrM addObject:[NSString stringWithFormat:@"%@ %@",arr[j][@"label"],arr[j][@"num"]]];
         }
         
         _commentModel.tagsArrM = tagsArrM;
@@ -233,6 +238,7 @@
     [dic setObject:isEmptyString([StorageUtil getId])?@"":[StorageUtil getId] forKey:@"token"];
     [dic setObject:[SPCommon getLoncationDic] forKey:@"locate"];
     [dic setObject:self.companyID forKey:@"companyID"];
+    NSLog(@"%@",dic);
     
     [[HttpRequest sharedClient]httpRequestPOST:YCompanyCourse parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         
@@ -362,7 +368,7 @@
         [base addSubview:baseScoreView];
         
         UILabel *score = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 30, 50)];
-        score.text = [NSString stringWithFormat:@"%.1f",_commentModel.reputation];
+        score.text = [NSString stringWithFormat:@"%.1f",self.M.reputation];
         score.adjustsFontSizeToFitWidth = YES;
         _scoreLabel = score;
         score.font = font(20);
@@ -388,7 +394,7 @@
         starRateView.backgroundColor = KWhiteColor;
         
         [baseScoreView addSubview:starRateView];
-        [starRateView setStarLeave:_commentModel.reputation];
+        [starRateView setStarLeave:self.M.reputation];
         UIImageView *more = [[UIImageView alloc]initWithFrame:CGRectMake(SCREEN_W-kMargin-10, 10+11, 8, 18)];
         [more setImage:[UIImage imageNamed:@"Shapear"]];
         [base addSubview:more];
@@ -408,6 +414,7 @@
     YSJCommentBaseVC *vc = [[YSJCommentBaseVC alloc]init];
     vc.evaluateDic = _evaluateDic;
     vc.type = 0;
+    vc.commentModel = _commentModel;
     vc.code = self.companyID;
     [self.navigationController pushViewController:vc animated:YES];
 }
@@ -467,8 +474,8 @@
 -(void)care:(UIButton *)btn{
     //如果没有登录，就弹出登录界面
     //    if ([SPCommon gotoLogin]) return;
-    
-    NSDictionary * dict = @{@"token":[StorageUtil getId],@"companyID":self.companyID};
+   
+    NSDictionary * dict = @{@"token":[StorageUtil getId],@"teacherID":self.companyID};
     NSLog(@"%@",dict);
     [[HttpRequest sharedClient]httpRequestPOST:YCare parameters:dict progress:^(NSProgress *downloadProgress) {
         

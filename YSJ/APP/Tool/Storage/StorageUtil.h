@@ -39,6 +39,10 @@
 + (void)saveId:(NSString *)roleId;
 + (NSString *)getId;
 
+//保存用户头像imgurl
++ (void)savePhoto:(NSString *)photoUrl;
++ (NSString *)getPhotoUrl;
+
 //用户首次登陆时，如果没有允许获取位置信息时，第一次刷新首页数据，请求获取位置信息
 + (void)saveIfRefreshLocation:(NSString *)refreshLocation;
 + (NSString *)getRefreshLocation;

@@ -8,11 +8,13 @@
 
 #import "BaseViewController.h"
 
-@class YSJCourseModel;
+@class YSJCourseModel,YSJSpellListModel;
 
 @interface YSJPayForOrderVC : BaseViewController
 
 @property (nonatomic,strong) YSJCourseModel *model;
+
+@property (nonatomic,strong) YSJSpellListModel *spellModel;
 
 @property (nonatomic,assign) YSJPayForObject payForType;
 

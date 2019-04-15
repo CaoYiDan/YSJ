@@ -173,8 +173,8 @@
     [_starRateView setStarLeave:model.reputation];
     _name.text = model.realname;
     _teacherType.text = model.sale_item;
-    [renzheng setTitle:[NSString stringWithFormat:@"%d",model.reputation] forState:0];
-    _getOrderCount.text = [NSString stringWithFormat:@"%u分   已售%u",model.reputation,model.dealcount];
+    [renzheng setTitle:[NSString stringWithFormat:@"%.1f",model.reputation] forState:0];
+    _getOrderCount.text = [NSString stringWithFormat:@"%.1f分   已售%u",model.reputation,model.dealcount];
     
     _price.text = [NSString stringWithFormat:@"¥%u 起",model.price];
     [_price setAttributeTextWithString:_price.text range:NSMakeRange(_price.text.length-1, 1) WithColour:gray999999 andFont:12];

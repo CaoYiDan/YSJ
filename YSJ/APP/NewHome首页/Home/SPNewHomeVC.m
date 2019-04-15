@@ -88,6 +88,9 @@
     
     [super viewDidLoad];
     
+    
+    [StorageUtil savePhoto:@"http://img5.imgtn.bdimg.com/it/u=1979198230,3799788659&fm=26&gp=0.jpg"];
+    
     _locationCity  = @"北京市";
     
     //渐变背景色
@@ -429,7 +432,7 @@
     
     UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(kMargin, 20, 100, 30)];
     title.text = _sectionViewData[_sortArr[section]][@"title"];
-    title.font = BoldFont(16);
+    title.font = BoldFont(18);
     [base addSubview:title];
     
     UILabel *subTitle = [[UILabel alloc]initWithFrame:CGRectMake(kMargin, 40, 300, 30)];

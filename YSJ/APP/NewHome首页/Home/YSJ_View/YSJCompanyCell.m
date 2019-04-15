@@ -1,13 +1,10 @@
 //
 //  YSJTeacherCell.m
-//  SmallPig
-//
-//  Created by xujf on 2019/3/20.
-//  Copyright © 2019年 lisen. All rights reserved.
-//
-//
+
 
 #import "YSJCompanyCell.h"
+
+#import "NSString+getSize.h"
 
 #import "YSJCompanysModel.h"
 
@@ -127,29 +124,35 @@
 
     NSArray *arr = [model.lables componentsSeparatedByString:@","];
     int i = 0 ;
+   
     for (NSString *labelStr in arr) {
         if (i>0) {
             return;
         }
+        
+        
+        
         UILabel *label = [UILabel new];
         label.textAlignment = NSTextAlignmentCenter;
         label.textColor = [UIColor hexColor:@"E8541E"];
-        label.font = Font(12);
+        label.font = Font(11);
         label.layer.cornerRadius = 8;
         label.clipsToBounds = YES;
         label.text = labelStr;
         label.backgroundColor = RGBA(253, 135, 197, 0.08);
         [_introductionView addSubview:label];
         label.text = [NSString stringWithFormat:@"%@名资深老师",model.num_teacher];
+       CGFloat width= [label.text sizeWithFont:font(11) maxW:150].width+20;
         [label mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.offset(i*100);
-            
+            make.width.offset(width);
             make.height.offset(20);
             make.bottom.offset(-5);
         }];
         i++;
     }
 }
+
 -(void)prepareForReuse
 {
     [super prepareForReuse];

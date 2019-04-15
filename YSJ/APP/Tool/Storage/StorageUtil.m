@@ -42,6 +42,16 @@
 return [self getObjectByKey:kStorageLat];
 }
 
+//用户头像
++ (void)savePhoto:(NSString *)photoUrl{
+    [self saveObject:photoUrl forKey:kPhoto];
+}
+
++ (NSString *)getPhotoUrl{
+    
+    return [self getObjectByKey:kPhoto];
+}
+
 //经度
 + (void)saveUserLon:(NSString *)userLon{
 [self saveObject:userLon forKey:KStorageLon];

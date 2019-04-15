@@ -1,9 +1,5 @@
 //
 //  MBProgressHUD+MJ.m
-//
-//  Created by mj on 13-4-18.
-//  Copyright (c) 2013年 itcast. All rights reserved.
-//
 
 #import "MBProgressHUD+MJ.h"
 
@@ -14,7 +10,7 @@
     if (view == nil) view = [[UIApplication sharedApplication].windows lastObject];
     // 快速显示一个提示信息
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
-    hud.labelText = text;
+    hud.label.text = text;
     // 设置图片
     hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"MBProgressHUD.bundle/%@", icon]]];
     // 再设置模式

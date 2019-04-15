@@ -3,6 +3,8 @@
 //  SmallPig
 //
 #import "MenuInfo.h"
+#import "FFDifferentWidthTagModel.h"
+#import "FFDifferentWidthTagCell.h"
 #import "YSJCommentVC.h"
 #import "SPCategorySelectionVC.h"
 #import "YSJCommentCell.h"
@@ -71,13 +73,15 @@
 -(void)refreshData{
     
     _page = 0;
-    
+    NSString *url = @"";
     if (self.type==0) {//机构 教师 评价
-        [NSString stringWithFormat:@"%@?teacher_phone=%@&filter=%@&page=%ld",YEvaluationDetails,self.code,@(self.menuInfo.index),(long)_page];
-    }else{//课程评价
-        [NSString stringWithFormat:@"%@?courseid=%@&filter=%@&page=%ld",YCourseDetails,self.code,@(self.menuInfo.index),(long)_page];
+       url = [NSString stringWithFormat:@"%@?teacher_phone=%@&filter=%@&page=%ld",YEvaluationDetails,self.code,@(self.menuInfo.index),(long)_page];
+    }else{
+        //课程评价
+      url = [NSString stringWithFormat:@"%@?courseid=%@&filter=%@&page=%ld",YCourseDetails,self.code,@(self.menuInfo.index),(long)_page];
     }
-    [[HttpRequest sharedClient]httpRequestGET:[NSString stringWithFormat:@"%@?teacher_phone=%@&filter=%@&page=%ld",YEvaluationDetails,self.code,@(self.menuInfo.index),(long)_page] parameters:nil progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+    NSLog(@"%@",[NSString stringWithFormat:@"%@?courseid=%@&filter=%@&page=%ld",YCourseDetails,self.code,@(self.menuInfo.index),(long)_page]);
+    [[HttpRequest sharedClient]httpRequestGET:url parameters:nil progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         NSLog(@"%@",responseObject);
         NSMutableArray *arr = [NSMutableArray array];
         //1.获取一个全局串行队列
@@ -162,40 +166,46 @@
 #pragma  mark - tableViewDelegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    if (section==0) {
+        return 1;
+    }
     return  self.listArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
+    if (indexPath.section==0) {
+        FFDifferentWidthTagCell *cell = [FFDifferentWidthTagCell loadCode:tableView];
+        cell.tagModel = _commentModel;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        return cell;
+    }else{
     YSJCommentCell*cell = [YSJCommentCell loadCode:tableView];
     cell.statusFrame = self.listArray[indexPath.row];
     
     return cell;
+    }
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-//    YSJCommentFrameModel *frame = self.listArray[indexPath.row];
-//    return frame.cellHeight;
-    return 250;
+    
+    if (indexPath.section==0) {
+        
+        return _commentModel.cellHeight;
+    }
+    YSJCommentFrameModel *frame = self.listArray[indexPath.row];
+    return frame.cellHeight;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    YSJCommentFrameModel *modelF = self.listArray[indexPath.row];
     
-//    SPDynamicDetialVC*vc = [[SPDynamicDetialVC alloc]init];
-//    vc.model = modelF.status;
-//    //删除动态
-//    vc.dynamicDeleteBlock = ^(){
-//        [self.listArray removeObject:modelF];
-//        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//    };
-//    [self.navigationController pushViewController:vc animated:YES];
 }
 
 #pragma  mark - -----------------SPNewDynamicHeaderViewDelegate-----------------
@@ -250,6 +260,7 @@
 
 //轮播图数据源
 -(NSMutableArray*)bannerArray{
+    
     if (_bannerArray==nil) {
         _bannerArray=[NSMutableArray array];
     }
@@ -257,6 +268,7 @@
 }
 
 -(UITableView *)tableView{
+    
     if (!_tableView ) {
         
         _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0,0, SCREEN_W, SCREEN_H2-SafeAreaTopHeight-KBottomHeight) style:UITableViewStylePlain];
@@ -264,7 +276,7 @@
         _tableView.dataSource = self;
         _tableView.backgroundColor = [UIColor whiteColor];
         _tableView.separatorColor = [UIColor clearColor];
-        _tableView.contentInset = UIEdgeInsetsMake(0, 0, KBottomHeight, 0);
+        _tableView.contentInset = UIEdgeInsetsMake(0, 0, KBottomHeight+49, 0);
         _tableView.showsVerticalScrollIndicator = NO;
         
         //header

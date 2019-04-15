@@ -114,7 +114,7 @@
     
     _name.text = model.title;
 
-    [_bottomView setContent2:model.is_at_home?@"接收":@"不接收" content4:model.coursetype content6:model.course_time];
+    [_bottomView setContent2:model.is_at_home?@"接受":@"不接受" content4:model.coursetype content6:model.course_time];
 
     _price.text = [NSString stringWithFormat:@"¥%@-¥%@",model.lowprice,model.highprice];
 

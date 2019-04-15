@@ -53,12 +53,13 @@
 
 //轮播图
 -(SDCycleScrollView*)bannerView{
+    
     if (!_bannerView) {
         
         _bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0,0,SCREEN_W-2*kMargin,bannerHeight) imageURLStringsGroup:self.bannerArray];
         [SPCommon setShaowForView:_bannerView];
         _bannerView.currentPageDotColor= KMainColor;
-        _bannerView.pageDotColor= [UIColor grayColor];
+        _bannerView.pageDotColor= KWhiteColor;
         _bannerView.docUp = YES;
         _bannerView.backgroundColor = HomeBaseColor; _bannerView.bannerImageViewContentMode=UIViewContentModeScaleAspectFill;
         _bannerView.infiniteLoop = YES;

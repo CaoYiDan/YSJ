@@ -38,12 +38,12 @@
         [button setImage:[UIImage imageNamed:@"return"] forState:UIControlStateNormal];
         
         [button addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];
-        button.frame = CGRectMake(0, 0, 44, 44);
-        button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-        button.titleLabel.font = [UIFont systemFontOfSize:1];
+        button.frame = CGRectMake(-30, 0, 70, 44);
         
+        button.contentHorizontalAlignment = UIViewContentModeLeft;
+      
+        button.imageEdgeInsets = UIEdgeInsetsMake(0, -35, 0, 0);
         viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
-        
     }
     
     

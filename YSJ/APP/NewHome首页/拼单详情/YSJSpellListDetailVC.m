@@ -1,6 +1,6 @@
 #import "CZHCountDownCell.h"
 #import "YSJSpellListModel.h"
-#import "YSJTeacherCourseDetailVC.h"
+#import "YSJCommentBaseVC.h"
 #import "YSJTeacherCourseCell.h"
 #import "YSJTeacherPinDanCell.h"
 #import "YSJMulticourseModel.h"
@@ -70,6 +70,7 @@
     NSInteger _selectedIndex;
     UIView *_photosView;
     
+    NSMutableDictionary *_evaluateDic;
     
     NSMutableArray *_bannerArr;
     //综合评分
@@ -107,7 +108,6 @@
     
     [self startAllRequest];
     
-
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -115,6 +115,15 @@
     [super viewWillAppear:animated];
     
     [self.navigationController setNavigationBarHidden:YES animated:YES];
+}
+- (void)dealloc {
+    
+    if (_timer) {
+        if ([_timer isValid]) {
+            [_timer invalidate];
+            _timer = nil;
+        }
+    }
 }
 
 #pragma mark - 开始进行请求数据
@@ -157,22 +166,29 @@
     
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         
-        
-        [self setUpTimer];
-        
         [weakSelf.tableView reloadData];
-        
+        [self setUpTimer];
     });
+}
+
+-(void)setMyTimer{
+    __weak id weakSelf = self;
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer *timer) {
+        NSLog(@"block %@",weakSelf);
+        [weakSelf timerEvent];
+    }];
 }
 
 #pragma mark - 获取评价
 - (void)getPingjiaRequestisScu:(void(^)(BOOL isScu))requestisScu{
     
-    [[HttpRequest sharedClient]httpRequestGET:[NSString stringWithFormat:@"%@?id=%@",YTeacherPingJia,self.courseID] parameters:nil progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+    [[HttpRequest sharedClient]httpRequestGET:[NSString stringWithFormat:@"%@?courseid=%@",YCoursePingJia,self.courseID] parameters:nil progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         
         NSLog(@"%@",responseObject);
         
-        NSArray *arr = responseObject[@"lable"];
+        _evaluateDic = responseObject;
+        
+        NSArray *arr = responseObject[@"label_count"];
         
         _commentModel = [FFDifferentWidthTagModel new];
         
@@ -181,7 +197,7 @@
         NSMutableArray *tagsArrM = [NSMutableArray array];
         for (int j = 0; j < arr.count; j++){
             
-            [tagsArrM addObject:[NSString stringWithFormat:@"%@ %@",arr[j][@"lable"],arr[j][@"count"]]];
+            [tagsArrM addObject:[NSString stringWithFormat:@"%@ %@",arr[j][@"label"],arr[j][@"num"]]];
         }
         
         _commentModel.tagsArrM = tagsArrM;
@@ -257,12 +273,6 @@
         NSLog(@"%@",responseObject);
         
         self.M = [YSJCourseModel mj_objectWithKeyValues:responseObject];
-        _bannerArr = @[].mutableCopy;
-        
-        for (NSString *str in self.M.course_display) {
-            [_bannerArr addObject:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,str]];
-        }
-        self.header.bannerImgArr = _bannerArr;
         
         self.header.model = self.M;
         
@@ -435,7 +445,7 @@
         [base addSubview:baseScoreView];
         
         UILabel *score = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 30, 50)];
-        score.text = [NSString stringWithFormat:@"%.1f",_commentModel.reputation];
+        score.text = [NSString stringWithFormat:@"%.1f",self.M.reputation];
         score.adjustsFontSizeToFitWidth = YES;
         _scoreLabel = score;
         score.font = font(20);
@@ -461,7 +471,7 @@
         starRateView.backgroundColor = KWhiteColor;
         
         [baseScoreView addSubview:starRateView];
-        [starRateView setStarLeave:_commentModel.reputation];
+        [starRateView setStarLeave:self.M.reputation];
         UIImageView *more = [[UIImageView alloc]initWithFrame:CGRectMake(SCREEN_W-kMargin-10, 10+11, 8, 18)];
         [more setImage:[UIImage imageNamed:@"sijiao_more"]];
         [base addSubview:more];
@@ -479,6 +489,14 @@
 
 -(void)more{
     
+    YSJCommentBaseVC *vc = [[YSJCommentBaseVC alloc]init];
+    
+    vc.type = 1;
+    vc.commentModel = _commentModel;
+    vc.code = self.courseID;
+    vc.evaluateDic = _evaluateDic;
+    [self.navigationController pushViewController:vc animated:YES];
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -491,6 +509,8 @@
         self.M.min_times = intToStringFormar(model.creater.times);
         
         vc.model = self.M;
+        
+        vc.spellModel = model;
         
         vc.payForType = YSJPayForPinDan;
         
@@ -525,6 +545,7 @@
     
     YSJPayForOrderVC *vc = [[YSJPayForOrderVC alloc]init];
     vc.model = self.M;
+   
     vc.payForType = YSJPayForStartPinDan;
     [self.navigationController pushViewController:vc animated:YES];
 }
@@ -537,9 +558,9 @@
     //如果没有登录，就弹出登录界面
     //    if ([SPCommon gotoLogin]) return;
     
-    NSDictionary * dict = @{@"token":[StorageUtil getId],@"teacherID":self.courseID};
+    NSDictionary * dict = @{@"token":[StorageUtil getId],@"courseID":self.courseID};
     NSLog(@"%@",dict);
-    [[HttpRequest sharedClient]httpRequestPOST:YCare parameters:dict progress:^(NSProgress *downloadProgress) {
+    [[HttpRequest sharedClient]httpRequestPOST:YCollection parameters:dict progress:^(NSProgress *downloadProgress) {
         
     } sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         
@@ -547,9 +568,9 @@
         
         btn.selected = !btn.isSelected;
         if (btn.isSelected) {
-            Toast(@"关注成功");
+            Toast(@"收藏成功");
         }else{
-            Toast(@"取消关注");
+            Toast(@"取消收藏");
         }
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
     }];
@@ -603,14 +624,12 @@
     if (!_header)
     {
         _header = [[YSJSpellHeaderView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_W,bannerHeight+profileHeight-15)];
-        
+    
     }
     return _header;
 }
 
-
 -(void)setBottomView{
-    
     
     CGFloat btnW = (kWindowW-40-10)/2;
     
@@ -710,5 +729,18 @@
         
     }
     
+}
+@end
+
+
+@implementation NSTimer(BlockTimer)
++ (NSTimer*)scheduledTimerWithTimeInterval:(NSTimeInterval)interval repeats:(BOOL)repeats blockTimer:(void (^)(NSTimer *))block{
+    NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(timered:) userInfo:[block copy] repeats:repeats];
+    return timer;
+}
+
++ (void)timered:(NSTimer*)timer {
+    void (^block)(NSTimer *timer)  = timer.userInfo;
+    block(timer);
 }
 @end

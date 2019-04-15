@@ -10,24 +10,63 @@
 #import "YSJSpellListModel.h"
 #import "YSJSpellPersonModel.h"
 @interface YSJFinshedPayShareVC ()
-
+@property (nonatomic, strong) NSTimer *timer;
 @end
 
 @implementation YSJFinshedPayShareVC
 
 {
     UILabel *_leftTime;
+    NSString *_hour;
+    NSString *_minute;
+    NSString *_second;
     UILabel *_bottomTip1;
     UILabel *_bottomTip2;
+    
 }
 
 #pragma mark life cycle
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
+    
     self.title = @"分享";
+    
     [self setUI];
+    
+    [self setMyTimer];
+    
 }
+
+-(void)setMyTimer{
+    
+    __weak id weakSelf = self;
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer *timer) {
+        NSLog(@"block %@",weakSelf);
+        [weakSelf timerEvent];
+    }];
+}
+
+- (void)dealloc {
+    
+    if (_timer) {
+        
+        if ([_timer isValid]) {
+            [_timer invalidate];
+            _timer = nil;
+        }
+    }
+}
+
+
+- (void)timerEvent {
+   
+    [self.model countDown];
+    
+    [self refreshTimeWithModel:self.model];
+}
+
 -(void)setUI{
     
     _leftTime = [[UILabel alloc]initWithFrame:CGRectMake(0, 25, kWindowW, 20)];
@@ -39,12 +78,20 @@
     
     CGFloat iconW = (kWindowW-6*kMargin)/5;
     UIImageView *lastImg = nil;
-    for (int i =0 ; i<self.needNum; i++) {
+    
+    int iconNum = 0;
+    if (self.needNum<=self.model.count) {
+        iconNum = self.model.count +1;
+    }else{
+        iconNum = self.needNum;
+    }
+    
+    for (int i =0 ; i<iconNum; i++) {
         
         UIImageView *icon = [[UIImageView alloc]initWithFrame:CGRectMake(kMargin +(iconW+kMargin)*(i%5), 20*(i/5)+70,iconW, iconW)];
         icon.layer.cornerRadius = iconW/2;
         icon.clipsToBounds = YES;
-        icon.contentMode  = UIViewContentModeScaleAspectFit;
+        icon.contentMode  = UIViewContentModeScaleAspectFill;
         [self.view addSubview:icon];
         
         if (i==0) {//团长头像
@@ -53,9 +100,10 @@
             
             //团长标签
             UIImageView *tuanzhangImg = [[UIImageView alloc]initWithFrame:CGRectMake(12,45,36, 15)];
-            tuanzhangImg.layer.cornerRadius = iconW/2;
+            
+            tuanzhangImg.image = [UIImage imageNamed:@"tuanzhang"];
             tuanzhangImg.clipsToBounds = YES;
-            tuanzhangImg.contentMode  = UIViewContentModeScaleAspectFit;
+            
             [icon addSubview:tuanzhangImg];
             
         }else if (i<=self.model.member.count){//之前的成员图标
@@ -63,7 +111,8 @@
             YSJSpellPersonModel *mod = self.model.member[i-1];
              [icon sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,mod.photo]]];
         }else if (i==self.model.member.count+1){//自己的图标
-            icon.backgroundColor = KMainColor;
+            icon.backgroundColor = grayF2F2F2;
+            ImgWithUrl(icon, [StorageUtil getPhotoUrl])
         }else{//” ？“图标
             icon.image = [UIImage imageNamed:@"yonghu5"];
         }
@@ -141,23 +190,35 @@
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
--(void)dealloc{
+#pragma mark - 刷新时间
+-(void)refreshTimeWithModel:(YSJSpellListModel*)timeModel{
     
+    NSInteger countDownTime = timeModel.startTime - timeModel.currentTime;
+    
+    if (countDownTime <= 0) {
+        _hour = @"00";
+        _minute = @"00";
+        _second = @"00";
+    } else {
+        _hour = [NSString stringWithFormat:@"%02ld", countDownTime/3600];
+        _minute = [NSString stringWithFormat:@"%02ld", countDownTime%3600/60];
+        _second = [NSString stringWithFormat:@"%02ld", countDownTime%60];
+    }
+    
+    _leftTime.text = [NSString stringWithFormat:@"剩余 %@ : %@ : %@",_hour,_minute,_second];
 }
 
-#pragma mark RequestNetWork
 
-#pragma mark UITableviewDelegate
+@end
 
-#pragma mark UITableviewDataSource
+@implementation NSTimer(BlockTimer)
++ (NSTimer*)scheduledTimerWithTimeInterval:(NSTimeInterval)interval repeats:(BOOL)repeats blockTimer:(void (^)(NSTimer *))block{
+    NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(timered:) userInfo:[block copy] repeats:repeats];
+    return timer;
+}
 
-#pragma mark CustomDelegate
-
-#pragma mark event response
-
-#pragma mark private methods
-
-#pragma mark getters and setters
-
-
++ (void)timered:(NSTimer*)timer {
+    void (^block)(NSTimer *timer)  = timer.userInfo;
+    block(timer);
+}
 @end

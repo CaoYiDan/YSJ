@@ -4,14 +4,7 @@
 //
 //  Created by xujf on 2019/3/20.
 //  Copyright © 2019年 lisen. All rights reserved.
-//
-//
-//  SPSelectionCollectionCell.m
-//  SmallPig
-//
-//  Created by 融合互联-------lisen on 17/8/30.
-//  Copyright © 2017年 李智帅. All rights reserved.
-//
+
 
 #import "YSJTeacherModel.h"
 
@@ -78,10 +71,11 @@
     [self.contentView addSubview:xingImg];
     [xingImg mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(0);
-        make.width.offset(13);
-        make.height.offset(13);
+        make.width.offset(11);
+        make.height.offset(11);
     make.top.equalTo(_introduction.mas_bottom).offset(10);
     }];
+    
     //评分
     xing = [[UILabel alloc]init];
     xing.backgroundColor = KWhiteColor;
@@ -98,7 +92,7 @@
     
     
     _price = [[UILabel alloc]init];
-    _price.font = font(11);
+    _price.font = font(12);
     _price.textAlignment = NSTextAlignmentCenter;
     _price.textColor = yellowEE9900;
     _price.backgroundColor = KWhiteColor;
@@ -119,14 +113,10 @@
     _distance.text = [SPCommon changeKm:model.distance];
     _name.text = model.realname;
     _introduction.text = [NSString stringWithFormat:@"%@ | %@ | %@",model.coursetype,model.coursetypes,model.sex];
-    xing.text = [NSString stringWithFormat:@"%d",model.reputation];
+    xing.text = [NSString stringWithFormat:@"%.1f",model.reputation];
   
     _price.text = [NSString stringWithFormat:@"¥%u/h起",model.price];
     
-    
-//    xing.selected = userModel.gender;
-//
-//    [_constellation setTitle:model.realname forState:0];
 }
 
 @end

@@ -19,6 +19,7 @@
     UILabel *_teacherType;
     UIButton *_dealCount;
     UILabel *pingfen;
+    YSJTagsView *_tagsView;
     UILabel *_price;
     UILabel *_oldPrice;
     UILabel *_score;
@@ -50,6 +51,16 @@
         make.height.offset(20);
         make.top.offset(40);
     }];
+    
+    _tagsView = [[YSJTagsView alloc]init];
+    [self.profileV addSubview:_tagsView];
+    [_tagsView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.offset(kMargin);
+        make.width.offset(kWindowW);
+        make.height.offset(30);
+        make.top.equalTo(_name.mas_bottom).offset(10);
+    }];
+    
     
     _dealCount = [[UIButton alloc]init];
     _dealCount.backgroundColor = KWhiteColor;
@@ -145,30 +156,8 @@
     
     [_bottomView setContent2:model.coursetypes content4:[NSString stringWithFormat:@"%@",model.suitable_range] content6:[NSString stringWithFormat:@"%ld-%ld",(long)model.min_user,model.max_user]];
     
-    NSArray *arr = [model.lables componentsSeparatedByString:@","];
-    int i = 0 ;
-    for (NSString *labelStr in arr) {
-        if (i>2) {
-            return;
-        }
-        UILabel *label = [UILabel new];
-        label.textAlignment = NSTextAlignmentCenter;
-        label.textColor = [UIColor hexColor:@"E8541E"];
-        label.font = Font(12);
-        label.layer.cornerRadius = 8;
-        label.clipsToBounds = YES;
-        label.text = labelStr;
-        label.backgroundColor = RGBA(253, 135, 197, 0.08);
-        [self addSubview:label];
-        
-        [label mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.offset(i*80+kMargin);
-            make.width.offset(70);
-            make.height.offset(20);
-            make.top.equalTo(_name.mas_bottom).offset(15);
-        }];
-        i++;
-    }
+   _tagsView.tagsArr = [model.lables componentsSeparatedByString:@","];
+    
 }
 
 -(void)buyClick{

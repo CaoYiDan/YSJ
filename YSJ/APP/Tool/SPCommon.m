@@ -107,7 +107,7 @@ animation.calculationMode = kCAAnimationCubic;
     
     NSMutableDictionary *dic  = @{}.mutableCopy;
     
-    if (YES)
+    if (NO)
     {
         [dic setObject:@"39.030928" forKey:@"latitude"];
         [dic setObject:@"117.279395" forKey:@"longitude"];
@@ -202,9 +202,9 @@ animation.calculationMode = kCAAnimationCubic;
  
  */
 +(NSString *)changeKm:(int)m{
-    if (m>=1000){
-        return  [NSString stringWithFormat:@"%.1fkm",m/1000.0];
-    }
-    return [NSString stringWithFormat:@"%um",m];
+//    if (m>=1000){
+//        return  [NSString stringWithFormat:@"%.1fkm",m/1000.0];
+//    }
+    return [NSString stringWithFormat:@"%ukm",m];
 }
 @end

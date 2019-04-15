@@ -18,6 +18,7 @@
     UILabel *_lab5;
     UILabel *_lab6;
 }
+
 - (instancetype)initWithFrame:(CGRect)frame withTitle:(NSArray *)titleArr
 {
     self = [super initWithFrame:frame];

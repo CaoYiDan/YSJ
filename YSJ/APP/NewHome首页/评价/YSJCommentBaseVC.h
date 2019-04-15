@@ -7,7 +7,7 @@
 //
 
 #import "VTMagic.h"
-
+@class FFDifferentWidthTagModel;
 @interface YSJCommentBaseVC : VTMagicController
 
 @property (nonatomic,copy) NSString *code;
@@ -15,5 +15,7 @@
 @property (nonatomic,strong) NSDictionary *evaluateDic;
 
 @property (nonatomic,assign) int  type;
+
+@property (nonatomic,strong)  FFDifferentWidthTagModel*commentModel;
 
 @end

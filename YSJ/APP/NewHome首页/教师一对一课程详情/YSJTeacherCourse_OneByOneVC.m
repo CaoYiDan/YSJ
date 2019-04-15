@@ -164,10 +164,9 @@
     [[HttpRequest sharedClient]httpRequestGET:[NSString stringWithFormat:@"%@?courseid=%@",YCoursePingJia,self.courseID] parameters:nil progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         
         NSLog(@"%@",responseObject);
-        
         _evaluateDic = responseObject;
         
-        NSArray *arr = responseObject[@"lable"];
+        NSArray *arr = responseObject[@"label_count"];
         
         _commentModel = [FFDifferentWidthTagModel new];
         
@@ -176,12 +175,13 @@
         NSMutableArray *tagsArrM = [NSMutableArray array];
         for (int j = 0; j < arr.count; j++){
             
-            [tagsArrM addObject:[NSString stringWithFormat:@"%@ %@",arr[j][@"lable"],arr[j][@"count"]]];
+            [tagsArrM addObject:[NSString stringWithFormat:@"%@ %@",arr[j][@"label"],arr[j][@"num"]]];
         }
         
         _commentModel.tagsArrM = tagsArrM;
         
         requestisScu(YES);
+        
         
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         
@@ -294,7 +294,7 @@
         
         return cell;
         
-    }else {
+    }else if (indexPath.section==5){
         
         FFDifferentWidthTagCell *cell = [FFDifferentWidthTagCell loadCode:tableView];
         cell.tagModel = _commentModel;
@@ -333,6 +333,7 @@
         return size.height;
     }else if(indexPath.section==5){
         return _commentModel.cellHeight;
+
     }
     
     return 45;
@@ -414,7 +415,7 @@
         [base addSubview:baseScoreView];
         
         UILabel *score = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 30, 50)];
-        score.text = [NSString stringWithFormat:@"%.1f",_commentModel.reputation];
+        score.text = [NSString stringWithFormat:@"%.1f",self.M.reputation];
         score.adjustsFontSizeToFitWidth = YES;
         _scoreLabel = score;
         score.font = font(20);
@@ -440,7 +441,7 @@
         starRateView.backgroundColor = KWhiteColor;
         
         [baseScoreView addSubview:starRateView];
-        [starRateView setStarLeave:_commentModel.reputation];
+        [starRateView setStarLeave:self.M.reputation];
         UIImageView *more = [[UIImageView alloc]initWithFrame:CGRectMake(SCREEN_W-kMargin-10, 10+11, 8, 18)];
         [more setImage:[UIImage imageNamed:@"sijiao_more"]];
         [base addSubview:more];
@@ -461,6 +462,7 @@
     YSJCommentBaseVC *vc = [[YSJCommentBaseVC alloc]init];
     
     vc.type = 1;
+    vc.commentModel = _commentModel;
     vc.code = self.M.code;
     vc.evaluateDic = _evaluateDic;
     [self.navigationController pushViewController:vc animated:YES];
@@ -503,11 +505,12 @@
 
 -(void)care:(UIButton *)btn{
     //如果没有登录，就弹出登录界面
+    
     //    if ([SPCommon gotoLogin]) return;
     
-    NSDictionary * dict = @{@"token":[StorageUtil getId],@"teacherID":self.courseID};
+    NSDictionary * dict = @{@"token":[StorageUtil getId],@"courseID":self.courseID};
     NSLog(@"%@",dict);
-    [[HttpRequest sharedClient]httpRequestPOST:YCare parameters:dict progress:^(NSProgress *downloadProgress) {
+    [[HttpRequest sharedClient]httpRequestPOST:YCollection parameters:dict progress:^(NSProgress *downloadProgress) {
         
     } sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         
@@ -515,9 +518,9 @@
         
         btn.selected = !btn.isSelected;
         if (btn.isSelected) {
-            Toast(@"关注成功");
+            Toast(@"收藏成功");
         }else{
-            Toast(@"取消关注");
+            Toast(@"取消收藏");
         }
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
     }];

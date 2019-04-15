@@ -1,5 +1,5 @@
 
-#import "YSJTeacherCourseDetailVC.h"
+
 #import "YSJTeacherCourseCell.h"
 #import "YSJTeacherPinDanCell.h"
 #import "YSJCourseModel.h"
@@ -349,7 +349,7 @@
     [base addSubview:title];
     [title mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(kMargin);
-        
+//        make.width.offset(80);
         make.height.offset(40);
         make.top.equalTo(base).offset(10);
     }];
@@ -409,6 +409,7 @@
     YSJCommentBaseVC *vc = [[YSJCommentBaseVC alloc]init];
     vc.evaluateDic = _evaluateDic;
     vc.type = 0;
+    vc.commentModel = _commentModel;
     vc.code = self.teacherID;
     [self.navigationController pushViewController:vc animated:YES];
     
@@ -420,6 +421,7 @@
        YSJCourseModel *model = self.courseArr[indexPath.row];
         YSJTeacherCourse_OneByOneVC *vc = [[YSJTeacherCourse_OneByOneVC alloc]init];
         vc.M = model;
+        vc.courseID = model.code;
         [self.navigationController pushViewController:vc animated:YES];
     }else{
         YSJCourseModel *model = self.multiCourseArr[indexPath.row];

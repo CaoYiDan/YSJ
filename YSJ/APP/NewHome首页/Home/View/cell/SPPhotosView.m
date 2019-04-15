@@ -51,7 +51,6 @@
             [img sd_setImageWithURL:[NSURL URLWithString:str]placeholderImage:[UIImage imageNamed:@"fb_jn_"]];
             
         }
-//
         img.tag = i;
         [self addSubview:img];
         img.userInteractionEnabled = YES;
@@ -70,10 +69,7 @@
     }
     
     if (imgArr.count>3) {
-        [threeImg addSubview:self.moreImg];
-        [self.moreImg mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.offset(0);
-        }];
+
     }
 }
 

@@ -33,7 +33,7 @@
     _leftItem.tag =0;
     
     [_leftItem addTarget:self action:@selector(homeNavClick:) forControlEvents:UIControlEventTouchDown];
-    _leftItem.titleLabel.font = font(13);
+    _leftItem.titleLabel.font = font(16);
     [_leftItem setImage:[UIImage imageNamed:@"dizhi"] forState:0];
     [_leftItem setTitle:[StorageUtil getCity] forState:0];
     [self addSubview:_leftItem];
