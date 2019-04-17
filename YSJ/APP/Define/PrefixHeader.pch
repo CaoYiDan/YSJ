@@ -48,8 +48,15 @@
 #import "MJRefresh.h"//刷新
 
 #import "Constant.h"
-#import "Masonry.h"
+
+#define MAS_SHORTHAND
+//define this constant if you want to enable auto-boxing for default syntax
+#define MAS_SHORTHAND_GLOBALS
+
+#import "Masonry.h" //宏必须添加在头文件前面
+
 #import "YSJEnum.h"
+#import "NSString+getSize.h"
 #import "UIView+SCFrame.h"
 #import "UITableViewCell+Extension.h"
 //图片标签位置

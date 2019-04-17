@@ -16,4 +16,28 @@
     CGSize maxSize = CGSizeMake(maxW, MAXFLOAT);
     return [self boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
 }
+
+/**
+ 将字符串转化为字典
+ 
+ @return 字典
+ */
+-(NSDictionary *)stringChangeToDictionary{
+    if (self== nil) {
+        return nil;
+    }
+    NSData *jsonData = [self dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *err;
+    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData
+                         
+                                                        options:NSJSONReadingMutableContainers
+                         
+                                                          error:&err];
+    if(err) {
+        
+        return nil;
+    }
+    
+    return dic;
+}
 @end

@@ -282,7 +282,7 @@
     //如果没有登录，就弹出登录界面
     //    if ([SPCommon gotoLogin]) return;
     
-    NSDictionary * dict = @{@"token":[StorageUtil getId],@"teacherID":self.studentID};
+    NSDictionary * dict = @{@"token":[StorageUtil getId],@"teacherID":self.model.code};
     NSLog(@"%@",dict);
     [[HttpRequest sharedClient]httpRequestPOST:YCare parameters:dict progress:^(NSProgress *downloadProgress) {
         

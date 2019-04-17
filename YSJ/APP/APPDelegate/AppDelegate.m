@@ -5,6 +5,9 @@
 //  Created by 李智帅 on 2017/5/26.
 //  Copyright © 2017年 李智帅. All rights reserved.
 //
+
+#define MAS_SHORTHAND
+#define MAS_SHORTHAND_GLOBALS
 #import "SPBaseNavigationController.h"
 #import "AppDelegate.h"
 #import <AlipaySDK/AlipaySDK.h>

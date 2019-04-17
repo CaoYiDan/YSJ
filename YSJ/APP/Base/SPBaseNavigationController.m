@@ -29,8 +29,6 @@
         viewController.hidesBottomBarWhenPushed = YES;
     }
     
-    
-    
     if (self.childViewControllers.count) {
         viewController.hidesBottomBarWhenPushed = YES;
         

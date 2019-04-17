@@ -18,7 +18,7 @@
     UILabel *_distance;
     UILabel *_name;
     UILabel *_requestType;
-    UIButton *xuqiu;
+    UILabel *xuqiu;
    
     UILabel *_price;
     UILabel *_introduction;
@@ -38,7 +38,6 @@
     _img.layer.cornerRadius = 4;
     _img.clipsToBounds = YES;
     [self.contentView addSubview:_img];
-    
     
     _name = [[UILabel alloc]init];
     _name.font = Font(15);
@@ -63,7 +62,6 @@
     }];
     
    
-    
     //上课类型
     _requestType = [[UILabel alloc]init];
     _requestType.font = font(12);
@@ -77,19 +75,26 @@
         make.top.equalTo(_name.mas_bottom).offset(7);
     }];
     
-    xuqiu = [[UIButton alloc]init];
-    xuqiu.backgroundColor = KWhiteColor;
-    xuqiu.layer.cornerRadius = 4;
-    xuqiu.clipsToBounds = YES;
-    [xuqiu setTitleColor:gray9B9B9B forState:UIControlStateNormal];
-    [xuqiu setImage:[UIImage imageNamed:@"xu"] forState:0];
-    xuqiu.titleLabel.font = font(12);
-    [self addSubview:xuqiu];
-    [xuqiu mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(_name).offset(5);
+    UIImageView *xuImg =[[UIImageView alloc]init];
+    xuImg.image = [UIImage imageNamed:@"xu"];
+    [self addSubview:xuImg];
+    [xuImg mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(_name).offset(0);
         
         make.height.offset(14);
-        make.top.equalTo(_requestType.mas_bottom).offset(7);
+        make.width.offset(14); make.top.equalTo(_requestType.mas_bottom).offset(7);
+    }];
+    
+    xuqiu = [[UILabel alloc]init];
+    xuqiu.backgroundColor = KWhiteColor;
+    xuqiu.textColor = gray9B9B9B;
+    xuqiu.font = font(12);
+    [self addSubview:xuqiu];
+    [xuqiu mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(xuImg.mas_right).offset(5);
+        
+        make.height.offset(14);
+        make.right.offset(-kMargin); make.top.equalTo(_requestType.mas_bottom).offset(7);
     }];
     
     //介绍
@@ -134,8 +139,8 @@
     _distance.text = [SPCommon changeKm:model.distance];
     _name.text = model.nickname;
     _requestType.text = [NSString stringWithFormat:@"%@ | %@ ",model.coursetype,model.coursetypes];
-    [xuqiu setTitle:[NSString stringWithFormat:@" %@",model.title] forState:0];
-    
+    xuqiu.text = [NSString stringWithFormat:@"%@",model.describe];
+     
     _introductionView.tagsArr = [model.userlables componentsSeparatedByString:@","];
     
 }
@@ -149,4 +154,5 @@
         [vi removeFromSuperview];
     }
 }
+
 @end

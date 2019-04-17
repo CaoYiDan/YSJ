@@ -46,3 +46,14 @@
 
 //获取单一课程评价详情
 #define YCourseDetails  YUrlBase_YSJ@"/profile/evaluation/course/details"
+
+
+#pragma mark - 登录
+
+#define YRegister  YUrlBase_YSJ@"/user/register"
+#define YLogin  YUrlBase_YSJ@"/user/login"
+#define YInformation  YUrlBase_YSJ@"/user/query/information"
+#define YNumber  YUrlBase_YSJ@"/user/number"
+#define YInfoSet  YUrlBase_YSJ@"/user/infoset"
+
+#define YPhoto YUrlBase_YSJ@"/user/photo"

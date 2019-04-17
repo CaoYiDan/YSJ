@@ -1,13 +1,30 @@
 //
-//  YSJMineHeaderView.h
-//  SmallPig
-//
-//  Created by xujf on 2019/4/10.
-//  Copyright © 2019年 lisen. All rights reserved.
-//
+//  SPNewDynamicHeaderView.h
 
 #import <UIKit/UIKit.h>
 
-@interface YSJMineHeaderView : UIView
+
+#define  categotyH  98
+#define  activityH  81
+#define bgImgH  (240-20+SafeAreaStateHeight)
+
+@protocol MineHeaderViewDelegate
+
+-(void)mineHeaderViewDidSelectedType:(NSString *)type index:(NSInteger)index;
+
+@end
+
+@class YSJUserModel;
+
+@interface YSJMineHeaderView: UIView
+
+@property (nonatomic,strong) UIImageView *bgImgView;
+
+@property (nonatomic,strong) NSMutableDictionary *numberDic;
+
+@property (nonatomic,strong) YSJUserModel *model;
+
+/**<##>代理*/
+@property(nonatomic,weak)id<MineHeaderViewDelegate> delegate;
 
 @end

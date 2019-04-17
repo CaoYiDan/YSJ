@@ -182,6 +182,23 @@ return [self getObjectByKey:KStorageLon];
   return [self getObjectByKey:kStorageUserName];
 }
 
+
+//用户手机号
++ (void)saveTel:(NSString *)tel{
+     [self saveObject:tel forKey:kTel];
+}
++ (NSString *)getTel{
+    return [self getObjectByKey:kTel];
+}
+
+//用户身份
++ (void)saveRole:(NSString *)role{
+    [self saveObject:role forKey:kRole];
+}
++ (NSString *)getRole{
+    return [self getObjectByKey:kRole];
+}
+
 //realName
 + (void)saveRealName:(NSString *)realName
 {

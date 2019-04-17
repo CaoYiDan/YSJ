@@ -10,4 +10,11 @@
 
 @interface NSString (getSize)
 - (CGSize)sizeWithFont:(UIFont *)font maxW:(CGFloat)maxW;
+
+/**
+ 将字符串转化为字典
+ 
+ @return 字典
+ */
+-(NSDictionary *)stringChangeToDictionary;
 @end

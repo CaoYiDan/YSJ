@@ -127,6 +127,9 @@ typedef NS_ENUM(NSInteger,DynamicCellType)
 
 #define kStorageUserMobile      @"userMobile"
 #define kStorageUserName        @"userName"
+#define kRole        @"role"
+#define kTel       @"telphone"
+
 #define kStorageHeaderName      @"headerName"
 #define kStorageUserRealName    @"realName"
 #define kStorageUserType        @"userType"

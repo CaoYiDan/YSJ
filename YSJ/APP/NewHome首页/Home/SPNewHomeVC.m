@@ -88,15 +88,12 @@
     
     [super viewDidLoad];
     
-    
-    [StorageUtil savePhoto:@"http://img5.imgtn.bdimg.com/it/u=1979198230,3799788659&fm=26&gp=0.jpg"];
+    [StorageUtil saveId:@"MTU1NDM0NTUyNC43MzUwOTk6OWQ5ZmM5MjQxYjU2MmI1OGFhYjVjNzk3NDk5NTVkNWM3ZDIzMmQ3ZQ=="];
     
     _locationCity  = @"北京市";
     
     //渐变背景色
     [self.view.layer addSublayer:[UIColor setGradualChangingColor:self.view fromColor:@"FF8960" toColor:@"FF62A5"]];
-    
-    [StorageUtil saveId:@"MTU1NDM0NTUyNC43MzUwOTk6OWQ5ZmM5MjQxYjU2MmI1OGFhYjVjNzk3NDk5NTVkNWM3ZDIzMmQ3ZQ=="];
     
     //这个数组决定了 “私教，机构，学生” 的展示顺序
     _sortArr = @[teachers,companys,requirements,].mutableCopy;
@@ -111,21 +108,21 @@
     
     _sectionViewData = @{teachers:@{@"title":@"私教推荐",@"subTitle":@"更多优秀的教师供您选择",@"cellType":@(0)},companys:@{@"title":@"机构推荐",@"subTitle":@"更多优秀的机构供您选择",@"cellType":@(1)},requirements:@{@"title":@"学生推荐",@"subTitle":@"更多学生推荐",@"cellType":@(2)}}.mutableCopy;
     
-   
+    
     //刷新
     [self.tableView.mj_header beginRefreshing];
     
     //注册 ，当发布完成之后，返回 刷新界面
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(reloadTableView)
-                                                 name:NotificationPublishFinish
-                                               object:nil];
-    
+     selector:@selector(reloadTableView)
+         name:NotificationPublishFinish
+       object:nil];
+
     //注册发布成功 跳转到首页
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(jumpToHome)
-                                                 name:NotificationJumpToHome
-                                               object:nil];
+     selector:@selector(jumpToHome)
+         name:NotificationJumpToHome
+       object:nil];
     
 }
 

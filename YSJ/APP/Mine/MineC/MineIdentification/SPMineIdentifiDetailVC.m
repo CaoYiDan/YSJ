@@ -2,8 +2,7 @@
 //  SPMineIdentifiDetailVC.m
 //  SmallPig
 //
-//  Created by 李智帅 on 2017/12/12.
-//  Copyright © 2017年 李智帅. All rights reserved.
+
 //
 
 #import "SPMineIdentifiDetailVC.h"
@@ -26,8 +25,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = WC;
-    self.automaticallyAdjustsScrollViewInsets=NO;
+   
     [self initNav];
     /*
      身份认证的状态：未认证、已认证、待审核、认证未通过
@@ -64,6 +62,11 @@
     }
     //[self loadData];
     // Do any additional setup after loading the view.
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
 #pragma mark - getLoadData

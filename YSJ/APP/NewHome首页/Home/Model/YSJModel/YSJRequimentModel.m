@@ -11,6 +11,6 @@
 @implementation YSJRequimentModel
 
 +(NSDictionary*)mj_replacedKeyFromPropertyName{
-    return @{@"requimentID":@"id"};
+    return @{@"requimentID":@"id",@"code":@"id"};
 }
 @end

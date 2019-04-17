@@ -68,6 +68,7 @@
 {
     
     [[HttpRequest sharedClient]httpRequestGET:kUrlListSkill parameters:nil progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+        
         NSLog(@"%@",responseObject);
         
         self.dataArray = [SPKungFuModel mj_objectArrayWithKeyValuesArray:responseObject[@"data"]];

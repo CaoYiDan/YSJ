@@ -35,6 +35,14 @@
 +(void)saveUserDict:(NSDictionary*)dict;
 +(NSDictionary*)getUserDict;
 
+//用户身份
++ (void)saveRole:(NSString *)role;
++ (NSString *)getRole;
+
+//用户手机号
++ (void)saveTel:(NSString *)tel;
++ (NSString *)getTel;
+
 //Id
 + (void)saveId:(NSString *)roleId;
 + (NSString *)getId;
