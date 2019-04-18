@@ -1,14 +1,14 @@
 //
-//  SPMineIdentifiDetailVC.m
-//  SmallPig
-//
 
 //
 
-#import "SPMineIdentifiDetailVC.h"
+#import "YSJApplication_secondVC.h"
 #import "SPLzsIdentifiDetailView.h"
 #import "BDImagePicker.h"
-@interface SPMineIdentifiDetailVC ()
+#import "YSJApplication_demoVC.h"
+#import "YSJApplication_certificateVC.h"
+#import "YSJAlpplication_thirdVC.h"
+@interface YSJApplication_secondVC ()
 @property (nonatomic,strong)UILabel * cadDetailLab;
 @property (nonatomic,strong)UITextField * cadNumLab;
 @property (nonatomic,strong)UIButton * addPhotobtn1;//手持证件正面照
@@ -18,19 +18,29 @@
 @property (nonatomic,strong)UIImageView * photoIV2;//第二个图
 @property (nonatomic,strong)UIImageView * photoIV3;//第三个图
 @property (nonatomic,strong)UIImageView * photoIV4;//第四个图
+
 @property (nonatomic,copy)NSString * identiStr;//用于转换显示身份认证类型 下个界面
+
 @property (nonatomic,copy)NSString * imgPathFaceStr;//正面照路劲
+
 @property (nonatomic,copy)NSString * imgPathBackStr;//背面照路劲
+
+@property(nonatomic,assign)int photoType;
+
 @end
 
-@implementation SPMineIdentifiDetailVC
+@implementation YSJApplication_secondVC
 {
     UIScrollView *_scrollView;
+    
+    UIView *_firstBotttomView;
+    
+    UIView *_secondBotttomView;
 }
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-   
+    
     self.title = @"私教申请";
     
     [self initUI];
@@ -44,7 +54,7 @@
 #pragma mark - getLoadData
 - (void)getLoadData{
     
-//    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    //    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     //NSString * Kurl = [NSString stringWithFormat:@"%@%@",URLOfGetCertification,[StorageUtil getCode]];
     [[HttpRequest sharedClient]httpRequestGET:[NSString stringWithFormat:@"%@%@",URLOfGetCertification,[StorageUtil getCode]] parameters:nil progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         
@@ -76,12 +86,12 @@
 #pragma mark -  loadData 申请认证
 -(void)loadData{
     
-//    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    //    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     
     
     
     NSMutableDictionary * dict = [[NSMutableDictionary alloc]init];
-   
+    
     
     [dict setObject:[StorageUtil getCode] forKey:@"userCode"];
     [dict setObject:self.identiStr forKey:@"certificateType"];
@@ -206,7 +216,7 @@
     [self setTop];
     
     [self firstIdentifierView];
-
+    
     [self secondIdentifierView];
     
     [self thirdIdentifierView];
@@ -217,7 +227,7 @@
 #pragma mark baseScrollview
 -(void)setBase{
     
-    UIScrollView  *scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, kWindowH-60-SafeAreaTopHeight-KBottomHeight)];
+    UIScrollView  *scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, kWindowH)];
     _scrollView = scrollView;
     _scrollView.backgroundColor = KWhiteColor;
     [self.view addSubview:_scrollView];
@@ -227,9 +237,16 @@
 }
 #pragma mark  top
 -(void)setTop{
-    UIImageView *topImg = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, 100)];
-    topImg.backgroundColor = [UIColor blueColor];
+    UIImageView *topImg = [[UIImageView alloc]initWithFrame:CGRectMake(27, 32, kWindowW-54, 47)];
+    topImg.backgroundColor = [UIColor whiteColor];
+    topImg.image = [UIImage imageNamed:@"step2"];
+    topImg.contentMode = UIViewContentModeScaleAspectFill;
     [_scrollView addSubview:topImg];
+    
+    UIView *bottomLine = [[UIView alloc]initWithFrame:CGRectMake(0, 32+37+32, kWindowW, 6)];
+    bottomLine.backgroundColor = grayF2F2F2;
+    [_scrollView addSubview:bottomLine];
+    
 }
 #pragma mark  身份证认证界面
 -(void)firstIdentifierView{
@@ -239,11 +256,11 @@
     [_scrollView addSubview:faceLab];
     faceLab.text = @"身份证";
     faceLab.textColor = [UIColor blackColor];
-    faceLab.font = Font(14);
+    faceLab.font = Font(16);
     faceLab.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
     [faceLab mas_makeConstraints:^(MASConstraintMaker *make) {
         
-        make.top.offset(120);
+        make.top.offset(130);
         make.left.offset(kMargin);
         make.width.offset(160);
         make.height.offset(20);
@@ -266,14 +283,15 @@
     }];
     
     
-    UIButton * demo= [[UIButton alloc]init];
-    [demo setTitleColor:KMainColor forState:0];
-    [demo setTitle:@"查看示例" forState:UIControlStateNormal];
-    [demo addTarget:self action:@selector(seeDemo) forControlEvents:UIControlEventTouchUpInside];
-    [_scrollView addSubview:demo];
-    [demo mas_makeConstraints:^(MASConstraintMaker *make) {
+    UIButton * demoa= [[UIButton alloc]init];
+    [demoa setTitleColor:KMainColor forState:0];
+    [demoa setTitle:@"查看示例" forState:UIControlStateNormal];
+    [demoa addTarget:self action:@selector(seeDemo) forControlEvents:UIControlEventTouchUpInside];
+    demoa.titleLabel.font = font(14);
+    [_scrollView addSubview:demoa];
+    [demoa mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.offset(80);
-        make.centerY.equalTo(faceLab); make.right.offset(-kMargin);
+        make.centerY.equalTo(faceLab); make.left.offset(kWindowW-80-kMargin);
         make.height.offset(30);
     }];
     
@@ -285,11 +303,12 @@
     self.photoIV1.clipsToBounds = YES;
     self.photoIV1.backgroundColor =grayF2F2F2;
     self.photoIV1.layer.cornerRadius = 4;
-    self.photoIV1.contentMode = UIViewContentModeScaleAspectFit;
-    self.photoIV1.image = [UIImage imageNamed:@"add"];
+    self.photoIV1.contentMode = UIViewContentModeScaleAspectFill;
+    self.photoIV1.image = [UIImage imageNamed:@"add1"];
     self.photoIV1.userInteractionEnabled = YES;
     WeakSelf;
     [self.photoIV1 addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
+        weakSelf.photoType = 1;
         [weakSelf addPhotobtn1Click];
     }];
     [self.photoIV1 mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -297,7 +316,7 @@
         make.top.equalTo(tipLab.mas_bottom).offset(15);
         make.left.offset(kMargin);
         make.width.offset(photoW);
-        make.height.offset(photoW/16.0*9.0);
+        make.height.offset(photoW/17.0*11.0);
     }];
     
     
@@ -307,20 +326,22 @@
     self.photoIV2.clipsToBounds = YES;
     self.photoIV2.backgroundColor =grayF2F2F2;
     self.photoIV2.layer.cornerRadius = 4;
-    self.photoIV2.contentMode = UIViewContentModeScaleAspectFit;
-    self.photoIV2.image = [UIImage imageNamed:@"add"];
+    self.photoIV2.contentMode = UIViewContentModeScaleAspectFill;
+    self.photoIV2.image = [UIImage imageNamed:@"add2"];
     self.photoIV2.userInteractionEnabled = YES;
     
     [self.photoIV2 addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
+        weakSelf.photoType = 2;
         [weakSelf addPhotobtn1Click];
     }];
     [self.photoIV2 mas_makeConstraints:^(MASConstraintMaker *make) {
         
-     make.top.equalTo(tipLab.mas_bottom).offset(15);
+        make.top.equalTo(tipLab.mas_bottom).offset(15);
         make.left.equalTo(self.photoIV1.mas_right).offset(kMargin);
         make.width.offset(photoW);
-        make.height.offset(photoW/16.0*9.0);
+        make.height.offset(photoW/17.0*11.0);
     }];
+   
 }
 
 #pragma mark  手持身份证认证界面
@@ -331,11 +352,11 @@
     [_scrollView addSubview:faceLab];
     faceLab.text = @"手持身份证认证";
     faceLab.textColor = [UIColor blackColor];
-    faceLab.font = Font(14);
+    faceLab.font = Font(16);
     faceLab.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
     [faceLab mas_makeConstraints:^(MASConstraintMaker *make) {
         
-        make.top.offset(310);
+        make.top.equalTo(self.photoIV2.mas_bottom).offset(22);
         make.left.offset(kMargin);
         make.width.offset(160);
         make.height.offset(20);
@@ -364,19 +385,17 @@
     self.photoIV3.clipsToBounds = YES;
     self.photoIV3.backgroundColor =grayF2F2F2;
     self.photoIV3.layer.cornerRadius = 4;
-    self.photoIV3.contentMode = UIViewContentModeScaleAspectFit;
-    self.photoIV3.image = [UIImage imageNamed:@"add"];
-    self.photoIV3.userInteractionEnabled = YES;
-    WeakSelf;
-    [self.photoIV3 addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
-        [weakSelf addPhotobtn1Click];
-    }];
+    self.photoIV3.contentMode = UIViewContentModeScaleAspectFill;
+    
+    self.photoIV3.image = [UIImage imageNamed:@"example1"];
+    self.photoIV3.userInteractionEnabled = NO;
+    
     [self.photoIV3 mas_makeConstraints:^(MASConstraintMaker *make) {
         
         make.top.equalTo(tipLab.mas_bottom).offset(15);
         make.left.offset(kMargin);
         make.width.offset(photoW);
-        make.height.offset(photoW/16.0*9.0);
+        make.height.offset(photoW/17.0*11.0);
     }];
     
     
@@ -386,10 +405,12 @@
     self.photoIV4.clipsToBounds = YES;
     self.photoIV4.backgroundColor =grayF2F2F2;
     self.photoIV4.layer.cornerRadius = 4;
-    self.photoIV4.contentMode = UIViewContentModeScaleAspectFit;
-    self.photoIV4.image = [UIImage imageNamed:@"add"];
+    self.photoIV4.contentMode = UIViewContentModeScaleAspectFill;
+    self.photoIV4.image = [UIImage imageNamed:@"add3"];
     self.photoIV4.userInteractionEnabled = YES;
+    WeakSelf;
     [self.photoIV4 addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
+        weakSelf.photoType = 4;
         [weakSelf addPhotobtn1Click];
     }];
     [self.photoIV4 mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -397,7 +418,7 @@
         make.top.equalTo(tipLab.mas_bottom).offset(15);
         make.left.equalTo(self.photoIV1.mas_right).offset(kMargin);
         make.width.offset(photoW);
-        make.height.offset(photoW/16.0*9.0);
+        make.height.offset(photoW/17.0*11.0);
     }];
 }
 
@@ -409,11 +430,11 @@
     [_scrollView addSubview:faceLab];
     faceLab.text = @"资质证书";
     faceLab.textColor = [UIColor blackColor];
-    faceLab.font = Font(14);
+    faceLab.font = Font(16);
     faceLab.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
     [faceLab mas_makeConstraints:^(MASConstraintMaker *make) {
         
-        make.top.offset(500);
+    make.top.equalTo(self.photoIV4.mas_bottom).offset(22);
         make.left.offset(kMargin);
         make.width.offset(160);
         make.height.offset(20);
@@ -438,14 +459,15 @@
     
     UIButton * demo= [UIButton buttonWithType:UIButtonTypeCustom];
     [demo setTitleColor: KMainColor forState:0];
+    demo.titleLabel.font = font(14);
     [demo setTitle:@"添加" forState:UIControlStateNormal];
-    [demo addTarget:self action:@selector(seeDemo) forControlEvents:UIControlEventTouchUpInside];
+    [demo addTarget:self action:@selector(addCertifier) forControlEvents:UIControlEventTouchUpInside];
     [_scrollView addSubview:demo];
     [demo mas_makeConstraints:^(MASConstraintMaker *make) {
-    make.top.equalTo(faceLab.mas_bottom).offset(5);
-        make.right.offset(-kMargin);
-        make.width.offset(160);
-        make.height.offset(20);
+        make.centerY.equalTo(faceLab).offset(0);
+        make.left.offset(kWindowW-40-kMargin);
+        make.width.offset(40);
+        make.height.offset(40);
         
     }];
     
@@ -466,7 +488,7 @@
         make.left.offset(20);
         make.right.offset(-20);
         make.height.offset(50);
-        make.bottom.offset(-KBottomHeight-5);
+        make.bottom.offset(-KBottomHeight-25);
     }];
 }
 
@@ -494,7 +516,7 @@
         
     }
     detailView.block = ^(NSString *field) {
-      
+        
         self.identiStr = field;
         if ([self.identiStr isEqualToString:@"PASSPORT"]) {
             self.cadDetailLab.text = @"护照 >";
@@ -522,8 +544,11 @@
     }
     
 }
+
 #pragma  mark 调取相册
+
 #pragma mark - addPhotobtn1Click
+
 - (void)addPhotobtn1Click{
     
     //吊起相册
@@ -531,25 +556,22 @@
     [BDImagePicker showImagePickerFromViewController:self allowsEditing:YES finishAction:^(UIImage *image) {
         
         if (image) {
-            self.photoIV1.image = image;
-            [weakSelf upDateHeadIcon:image WithImageType:1];
+            
+            if (self.photoType==1) {
+                self.photoIV1.image = image;
+                [weakSelf upDateHeadIcon:image WithImageType:1];
+            }else if (self.photoType==2){
+                self.photoIV2.image = image;
+                [weakSelf upDateHeadIcon:image WithImageType:1];
+            }else if (self.photoType==4){
+                self.photoIV4.image = image;
+                [weakSelf upDateHeadIcon:image WithImageType:1];
+            }
+            
         }
         
     }];
-    
-    
-}
-- (void)addPhotobtn2Click{
-    WeakSelf;
-    [BDImagePicker showImagePickerFromViewController:self allowsEditing:YES finishAction:^(UIImage *image) {
-       
-        if (image) {
-            self.photoIV2.image = image;
-            [weakSelf upDateHeadIcon:image WithImageType:2];
-        }
-        
-    }];
-    
+
 }
 
 #pragma mark - action
@@ -557,10 +579,14 @@
 //查看实例
 -(void)seeDemo{
     
+    pushClass(YSJApplication_demoVC);
 }
 
-
 -(void)next{
-    
+    pushClass(YSJAlpplication_thirdVC);
+}
+
+-(void)addCertifier{
+    pushClass(YSJApplication_certificateVC)
 }
 @end

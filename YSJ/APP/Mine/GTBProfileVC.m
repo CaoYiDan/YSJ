@@ -270,7 +270,6 @@
             make.width.offset(1);
             make.bottom.offset(0);
         }];
-        
     }
     return _genderView;
 }

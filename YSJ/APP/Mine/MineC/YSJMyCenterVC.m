@@ -4,6 +4,7 @@
 #import "YSJMyCenterVC.h"
 #import "YSJMineHeaderView.h"
 #import "GTBProfileVC.h"
+#import "YSJPopApplicationView.h"
 @interface YSJMyCenterVC ()<UITableViewDelegate,UITableViewDataSource,MineHeaderViewDelegate>
 @property (nonatomic,strong) UITableView *tableView;
 @property (nonatomic,strong) YSJUserModel *model;
@@ -61,8 +62,9 @@
     
     [[HttpRequest sharedClient]httpRequestPOST:YNumber parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         NSLog(@"%@",responseObject);
-        NSMutableDictionary *numdic = responseObject;
-        [numdic setObject:@"0" forKey:@"haveLook"];
+        NSDictionary * re = responseObject;
+        NSMutableDictionary *numdic = re.mutableCopy;
+        [numdic setObject:@(0) forKey:@"haveLook"];
         self.headerView.numberDic = numdic;
         
     }failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -135,9 +137,9 @@
     }else if ([type isEqualToString:@"middle"]){
         
     }else if ([type isEqualToString:@"application"]){
-        SPMineIdentifiDetailVC *vc = [[SPMineIdentifiDetailVC alloc]init];
-        vc.identifiStr = @"私教申请";
-        [self.navigationController pushViewController:vc animated:YES];
+        YSJPopApplicationView *popView = [[YSJPopApplicationView alloc]initWithFrame:self.view.bounds];
+        popView.type = index;
+        [self.view addSubview:popView];
     }
 }
 

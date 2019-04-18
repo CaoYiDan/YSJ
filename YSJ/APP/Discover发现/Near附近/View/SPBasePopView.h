@@ -11,4 +11,5 @@
 @interface SPBasePopView : UIView <UIGestureRecognizerDelegate>
 -(void)setAnimtion;
 -(void)initUI;
+-(void)shat;
 @end

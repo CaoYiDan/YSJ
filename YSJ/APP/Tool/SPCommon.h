@@ -48,4 +48,7 @@
 
  */
 +(NSString *)changeKm:(int)m;
+
+#pragma mark - 弹出编辑框
++(void)creatAlertControllerTitle:(NSString*) title subTitle:(NSString *)subTitle _alertSure:(void (^)(NSString *text)) resultText;
 @end

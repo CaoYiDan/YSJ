@@ -27,6 +27,10 @@ typedef NS_ENUM(NSInteger,DynamicCellType)
 #pragma mark - FontSize
 #define intToStringFormar(x) [NSString stringWithFormat:@"%d",x]
 #define ImgWithUrl(x,y) [x sd_setImageWithURL:[NSURL URLWithString:y]];
+
+#define pushClass(x) x *vc = [[x alloc]init];[self.navigationController pushViewController:vc animated:YES];
+
+
 #define  font(x)  [UIFont fontWithName:@"PingFangSC-Medium" size:x]
 #define  Font(x)  [UIFont fontWithName:@"PingFangSC-Medium" size:x]
 #define KWhiteColor [UIColor whiteColor]

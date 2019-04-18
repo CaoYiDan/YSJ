@@ -376,8 +376,9 @@
     int i = 0;
     
     for (UILabel *lab in _numArr) {
-       
-        lab.text = numberDic[keyArr[i]];
+        
+        NSNumber *num  = numberDic[keyArr[i]];
+        lab.text = [num stringValue];
         
         i++;
     }
