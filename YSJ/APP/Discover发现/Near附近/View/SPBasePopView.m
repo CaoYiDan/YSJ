@@ -39,6 +39,8 @@
 
 -(void)shat{
     
+    [self endEditing:YES];
+    
     [UIView animateWithDuration:0.3 animations:^{
         self.originY= SCREEN_H+100;
     }completion:^(BOOL finished) {

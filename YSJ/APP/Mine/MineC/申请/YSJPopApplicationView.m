@@ -7,7 +7,7 @@
 //
 #import "YSJApplication_firstVC.h"
 #import "YSJPopApplicationView.h"
-#import "YSJApplicationCompany_firstVC.h"
+#import "YSJApplicationCompany_FirstVC.h"
 @implementation YSJPopApplicationView
 
 {
@@ -71,13 +71,21 @@
 
 -(void)applicationClick{
     
-    [self shat];
+    //退出主界面
+    [UIView animateWithDuration:0.4 animations:^{
+        self.originX= (SCREEN_H+100);
+    }completion:^(BOOL finished) {
+        
+    }];
     
+    //私教申请
     if (self.type==0) {
-        YSJApplication_firstVC *vc = [[YSJApplication_firstVC alloc]init];
+        YSJApplication_FirstVC *vc = [[YSJApplication_FirstVC alloc]init];
         [[SPCommon getCurrentVC].navigationController pushViewController:vc animated:YES];
     }else{
-    YSJApplicationCompany_firstVC *vc = [[YSJApplicationCompany_firstVC alloc]init];
+        
+    //机构申请
+    YSJApplicationCompany_FirstVC *vc = [[YSJApplicationCompany_FirstVC alloc]init];
     [[SPCommon getCurrentVC].navigationController pushViewController:vc animated:YES];
     }
     

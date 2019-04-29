@@ -1,28 +1,39 @@
-//
-//  YSJApplication_firstVC.m
-//  SmallPig
-//
-//  Created by xujf on 2019/4/17.
-//  Copyright © 2019年 lisen. All rights reserved.
-#import "YSJCommonSwitchView.h"
-#import "YSJCommonArrowView.h"
-#import "YSJApplication_secondVC.h"
 
-#import "YSJAlpplication_thirdVC.h"
+//  YSJApplication_firstVC.m
+
+//  SmallPig
+
+//  Created by xujf on 2019/4/17.
+
+//  Copyright © 2019年 lisen. All rights reserved.
+
+#import "YSJCommonSwitchView.h"
+#import "YSJPopTextFiledView.h"
+#import "YSJApplication_SecondVC.h"
+#import "YSJApplication_SuccessVC.h"
+#import "YSJAlpplication_ThirdVC.h"
+#import "YSJPopTeachTypeView.h"
+#import "YSJPopTextView.h"
+
+#import "YSJFactoryForCellBuilder.h"
 
 #define cellH 76
 
-@interface YSJAlpplication_thirdVC ()
-
+@interface YSJAlpplication_ThirdVC ()
+@property (nonatomic,strong) YSJPopTeachTypeView *teachTypeView;
+//可售课程cell
+@property (nonatomic,strong) YSJPopTextFiledView *courseTypeCell;
+//学历cell
+@property (nonatomic,strong) YSJPopTextFiledView *xueliCell;
 @end
 
-@implementation YSJAlpplication_thirdVC
+@implementation YSJAlpplication_ThirdVC
 {
     UIScrollView  *_scroll;
     UILabel *_name;
     UITextField *_identifierTextFiled;
     UILabel *_sex;
-    
+    YSJFactoryForCellBuilder *_builder;
     YSJCommonSwitchView *_supportHome;
     
     UIView *_tag;
@@ -48,33 +59,67 @@
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
+
 #pragma mark - UI
 
 -(void)initUI{
+
+    YSJFactoryForCellBuilder *builder = [[YSJFactoryForCellBuilder alloc]init];
     
-    [self setBase];
+    _builder = builder;
+    
+    _scroll = [builder createViewWithDic:[self getCellDic]];
+    [self.view addSubview:_scroll];
+    _tag =builder.lastBottomView;
     
     [self topView];
-    
-    [self setView1];
-    
-    [self setSwitchView];
-    
+
     [self setBottomView];
     
 }
 
-
--(void)setBase{
+-(NSDictionary *)getCellDic{
     
-    UIScrollView  *scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, kWindowH)];
-    _scroll = scrollView;
-    _scroll.backgroundColor = KWhiteColor;
-    [self.view addSubview:_scroll];
-    _scroll.showsVerticalScrollIndicator = NO;
-    _scroll.showsHorizontalScrollIndicator = NO;
-    _scroll.contentSize = CGSizeMake(kWindowW, 800);
+    NSDictionary *dic = @{@"cellH":@"76",
+                          @"orY":@"111",
+                          @"arr":@[
+                                  @{
+                                      @"type":@(CellPopCouserChosed),
+                                      @"title":@"可授课程",
+                                      },
+                                  @{
+                                      @"type":@(CellPopNormal),
+                                      @"title":@"授课地点",
+                                      },
+                                  
+                                  @{
+                                      @"type":@(CellSwitch),
+                                      @"title":@"上门服务",
+                                      },
+                                  
+                                  @{
+                                      @"type":@(CellPopNormal),
+                                      @"title":@"职业",
+                                      },
+                                  @{
+                                      @"type":@(CellPopNormal),
+                                      @"title":@"工作单位/学校",
+                                      },
+                                  @{
+                                      @"type":@(CellPopSheet),
+                                      @"title":@"学历",
+                                      @"sheetText":  @"大专,本科,硕士,博士,其他"
+                                      
+                                      },
+                                  @{
+                                      @"type":@(CellPopTextView),
+                                      @"title":@"个人介绍",
+                                      }
+                                  ]
+                          };
+    return dic;
 }
+
 
 -(void)topView{
     
@@ -97,53 +142,6 @@
     }];
 }
 
--(void)setView1{
-    
-    _cellViewArr = @[].mutableCopy;
-    NSArray *arr = @[@"可授课程",@"授课地点",@"职业",@"工作单位/学校",@"学历",@"个人介绍"];
-    int i=0;
-    for (NSString *str in arr) {
-        
-        YSJCommonArrowView *cell = [[YSJCommonArrowView alloc]initWithFrame:CGRectMake(0, cellH*i+(i>=2?(111+cellH+6):111), kWindowW, cellH) withTitle:str subTitle:@""];
-        [_scroll addSubview:cell];
-        [_cellViewArr addObject:cell];
-        __weak typeof(cell) weakCell = cell;
-        [cell addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
-            [SPCommon creatAlertControllerTitle:str subTitle:@"" _alertSure:^(NSString *text) {
-                weakCell.rightSubTitle = text;
-            }];
-        }];
-        if (i==1) {
-            _tag = cell;
-        }
-        i++;
-    }
-}
-
--(void)setSwitchView{
-    
-    YSJCommonSwitchView *switchView = [[YSJCommonSwitchView alloc]initWithFrame:CGRectZero withTitle:@"上门服务" selected:YES];
-    [_scroll addSubview:switchView];
-    _supportHome = switchView;
-    [switchView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.offset(0);
-        make.width.offset(kWindowW);
-        make.height.offset(cellH);
-    make.top.equalTo(_tag.mas_bottom).offset(0);
-    }];
-    
-    UIView *bottomLine = [[UIView alloc]init];
-    bottomLine.backgroundColor = grayF2F2F2;
-    [_scroll addSubview:bottomLine];
-    [bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.offset(0);
-        make.width.offset(kWindowW);
-        make.height.offset(6);
-        make.top.equalTo(switchView.mas_bottom).offset(0);
-    }];
-    
-}
-
 -(void)setBottomView{
     
     UIButton *connectBtn = [[UIButton alloc]initWithFrame:CGRectMake(20, kWindowH-SafeAreaTopHeight-25-50-KBottomHeight, kWindowW-40, 50)];
@@ -153,44 +151,67 @@
     connectBtn.clipsToBounds = YES;
     [connectBtn addTarget:self action:@selector(next) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:connectBtn];
- 
+    
 }
 
 #pragma mark - action
 
+#pragma mark  提交申请
+
 -(void)next{
+
+    NSArray *keyArr = @[@"sale_item",@"address",@"is_at_home",@"occupation",@"school",@"education",@"describe"];
     
-    for (YSJCommonArrowView *cell in _cellViewArr) {
-        NSLog(@"%@",cell.rightSubTitle);
+    NSMutableArray *valueArr = [_builder getAllContent];
+   
+    int i = 0 ;
+    NSMutableDictionary *dic = @{}.mutableCopy;
+    for (NSString *value in valueArr) {
+        if (isEmptyString(value)) {
+            Toast(@"请填写完整信息");
+            return;
+        }else{
+           [dic setObject:value forKey:keyArr[i]];
+        }
+        i++;
     }
+
+    [dic setObject:[StorageUtil getId] forKey:@"token"];
+    
+    [dic setObject:self.certifierString forKey:@"qualifications"];
+   
+    NSLog(@"%@",dic);
+    
+    [[HttpRequest sharedClient]httpRequestPOST:YTeacherStep3 parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+        
+        NSLog(@"%@",responseObject);
+        
+        YSJApplication_SuccessVC *vc = [[YSJApplication_SuccessVC alloc]init];
+        
+        [self.navigationController pushViewController:vc animated:YES];
+        
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        
+    }];
     
 }
 
-- (void)showSheet:(UIButton *)sender {
-    //显示弹出框列表选择
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
-                                                                   message:@""
-                                                            preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel
-                                                         handler:^(UIAlertAction * action) {
-                                                             //响应事件
-                                                             NSLog(@"action = %@", action);
-                                                         }];
-    UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"男" style:UIAlertActionStyleDefault
-                                                         handler:^(UIAlertAction * action) {
-                                                             //响应事件
-                                                             NSLog(@"action = %@", action);
-                                                             _sex.text = @"男";                                }];
-    UIAlertAction* saveAction = [UIAlertAction actionWithTitle:@"女" style:UIAlertActionStyleDefault
-                                                       handler:^(UIAlertAction * action) {
-                                                           //响应事件
-                                                           NSLog(@"action = %@", action);
-                                                           _sex.text = @"女";                      }];
-    [alert addAction:saveAction];
-    [alert addAction:cancelAction];
-    [alert addAction:deleteAction];
-    [self presentViewController:alert animated:YES completion:nil];
+//显示弹出框列表选择
+- (void)showSheet{
+ 
 }
 
+-(YSJPopTeachTypeView*)teachTypeView{
+    if (!_teachTypeView) {
+        _teachTypeView = [[YSJPopTeachTypeView alloc]initWithFrame:self.view.bounds];
+        [self.view addSubview:_teachTypeView];
+        WeakSelf;
+        _teachTypeView.block = ^(NSMutableArray *chosedArr) {
+            //             [weakSelf.tableView reloadData];
+            NSLog(@"%@",chosedArr);
+            weakSelf.courseTypeCell.rightSubTitle = [chosedArr componentsJoinedByString:@","];
+        };
+    }
+    return _teachTypeView;
+}
 @end

@@ -31,8 +31,8 @@
 -(void)addUI{
     CGFloat imageWH = (SCREEN_W-50)/4;
     self.userInteractionEnabled = YES;
-    UIButton *delete = [[UIButton alloc]initWithFrame:CGRectMake(imageWH-20 , 0, 20, 20)];
-    [delete setImage:[UIImage imageNamed:@"fb"] forState:0];
+    UIButton *delete = [[UIButton alloc]initWithFrame:CGRectMake(0 , 0, 20, 20)];
+    [delete setImage:[UIImage imageNamed:@"shanchu2"] forState:0];
     [delete addTarget:self action:@selector(deleteClick) forControlEvents:UIControlEventTouchDown];
     [self addSubview:delete];
 }

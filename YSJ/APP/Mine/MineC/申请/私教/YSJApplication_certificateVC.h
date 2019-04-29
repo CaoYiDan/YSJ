@@ -1,5 +1,5 @@
 //
-//  YSJApplication_certificateVC.h
+//  YSJApplication_CertificateVC.h
 //  SmallPig
 //
 //  Created by xujf on 2019/4/17.
@@ -9,9 +9,9 @@
 #import "BaseViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
-@interface YSJApplication_certificateVC : BaseViewController
-
+typedef  void (^addCertifierSucceed) (NSString  *certifierName);
+@interface YSJApplication_CertificateVC : BaseViewController
+@property (nonatomic,copy) addCertifierSucceed block;
 @end
 
 NS_ASSUME_NONNULL_END

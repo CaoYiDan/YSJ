@@ -7,12 +7,15 @@
 //
 
 #import "YSJCommonSwitchView.h"
+
 #define cellH 76
+
 @implementation YSJCommonSwitchView
 {
     UILabel *_leftText;
     UISwitch *_switch;
 }
+
 - (instancetype)initWithFrame:(CGRect)frame withTitle:(NSString *)title selected:(BOOL)selected{
     self = [super initWithFrame:frame];
     if (self) {
@@ -20,10 +23,12 @@
     }
     return self;
 }
+
 -(void)initUIWithTitle:(NSString *)title selected:(BOOL)selected{
     _leftText = [[UILabel alloc]init];
     _leftText.font = font(16);
     _leftText.text = @"上门服务";
+    _leftText.textColor = KBlack333333;
     [self addSubview:_leftText];
     [_leftText mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(kMargin);
@@ -50,7 +55,7 @@
         make.left.offset(0);
         make.width.offset(kWindowW);
         make.height.offset(1);
-    make.top.equalTo(_leftText.mas_bottom).offset(0);
+        make.bottom.offset(0);
     }];
     
 }
@@ -58,6 +63,10 @@
 - (void)setSwitchSelected:(BOOL)switchSelected{
     _switchSelected = switchSelected;
     [_switch setOn:switchSelected];
+}
+
+- (NSString *)getContent{
+    return _switch.isOn?@"1":@"0";
 }
 
 @end

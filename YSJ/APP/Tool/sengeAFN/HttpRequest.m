@@ -87,6 +87,11 @@ self.manager.responseSerializer.acceptableContentTypes=[NSSet setWithObjects:@"a
         }else{
             if (!isEmptyString(responseObject[@"message"])) {
                 Toast(responseObject[@"message"]);
+                NSString *message =responseObject[@"message"];
+                //如果是token 过期，则返回所有数据
+                if ([message containsString:@"token time"] || [message containsString:@"user not ex"]) {
+                    sucess(task,responseObject,responseObject);
+                }
             }
              failure(nil,nil);
         }

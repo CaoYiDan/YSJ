@@ -6,7 +6,7 @@
 //  Copyright © 2019年 lisen. All rights reserved.
 //
 //
-//  SPSelectionCollectionCell.m
+//  YSJHomeTableViewCell.m
 //  SmallPig
 //
 //  Created by 融合互联-------lisen on 17/8/30.

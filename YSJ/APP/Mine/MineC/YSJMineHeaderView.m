@@ -165,7 +165,7 @@
     }];
     
     
-    UIButton *insertBtn = [FactoryUI createButtonWithtitle:@" 》" titleColor:nil imageName:@"" backgroundImageName:nil target:self selector:@selector(insertClick)];
+    UIButton *insertBtn = [FactoryUI createButtonWithtitle:@"" titleColor:nil imageName:@"dizhi_more" backgroundImageName:nil target:self selector:@selector(insertClick)];
     [_bgImgView addSubview:insertBtn];
     [insertBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.offset(-kMargin);

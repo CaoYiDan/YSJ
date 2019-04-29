@@ -1,11 +1,3 @@
-//
-//  YSJTeacherCell.m
-//  SmallPig
-//
-//  Created by xujf on 2019/3/20.
-//  Copyright © 2019年 lisen. All rights reserved.
-//
-
 
 #import "YSJRequestListCell.h"
 
@@ -48,7 +40,6 @@
         make.height.offset(20);
         make.top.equalTo(_img).offset(0);
     }];
-    
     
     _distance = [[UILabel alloc]init];
     _distance.font = Font(12);

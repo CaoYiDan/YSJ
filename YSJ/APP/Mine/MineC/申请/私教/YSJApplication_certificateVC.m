@@ -1,20 +1,21 @@
 //
-//  YSJApplication_certificateVC.m
+//  YSJApplication_CertificateVC.m
 //  SmallPig
 //
 //  Created by xujf on 2019/4/17.
 //  Copyright © 2019年 lisen. All rights reserved.
 //
 #import "BDImagePicker.h"
-#import "YSJApplication_certificateVC.h"
+#import "YSJApplication_CertificateVC.h"
 
-@interface YSJApplication_certificateVC ()
+@interface YSJApplication_CertificateVC ()
 @property (nonatomic,strong) UIImageView *photo;
+@property (nonatomic,strong)  UILabel *certifierName;
 @end
 
-@implementation YSJApplication_certificateVC
+@implementation YSJApplication_CertificateVC
 {
-    UILabel *_certifierName;
+   
     UILabel *_getTime;
     UISwitch *_canSee;
 }
@@ -27,23 +28,26 @@
     
     [self initUI];
 }
-
+-(void)save{
+    
+    [self upDateHeadIcon:self.photo.image];
+   
+  
+}
 -(void)initUI{
     
     UIButton *right = [[UIButton alloc]init];
     right.frame = CGRectMake(0, 0, 44, 44);
     [right setTitle:@"保存" forState:0];
     [right setTitleColor:KWhiteColor forState:0];
-    WeakSelf;
-    [right addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
-        [weakSelf.navigationController popViewControllerAnimated:YES];
-    }];
+    [right addTarget:self action:@selector(save) forControlEvents:UIControlEventTouchDown];
+    
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:right];
     
     
     CGFloat photoW = (kWindowW-2*kMargin);
     
-    //身份证正面照
+    //照片
     self.photo = [[UIImageView alloc]init];
     [self.view addSubview:self.photo];
     self.photo.clipsToBounds = YES;
@@ -52,7 +56,7 @@
     self.photo.contentMode = UIViewContentModeScaleAspectFill;
     self.photo.image = [UIImage imageNamed:@"add4"];
     self.photo.userInteractionEnabled = YES;
-    
+    WeakSelf;
     [self.photo addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
         [weakSelf addPhotobtn1Click];
     }];
@@ -71,7 +75,7 @@
     
     CGFloat cellH = 70;
     
-    //姓名
+    //资质证书名称
     UILabel *_leftText = [[UILabel alloc]init];
     _leftText.font = font(16);
     _leftText.text = @"资质证书名称";
@@ -218,7 +222,6 @@
         }];
         
     }
-   
 }
 
 #pragma  mark 调取相册
@@ -233,19 +236,20 @@
         
         if (image) {
             self.photo.image = image;
-            [weakSelf upDateHeadIcon:image WithImageType:1];
+          
         }
         
     }];
 }
 
 #pragma  mark 调取相册
-
-- (void)upDateHeadIcon:(UIImage *)photo WithImageType:(int)type{
+#pragma  mark 上传图片
+- (void)upDateHeadIcon:(UIImage *)photo{
     
-    //菊花显示
-    
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    if (isEmptyString(_getTime.text)||isEmptyString((_certifierName.text))) {
+        Toast(@"请填写完整信息");
+        return;
+    }
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
@@ -264,43 +268,39 @@
                                                          nil];
     
     manager.requestSerializer= [AFHTTPRequestSerializer serializer];
-    
+    NSString *path = [NSString stringWithFormat:@"%@%@",[StorageUtil getTel],@"e433332232"];
     NSData * imageData = UIImageJPEGRepresentation(photo,0.5);
-    NSString * fullPath = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]stringByAppendingPathComponent:@"text"];
+    NSString * fullPath = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]stringByAppendingPathComponent:path];
     [imageData writeToFile:fullPath atomically:NO];
     
     NSMutableDictionary * dictT = [[NSMutableDictionary alloc]init];
-    [dictT setObject:imageData forKey:@"image"];
-    [dictT setObject:@"/usr/local/tomcat/webapps/" forKey:@"imageUploadPath"];
-    [manager POST:kUrlPostImg parameters:dictT constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-        [formData appendPartWithFileData:imageData name:@"image" fileName:@"text.jpg" mimeType:@"image/jpg"];
+    [dictT setObject:imageData forKey:@"cert"];
+    [dictT setObject:[StorageUtil getId] forKey:@"token"];
+    [dictT setObject:_certifierName.text forKey:@"certs_name"];
+    [dictT setObject:@(_canSee.isOn) forKey:@"certs_visible"];
+    
+    [dictT setObject:_getTime.text forKey:@"get_time"];
+    [manager POST:YTeacherStep4 parameters:dictT constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        [formData appendPartWithFileData:imageData name:@"cert" fileName:[NSString stringWithFormat:@"%@.jpg",path] mimeType:@"image/jpg"];
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
+        NSLog(@"%@",responseObject);
+        
         //将二进制转为字符串
         NSString *result2 = [[NSString alloc] initWithData:responseObject  encoding:NSUTF8StringEncoding];
         //字符串转字典
-        NSDictionary*dict=[self dictionaryWithJsonString:result2];
-        //            [self.photosArr addObject:dict[@"image"]];
-        NSMutableDictionary *dic =[[NSMutableDictionary alloc]init];
-        [dic setObject:dict[@"image"] forKey:@"url"];
-        if (type==1) {//正面照路劲
-            
-            //            self.imgPathFaceStr = dict[@"image"];
-        }else{
-            //
-            //            self.imgPathBackStr = dict[@"image"];
-        }
+        NSDictionary*dict=[result2 stringChangeToDictionary];
         
+        //回传给上个界面
+        !self.block?:self.block(self.certifierName.text);
         
+        [self.navigationController popViewControllerAnimated:YES];
         
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-        //        [self post];
-        
+        NSLog(@"%@",dict);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        NSLog(@"%@",error);
     }];
 }
 

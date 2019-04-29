@@ -1,5 +1,5 @@
 //
-//  SPSelectionCell.m
+//  YSJHomeTableViewCell.m
 //  SmallPig
 //
 
@@ -7,7 +7,7 @@
 #import "YSJCompanyTeacherCell.h"
 #import "SPUser.h"
 #import "YSJTeacherModel.h"
-#import "SPSelectionCollectionCell.h"
+#import "YSJHomeTableViewCell.h"
 #import "YSJTeacher_DetailVC.h"
 #import "YSJStudent_DetailVC.h"
 #import "YSJCompany_DetailVC.h"

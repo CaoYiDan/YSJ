@@ -1,5 +1,5 @@
 //
-//  YSJAlpplication_thirdVC.h
+//  YSJAlpplication_ThirdVC.h
 //  SmallPig
 //
 //  Created by xujf on 2019/4/17.
@@ -10,7 +10,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface YSJAlpplication_thirdVC : BaseViewController
+@interface YSJAlpplication_ThirdVC : BaseViewController
+
+//从上个界面传过来的资质证书字符串（仅在本界面提交，并不显示）
+@property (nonatomic,copy) NSString *certifierString;
 
 @end
 

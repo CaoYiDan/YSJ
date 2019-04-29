@@ -48,8 +48,17 @@
     
     [[HttpRequest sharedClient]httpRequestPOST:YInformation parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         NSLog(@"%@",responseObject);
-        self.model = [YSJUserModel mj_objectWithKeyValues:responseObject];
-        self.headerView.model = self.model;
+        
+          if (isEmptyString(responseObject[@"status"])) {
+              self.model = [YSJUserModel mj_objectWithKeyValues:responseObject];
+              self.headerView.model = self.model;
+          }else{
+              //status不等于200,属于token 过期，重新登录
+              [StorageUtil saveId:@""];
+              [SPCommon gotoLogin];
+              self.tabBarController.selectedIndex =4;
+          }
+       
     }failure:^(NSURLSessionDataTask *task, NSError *error) {
         
     }];
@@ -75,8 +84,7 @@
 #pragma mark - tableViewDelegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-
-        return self.titleArr.count;
+    return self.titleArr.count;
     
 }
 
@@ -101,7 +109,7 @@
     cell.textLabel.text = self.titleArr[indexPath.row];
     
     cell.imageView.image = [UIImage imageNamed:self.titleImageArr[indexPath.row]];
-
+    
     return cell;
 }
 
@@ -116,7 +124,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-   
+    
 }
 
 #pragma mark - header点击代理事件
@@ -159,13 +167,22 @@
         _tableView.dataSource = self;
         _tableView.delegate = self;
         _tableView.separatorColor = grayF2F2F2;
-       _tableView.backgroundColor = KMainColor; _tableView.showsVerticalScrollIndicator = NO                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ;
+        _tableView.backgroundColor = KMainColor;
+        _tableView.showsVerticalScrollIndicator = NO                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ;
         _tableView.frame = CGRectMake(0, 0, kWindowW, kWindowH-49);
         _tableView.tableHeaderView = self.headerView;
         _tableView.rowHeight = 50;
         _tableView.contentInset =UIEdgeInsetsMake(0, 0, 10+KBottomHeight-80, 0);
         [self.view addSubview:_tableView];
         
+        
+        UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake(0, kWindowH+500, kWindowW, 80)];
+        lab.font = font(11);
+        lab.textColor = KWhiteColor;
+        lab.numberOfLines = 0;
+        lab.textAlignment = NSTextAlignmentCenter;
+        lab.text = @"哇，这都被你找到了，好吧，我承认...........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................";
+        [_tableView addSubview:lab];
     }
     return _tableView;
 }
@@ -182,24 +199,24 @@
 #pragma mark -  滚动tableview 完毕之后
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     
-//    //图片高度
-//    CGFloat imageHeight = self.headerView.bgImgView.frameHeight;
-//    //图片宽度
-//    CGFloat imageWidth = kWindowW;
-//    //图片上下偏移量
-//    CGFloat imageOffsetY = scrollView.contentOffset.y/10.0;
-//    //上移
-//    if (imageOffsetY <= 0) {
-//
-//        CGFloat totalOffset = imageHeight - imageOffsetY;
-//        NSLog(@"%.0f,%.0f,%.0f",totalOffset,imageOffsetY,imageHeight);
-//
-//        self.headerView.bgImgView.frame = CGRectMake(0, imageOffsetY, imageWidth , totalOffset);
-//        self.headerView.frame = CGRectMake(0, 0, imageWidth ,totalOffset+300);
-//        if (imageOffsetY==0) {
-//            self.headerView.bgImgView.frame = CGRectMake(0, 0, imageWidth ,bgImgH);
-//        }
-//    }
+    //    //图片高度
+    //    CGFloat imageHeight = self.headerView.bgImgView.frameHeight;
+    //    //图片宽度
+    //    CGFloat imageWidth = kWindowW;
+    //    //图片上下偏移量
+    //    CGFloat imageOffsetY = scrollView.contentOffset.y/10.0;
+    //    //上移
+    //    if (imageOffsetY <= 0) {
+    //
+    //        CGFloat totalOffset = imageHeight - imageOffsetY;
+    //        NSLog(@"%.0f,%.0f,%.0f",totalOffset,imageOffsetY,imageHeight);
+    //
+    //        self.headerView.bgImgView.frame = CGRectMake(0, imageOffsetY, imageWidth , totalOffset);
+    //        self.headerView.frame = CGRectMake(0, 0, imageWidth ,totalOffset+300);
+    //        if (imageOffsetY==0) {
+    //            self.headerView.bgImgView.frame = CGRectMake(0, 0, imageWidth ,bgImgH);
+    //        }
+    //    }
 }
 
 @end

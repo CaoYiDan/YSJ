@@ -6,6 +6,7 @@
 //  Copyright © 2017年 XJS_oxpc. All rights reserved.
 //
 
+#import "YSJPopTextFiledView.h"
 #import "LGTextView.h"
 #import "SLLocationHelp.h"
 #import "LGComposePhotosView.h"
@@ -36,6 +37,14 @@
 
 @property (nonatomic, strong) NSMutableArray *photos;
 
+/**
+ 上课时间
+ */
+@property (nonatomic,strong) YSJPopTextFiledView *classTime;
+/**
+ 课时数
+ */
+@property (nonatomic,strong) YSJPopTextFiledView *classNums;
 @end
 
 @implementation SPPublishVC
@@ -47,24 +56,25 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.automaticallyAdjustsScrollViewInsets = NO;
-    self.navigationController.navigationBar.translucent = NO;
-    self.extendedLayoutIncludesOpaqueBars = NO;
-    self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
-    
-    [self setNav];//导航设置
+   
+    self.title = @"课程详情";
     
     [self getLocation];//请求位置信息
-    
+
     self.limitStr = @"ALL";
+    
     _limitIndex = 0;
     
     [self.view addSubview:self.scrollView];
     [self.scrollView addSubview:self.topView];
     [self.scrollView addSubview:self.middleView];
-    self.bottomView.backgroundColor = [UIColor whiteColor];
+    self.bottomView.backgroundColor = KWhiteColor;
+    [self  setSaveButton];
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
 -(NSMutableArray *)imgArr{
@@ -112,8 +122,8 @@
 
 - (UIScrollView *)scrollView{
     if (!_scrollView) {
-        _scrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, -84, SCREEN_W, SCREEN_H+84)];
-        _scrollView.contentSize=CGSizeMake(0, SCREEN_H+100);
+        _scrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_W, SCREEN_H)];
+        _scrollView.contentSize=CGSizeMake(0, 900);
     }
     return _scrollView;
 }
@@ -121,45 +131,60 @@
 //上半部分创建
 - (UIView *)topView{
     if (!_topView) {
-        _topView =[[UIView alloc]initWithFrame:CGRectMake(0,84, SCREEN_W, 120)];
+        _topView =[[UIView alloc]initWithFrame:CGRectMake(0,0, SCREEN_W, 156)];
         _topView.backgroundColor = [UIColor whiteColor];
         [self topUI];
-//        [self mostText];
     }
     return _topView;
 }
 
 - (void)topUI{
     
-    UIView *line1 = [[UIView alloc]initWithFrame:CGRectMake(10, 0, SCREEN_W-20, 1)];
-    line1.backgroundColor = BASEGRAYCOLOR;
-    [self.topView addSubview:line1];
+    //需求内容
+    UILabel * xuTextTitle = [[UILabel alloc]init];
+    xuTextTitle.font = font(16);
+    xuTextTitle.text = @"课程详情";
+    xuTextTitle.textColor = KBlack333333;
+    [self.topView addSubview:xuTextTitle];
+    [xuTextTitle mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.offset(kMargin);
+        make.height.offset(20);
+        make.top.offset(18);
+    }];
     
-    LGTextView *textView=[[LGTextView alloc]initWithFrame:CGRectMake(5, 1, SCREEN_W-10, 100)];
+    LGTextView *textView=[[LGTextView alloc]initWithFrame:CGRectMake(kMargin, 56, SCREEN_W-2*kMargin, 84)];
     self.textView = textView;
+    [self.topView addSubview:textView];
+    textView.placeholderColor = [UIColor hexColor:@"BBBBBB"];
+    textView.textColor = black666666;
     textView.delegate = self;
-    textView.font  = font(16);
-    textView.placeholder = @"这一刻的想法... ";
+    textView.font  = font(14);
+    textView.placeholder = @"详细描述课程内容\n1.描述课程内容特色、学习目标、教学理念等\n2.描述老师授课特色\n3.描述课程为学生带来的影响是什么";
     [self.topView addSubview:textView];
     
-    UIView *line = [[UIView alloc]initWithFrame:CGRectMake(10, 100, SCREEN_W-20, 1)];
-    line.backgroundColor = BASEGRAYCOLOR;
-    [self.topView addSubview:line];
+    UIView *bottomLine = [[UIView alloc]init];
+    bottomLine.backgroundColor = grayF2F2F2;
+    [self.topView addSubview:bottomLine];
+    [bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.offset(kMargin);
+        make.width.offset(kWindowW);
+        make.height.offset(1);
+        make.bottom.offset(0);
+    }];
 }
 
 //中间视图创建
 - (UIView *)middleView{
     if (!_middleView) {
-        _middleView=[[UIView alloc]initWithFrame:CGRectMake(0, self.topView.frameHeight+84, SCREEN_W, 120)];
+        _middleView=[[UIView alloc]initWithFrame:CGRectMake(0, self.topView.frameHeight+28, SCREEN_W, 120)];
         _middleView.backgroundColor = [UIColor whiteColor];
         [self middleUI];
     }
     return _middleView;
 }
 
-
-
 - (void)middleUI{
+    
     LGComposePhotosView *photoView=[[LGComposePhotosView alloc]init];
     [self.middleView addSubview:photoView];
     self.photoView = photoView;
@@ -171,12 +196,7 @@
     __typeof(photoView)weakPhotoView=photoView;
     photoView .clickblock=^(NSInteger tag){
         if (tag == 110) {
-            //[BDImagePicker showImagePickerFromViewController:self allowsEditing:NO finishAction:^(UIImage *image) {
-              //  if (image) {
-                //     [weakPhotoView addPhoto:image];
-               // }
-               
-            //}];
+           
             [self showWithPreview:NO];
             
         }else if (tag >120){
@@ -189,120 +209,68 @@
             [weakSelf.photoView setImgs:weakSelf.photos];
         }
     };
+    
+    UIView *bottomLine = [[UIView alloc]init];
+    bottomLine.backgroundColor = grayF2F2F2;
+    [self.middleView addSubview:bottomLine];
+    [bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.offset(kMargin);
+        make.width.offset(kWindowW);
+        make.height.offset(1);
+        make.bottom.offset(0);
+    }];
 }
-
-
-//-(void)mostText{
-//    UIImageView *mostImage = [[UIImageView alloc]initWithFrame:CGRectMake(SCREEN_W-100, 100, 90, 16)];
-//    [mostImage setImage:[UIImage imageNamed:@"fx1"]];
-//    mostImage.backgroundColor = [UIColor orangeColor];
-//    [self.topView addSubview:mostImage];
-//}
 
 //下部分视图创建
 -(UIView *)bottomView{
+    
     if (!_bottomView) {
+        
         _bottomView=[[UIView alloc]init];
         [self.scrollView addSubview:self.bottomView];
-        [self bottomUI];
+      
         [_bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.offset(10);
+            make.left.offset(0);
             make.top.equalTo(_middleView.mas_bottom).offset(0);
-            make.size.mas_offset(CGSizeMake(SCREEN_W-20, 90));
+            make.size.mas_offset(CGSizeMake(SCREEN_W-20, normaelCellH*2));
         }];
+        
+          [self bottomUI];
     }
     return _bottomView;
 }
 
 - (void)bottomUI{
     
-    //所在位置
-    UIImageView *areaImg = [[UIImageView alloc]initWithFrame:CGRectMake(10,10, 20, 20)];
-    areaImg.image= [UIImage imageNamed:@"p_location"];
-    [self.bottomView addSubview:areaImg];
+    YSJPopTextFiledView *cell = [[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, 0, kWindowW,normaelCellH) withTitle:@"上课时间" subTitle:@""];
+    self.classTime = cell;
+    [self.bottomView addSubview:cell];
     
-    UILabel *areaLab = [[UILabel alloc]initWithFrame:CGRectMake(40, 0,SCREEN_W-90, 40)];
-    areaLab.text = @"所在位置";
-    areaLab.font = kFontNormal;
-    _cityLab = areaLab;
-    [self.bottomView addSubview:areaLab];
+    YSJPopTextFiledView *cell2 = [[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, normaelCellH, kWindowW,normaelCellH) withTitle:@"课时数" subTitle:@""];
+    self.classNums = cell2;
+    [self.bottomView addSubview:cell2];
+  
+}
+
+-(void)setSaveButton{
     
-//    _cityLab = [[UILabel alloc]initWithFrame:CGRectMake(130, 0, 100, 40)];
-////    _cityLab.text = [self.locationCity isEqualToString:@"位置"]?@"":self.locationCity;
-//    _cityLab.font = kFontNormal;
-//    _cityLab.textColor = MyBlueColor;
-//    [self.bottomView addSubview:_cityLab];
-    
-    UIImageView *arrowImg = [[UIImageView alloc]initWithFrame:CGRectMake(SCREEN_W-40,12, 17, 17)];
-    arrowImg.image= [UIImage imageNamed:@"a_arrow"];
-    [self.bottomView addSubview:arrowImg];
-    
-    UIButton *areaBtn = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, SCREEN_W, 40)];
-    [areaBtn addTarget:self action:@selector(city) forControlEvents:UIControlEventTouchDown];
-    areaBtn.backgroundColor = [UIColor clearColor];
-    [self.bottomView addSubview:areaBtn];
-    
-    //分割线
-    UIView *line  = [[UIView alloc]initWithFrame:CGRectMake(0, 40, SCREEN_W-20, 1)];
-    line.backgroundColor = BASEGRAYCOLOR;
-    [self.bottomView addSubview:line];
-    
-    //谁可以看
-    UIImageView *limitImg = [[UIImageView alloc]initWithFrame:CGRectMake(10,51, 20, 20)];
-    limitImg.image= [UIImage imageNamed:@"p_see"];
-    [self.bottomView addSubview:limitImg];
-    
-    UILabel *limitLab = [[UILabel alloc]initWithFrame:CGRectMake(40, 41, 100, 40)];
-    limitLab.font = kFontNormal;
-    limitLab.text = @"谁可以看";
-    _limitLab = limitLab;
-    [self.bottomView addSubview:limitLab];
-    
-    
-//    _limitLab = [[UILabel alloc]initWithFrame:CGRectMake(130, 41, 100, 40)];
-////    _limitLab.text = @"所有人可见";
-//    _limitLab.font = kFontNormal;
-//    _limitLab.textColor = MyBlueColor;
-//    [self.bottomView addSubview:_limitLab];
-    
-    UIImageView *arrowImg2 = [[UIImageView alloc]initWithFrame:CGRectMake(SCREEN_W-40,53, 17, 17)];
-    arrowImg2.image= [UIImage imageNamed:@"a_arrow"];
-    [self.bottomView addSubview:arrowImg2];
-    
-    UIButton *limitBtn = [[UIButton alloc]initWithFrame:CGRectMake(0, 41, SCREEN_W, 40)];
-     [limitBtn addTarget:self action:@selector(limit) forControlEvents:UIControlEventTouchDown];
-    limitBtn.backgroundColor = [UIColor clearColor];
-    [self.bottomView addSubview:limitBtn];
-    
-    //分割线
-    UIView *line2  = [[UIView alloc]initWithFrame:CGRectMake(0, 81, SCREEN_W-20, 1)];
-    line2.backgroundColor = BASEGRAYCOLOR;
-    [self.bottomView addSubview:line2];
+    UIButton *connectBtn = [[UIButton alloc]initWithFrame:CGRectMake(20, kWindowH-SafeAreaTopHeight-25-50-KBottomHeight, kWindowW-40, 50)];
+    connectBtn.backgroundColor = KMainColor;
+    [connectBtn setTitle:@"保存" forState:0];
+    connectBtn.layer.cornerRadius = 5;
+    connectBtn.clipsToBounds = YES;
+    [connectBtn addTarget:self action:@selector(save) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:connectBtn];
     
 }
 
-//navigation
-- (void)setNav{
+-(void)save{
     
-    self.automaticallyAdjustsScrollViewInsets = NO;
-    self.navigationController.navigationBar.translucent = NO;
-    self.extendedLayoutIncludesOpaqueBars = NO;
-    self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
-    
-    self.titleLabel.text = @"发布动态";
-    
-    [self.rightButton setTitleColor:[UIColor blackColor] forState:0];
-    [self.rightButton setTitle:@"发送" forState:0];
-    
-    [self addRightTarget:@selector(onRightClick)];
-    
-    //删除按钮
-    [self addCancelBtn];
 }
 
 //添加取消按钮->
 -(void)addCancelBtn{
+    
     UIButton *cancelBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     [cancelBtn setFrame:CGRectMake(20, 20, 40, 30)];
     [cancelBtn setTitle:@"取消" forState:UIControlStateNormal];

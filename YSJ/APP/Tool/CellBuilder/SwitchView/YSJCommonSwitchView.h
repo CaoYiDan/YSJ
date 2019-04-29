@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "YSJPopViewProtocol.h"
 NS_ASSUME_NONNULL_BEGIN
 
-@interface YSJCommonSwitchView : UIView
+@interface YSJCommonSwitchView : UIView <YSJPopViewProtocol>
 
 @property (nonatomic,assign) BOOL switchSelected;
 - (instancetype)initWithFrame:(CGRect)frame withTitle:(NSString *)title selected:(BOOL)selected;

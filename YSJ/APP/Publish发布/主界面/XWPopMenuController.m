@@ -12,7 +12,9 @@
 #import "SPBaseNavigationController.h"
 //导入自定义控制器->
 #import "SPPublishVC.h"
-
+#import "YSJPublish_RequementVC.h"
+#import "YSJPublish_TeacherVC.h"
+#import "YSJPublish_CompanyVC.h"
 #import "SPMySkillForMakeMonery.h"
 //自定义颜色rgba
 #define ColorWithRGBA(r, g, b, a) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:(a)/1.0] //<<< 用10进制表示颜色，例如（255,255,255）黑色
@@ -53,7 +55,7 @@
         
         _ary = [NSArray array];
         
-        _ary = @[@"fb_zq",@"fb_zr"];
+        _ary = @[@"fb_zq",@"fb_zr",@"fb_zr"];
     }
     
     return _ary;
@@ -86,14 +88,9 @@
     
     [super viewDidLoad];
     
-    self.automaticallyAdjustsScrollViewInsets = NO;
-    self.navigationController.navigationBar.translucent = NO;
-    self.extendedLayoutIncludesOpaqueBars = NO;
-    self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-   
-    
+ 
     //添加 发布动态菜单
-    [self setTopMenu];
+//    [self setTopMenu];
     //添加菜单按钮
     [self setMenu];
     //添加底部关闭按钮
@@ -111,6 +108,8 @@
 - (void)viewWillAppear:(BOOL)animated{
     
     [super viewWillAppear:animated];
+    
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
     
     [UIView animateWithDuration:0.6 animations:^{
         
@@ -211,7 +210,7 @@
 //按九宫格计算方式排列按钮
 - (void)setMenu{
     
-    int cols = 2;
+    int cols = 3;
     int col = 0;
     int row = 0;
     
@@ -238,9 +237,6 @@
     }
     
     for (int i = 0; i < self.ary.count; i++) {
-        
-//        NSArray *arrTitle = @[@"文字",@"照片",@"链接",@"视频",@"寻亲",@"文章"];
-//        NSArray *arrTitle = @[@"文字",@"照片",@"链接",@"视频",@"寻亲",@"文章"];
         
         
         PublishMenuButton *btn = [PublishMenuButton buttonWithType:UIButtonTypeCustom];
@@ -287,32 +283,19 @@
     
     if (btn.tag == 1000) {
         
-        //我要赚钱
-        SPMySkillForMakeMonery *publishVC = [[SPMySkillForMakeMonery alloc] init];
-        [publishVC.navigationItem setTitle:@"我要赚钱"];
+        YSJPublish_RequementVC *vc = [[YSJPublish_RequementVC alloc]init];
+//                [self.navigationController pushViewController:vc animated:YES];
         
-        [publishVC toDissmissSelf:^{
-//            self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(returnUpVC) userInfo:nil repeats:YES];
-//            [UIView animateWithDuration:0.2 animations:^{
-//                _closeImgView.transform = CGAffineTransformRotate(_closeImgView.transform, -M_PI_2*1.5);
-//            }];
-        }];
-//        [self presentViewController:nav animated:YES completion:nil];
-        [self.navigationController pushViewController:publishVC animated:YES];
     }else if(btn.tag == 1001){
-        //我要找人
-        SPFindPeopleAllCategoryVC *publishVC = [[SPFindPeopleAllCategoryVC alloc] init];
-        [publishVC.navigationItem setTitle:@"我要找人"];
-        [publishVC toDissmissSelf:^{
-//            self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(returnUpVC) userInfo:nil repeats:YES];
-//            [UIView animateWithDuration:0.2 animations:^{
-//                _closeImgView.transform = CGAffineTransformRotate(_closeImgView.transform, -M_PI_2*1.5);
-//            }];
-        }];
-        [self.navigationController pushViewController:publishVC animated:YES];
-//        [self presentViewController:nav animated:YES completion:nil];
+        
+         YSJPublish_TeacherVC *vc = [[YSJPublish_TeacherVC alloc]init];
+         [self.navigationController pushViewController:vc animated:YES];
+   
     }else{
-       
+        
+        YSJPublish_CompanyVC *vc = [[YSJPublish_CompanyVC alloc]init];
+//        [self.navigationController pushViewController:vc animated:YES];
+        
     }
     
     [UIView animateWithDuration:0.5 animations:^{

@@ -1,18 +1,18 @@
 //
-//  YSJApplication_demoVC.m
+//  YSJApplication_DemoVC.m
 //  SmallPig
 //
 //  Created by xujf on 2019/4/17.
 //  Copyright © 2019年 lisen. All rights reserved.
 //
 
-#import "YSJApplication_demoVC.h"
+#import "YSJApplication_DemoVC.h"
 
-@interface YSJApplication_demoVC ()
+@interface YSJApplication_DemoVC ()
 
 @end
 
-@implementation YSJApplication_demoVC
+@implementation YSJApplication_DemoVC
 {
     UIImageView *_img;
     UIScrollView  *_scrollView;
@@ -29,7 +29,7 @@
     tip0.textAlignment = NSTextAlignmentLeft;
     [_scrollView addSubview:tip0];
     
-    UILabel *tip1 = [FactoryUI createLabelWithFrame:CGRectZero text:@"请参考样例，拍摄完整照片\n照片不可模糊\n照片不可反光" textColor:gray999999 font:font(14)];
+    UILabel *tip1 = [FactoryUI createLabelWithFrame:CGRectZero text:@"请参考样例，拍摄完整照片\n\n照片不可模糊\n\n照片不可反光" textColor:gray999999 font:font(14)];
     tip1.numberOfLines = 0;
     tip1.textAlignment = NSTextAlignmentLeft;
     [_scrollView addSubview:tip1];

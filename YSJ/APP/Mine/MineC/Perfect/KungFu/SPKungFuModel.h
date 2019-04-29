@@ -64,4 +64,6 @@
 @property(nonatomic,assign)BOOL chosed;
 
 
+@property (nonatomic,copy) NSString *coursetype_name;
+
 @end

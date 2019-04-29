@@ -9,7 +9,8 @@
 #import "SPCommon.h"
 #import "WXApi.h"
 #import "SPKitExample.h"
-
+#import "YSJFastLoginVC.h"
+#import "SPBaseNavigationController.h"
 @implementation SPCommon
 
 //转换颜色色值
@@ -120,10 +121,12 @@ animation.calculationMode = kCAAnimationCubic;
 }
 
 +(BOOL)gotoLogin{
-    if (isEmptyString([StorageUtil getCode])) {
-        RegisterViewController *vc = [[RegisterViewController alloc]init];
+    
+    if (isEmptyString([StorageUtil getId])) {
         
-        [[self getCurrentVC] presentViewController:vc animated:YES completion:nil];
+        YSJFastLoginVC *vc = [[YSJFastLoginVC alloc]init];
+        SPBaseNavigationController *nav = [[SPBaseNavigationController alloc]initWithRootViewController:vc];
+        [[self getCurrentVC] presentViewController:nav animated:YES completion:nil];
         return YES;
     }else{
         return NO;
@@ -217,6 +220,7 @@ animation.calculationMode = kCAAnimationCubic;
     //可以给alertview中添加一个输入框
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.placeholder = @"";
+        
     }];
     
     UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {

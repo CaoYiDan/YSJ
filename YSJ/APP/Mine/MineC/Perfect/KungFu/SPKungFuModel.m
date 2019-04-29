@@ -14,4 +14,10 @@
              @"subProperties" : [SPKungFuModel class],
              };
 }
+
++(NSDictionary*)mj_replacedKeyFromPropertyName{
+    return @{@"value":@"coursetype_name",@"site_photo":@"venue_pic",@"teacherArr":@"teachers",@"sale_items":@"sale_item"};
+}
+
+
 @end

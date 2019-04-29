@@ -1,9 +1,9 @@
 //
-//  SPSelectionCell.h
+//  YSJHomeTableViewCell.h
 
 #import <UIKit/UIKit.h>
 
-@interface SPSelectionCell : UITableViewCell 
+@interface YSJHomeTableViewCell : UITableViewCell 
 /**<##>数据数组*/
 @property (nonatomic, strong)NSArray *listArr;
 //cellType

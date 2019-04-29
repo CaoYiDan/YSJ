@@ -1,22 +1,31 @@
 //
-//  YSJCommonArrowView.m
+//  YSJLSBaseCommonCellView.m
 //  SmallPig
 //
-//  Created by xujf on 2019/4/17.
+//  Created by xujf on 2019/4/19.
 //  Copyright © 2019年 lisen. All rights reserved.
 //
 
-#import "YSJCommonArrowView.h"
-#define cellH 76
-@implementation YSJCommonArrowView
+#import "YSJPopProtocol.h"
+
+#import "YSJLSBaseCommonCellView.h"
+#import "YSJPopSheetView.h"
+#import "YSJPopTextViewView.h"
+#import "YSJPopTextFiledView.h"
+
+@implementation YSJLSBaseCommonCellView
+
 {
     UILabel *_leftText;
     UILabel *_rightText;
+    
 }
+
 - (instancetype)initWithFrame:(CGRect)frame withTitle:(NSString *)title subTitle:(NSString *)subTitle
 {
     self = [super initWithFrame:frame];
     if (self) {
+        self.backgroundColor = KWhiteColor;
         [self initUIwithTitle:title subTitle:subTitle];
     }
     return self;
@@ -27,10 +36,11 @@
     _leftText = [[UILabel alloc]init];
     _leftText.font = font(16);
     _leftText.text = title;
+    _leftText.textColor = KBlack333333;
     [self addSubview:_leftText];
     [_leftText mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(kMargin);
-        make.height.offset(cellH);
+        make.height.offset(normaelCellH);
         make.top.equalTo(self).offset(0);
     }];
     
@@ -43,7 +53,7 @@
     [_rightText mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.offset(-kMargin-20);
         make.left.equalTo(_leftText.mas_right).offset(10);
-        make.height.offset(cellH);
+        make.height.offset(normaelCellH);
         make.top.offset(0);
     }];
     
@@ -66,6 +76,22 @@
         make.height.offset(1);
         make.bottom.offset(0);
     }];
+    
+    WeakSelf;
+    [self addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
+        [weakSelf.superview endEditing:YES];
+        [weakSelf zhuanhuanqiWithTitle:title subTitle:weakSelf.rightSubTitle];
+    }];
+    
+}
+
+-(void)zhuanhuanqiWithTitle:(NSString *)title subTitle:(NSString *)subTitle{
+    [self popViewWithTitle:title subTitle:self.rightSubTitle];
+}
+
+//交由子类去实现
+-(void)popViewWithTitle:(NSString *)title subTitle:(NSString *)subTitle{
+    
 }
 
 - (void)setRightSubTitle:(NSString *)rightSubTitle{
@@ -73,4 +99,11 @@
     _rightText.text = rightSubTitle;
 }
 
+- (NSString *)getContent{
+    return self.rightSubTitle;
+}
+
+- (UIView *)getView{
+    return  self;
+}
 @end

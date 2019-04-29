@@ -8,7 +8,7 @@
 
 #import "SelectionViewController.h"
 #import "SPSearchVC.h"
-#import "SPSelectionCell.h"
+#import "YSJHomeTableViewCell.h"
 #import "SDCycleScrollView.h"
 #import "SPSkillListModel.h"
 #import "SPBannerModel.h"
@@ -167,7 +167,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    SPSelectionCell*cell = [SPSelectionCell cellWithTableView:tableView indexPath:indexPath andCellType:0];
+    YSJHomeTableViewCell*cell = [YSJHomeTableViewCell cellWithTableView:tableView indexPath:indexPath andCellType:0];
     SPSkillListModel *model = self.listArray[indexPath.section];
     cell.listArr = model.userList;
 //    cell.statusFrame = self.listArray[indexPath.row];
@@ -297,7 +297,7 @@
 //        _tableView.sectionHeaderHeight =0;
         _tableView.backgroundColor = BASEGRAYCOLOR;
         _tableView.separatorColor = [UIColor clearColor];
-        [_tableView registerClass:[SPSelectionCell class] forCellReuseIdentifier:@"selectionCellID"];
+        [_tableView registerClass:[YSJHomeTableViewCell class] forCellReuseIdentifier:@"selectionCellID"];
         _tableView.showsVerticalScrollIndicator = NO;
         
         _tableView.tableHeaderView = self.bannerView;

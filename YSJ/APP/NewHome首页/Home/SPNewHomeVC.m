@@ -5,7 +5,7 @@
 //  Copyright © 2017年 李智帅. All rights reserved.
 #import "SPNewHomeVC.h"
 #import "SPSearchVC.h"
-#import "SPSelectionCell.h"
+#import "YSJHomeTableViewCell.h"
 #import "SPSkillListModel.h"
 #import "UITabBar+SPTabbarBadge.h"
 #import "SPLzsInviteFriendVC.h"
@@ -88,8 +88,7 @@
     
     [super viewDidLoad];
     
-    [StorageUtil saveId:@"MTU1NDM0NTUyNC43MzUwOTk6OWQ5ZmM5MjQxYjU2MmI1OGFhYjVjNzk3NDk5NTVkNWM3ZDIzMmQ3ZQ=="];
-    
+  
     _locationCity  = @"北京市";
     
     //渐变背景色
@@ -388,7 +387,7 @@
 {
     NSNumber *cellType = _sectionViewData[_sortArr[indexPath.section]][@"cellType"];
     
-    SPSelectionCell*cell = [SPSelectionCell cellWithTableView:tableView indexPath:indexPath andCellType:[cellType integerValue]];
+    YSJHomeTableViewCell*cell = [YSJHomeTableViewCell cellWithTableView:tableView indexPath:indexPath andCellType:[cellType integerValue]];
     
     cell.listArr = self.listDic[_sortArr[indexPath.section]];
     //    cell.listArr = self.listDic[_sortArr[indexPath.section]];

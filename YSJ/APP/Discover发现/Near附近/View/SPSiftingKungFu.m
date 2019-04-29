@@ -221,7 +221,7 @@ static CGFloat tabWid = 150;
 }
 
 -(UIButton *)confirmBtn{
-    UIButton *confirm = [[UIButton alloc]initWithFrame:CGRectMake(0, 355,tabWid*2, 40)];
+    UIButton *confirm = [[UIButton alloc]initWithFrame:CGRectMake(0, 355,40, 50)];
     [confirm setImage:[UIImage imageNamed:@"grxx6_r4_c5"] forState:0];
     [confirm addTarget:self action:@selector(confirmClick) forControlEvents:UIControlEventTouchDown];
     return confirm;

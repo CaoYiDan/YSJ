@@ -73,7 +73,7 @@
     
     // 文字属性
     NSMutableDictionary *attrs = [NSMutableDictionary dictionary];
-    attrs[NSFontAttributeName] = kFontNormal_14;
+    attrs[NSFontAttributeName] = font(14);
     attrs[NSForegroundColorAttributeName] = self.placeholderColor?self.placeholderColor:[UIColor blackColor];
     // 画文字
     //    [self.placeholder drawAtPoint:CGPointMake(5, 8) withAttributes:attrs];

@@ -1,5 +1,5 @@
 //
-//  YSJApplication_secondVC.h
+//  YSJApplication_SecondVC.h
 //  SmallPig
 //
 //  Created by xujf on 2019/4/17.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface YSJApplication_secondVC : BaseViewController
+@interface YSJApplication_SecondVC : BaseViewController
 
 @end
 

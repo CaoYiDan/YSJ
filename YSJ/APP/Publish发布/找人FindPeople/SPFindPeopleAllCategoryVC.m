@@ -22,6 +22,7 @@
 @implementation SPFindPeopleAllCategoryVC
 
 #pragma mark lefe cycle
+
 - (void)viewDidLoad {
     
     [super viewDidLoad];

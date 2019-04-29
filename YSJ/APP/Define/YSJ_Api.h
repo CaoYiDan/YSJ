@@ -53,7 +53,16 @@
 #define YRegister  YUrlBase_YSJ@"/user/register"
 #define YLogin  YUrlBase_YSJ@"/user/login"
 #define YInformation  YUrlBase_YSJ@"/user/query/information"
+#define YcompanyStep1  YUrlBase_YSJ@"/requests/company/step1"
+#define YcompanyStep2  YUrlBase_YSJ@"/requests/company/step2"
+#define YcompanyStep3  YUrlBase_YSJ@"/requests/company/step3"
+#define YTeacherStep1  YUrlBase_YSJ@"/requests/teacher/step1"
+#define YTeacherStep2  YUrlBase_YSJ@"/requests/teacher/step2"
+#define YTeacherStep3  YUrlBase_YSJ@"/requests/teacher/step3"
+#define YTeacherStep4  YUrlBase_YSJ@"/requests/teacher/step4"
 #define YNumber  YUrlBase_YSJ@"/user/number"
 #define YInfoSet  YUrlBase_YSJ@"/user/infoset"
 
 #define YPhoto YUrlBase_YSJ@"/user/photo"
+#define YAllCourseType YUrlBase_YSJ@"/home/find/coursetype/all"
+

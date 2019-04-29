@@ -1,18 +1,16 @@
 //
-//  YSJApplicationCompany_firstVC.h
+//  YSJPublish_CompanyVC.h
 //  SmallPig
 //
-//  Created by xujf on 2019/4/17.
+//  Created by xujf on 2019/4/25.
 //  Copyright © 2019年 lisen. All rights reserved.
 //
-
-#import <UIKit/UIKit.h>
 
 #import "BaseViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface YSJApplicationCompany_firstVC : BaseViewController
+@interface YSJPublish_CompanyVC : BaseViewController
 
 @end
 

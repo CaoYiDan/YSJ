@@ -17,6 +17,8 @@
 // 地图
 #import <CoreLocation/CoreLocation.h>
 
+
+
 #define kScreenWidth ([UIScreen mainScreen].bounds.size.width)
 #define kScreenHeight ([UIScreen mainScreen].bounds.size.height)
 #define kScreenW [UIScreen mainScreen].bounds.size.width
@@ -27,6 +29,8 @@
 
 #import "SPLZSHeader.h"
 #import "SPApi.h"
+#import "YSJPopViewProtocol.h"
+
 #import "YSJTagsView.h"
 #import "UILabel+Extension.h"
 #import "SPCommon.h"

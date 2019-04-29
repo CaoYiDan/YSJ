@@ -1,11 +1,11 @@
 //
-//  SPSelectionCell.m
+//  YSJHomeTableViewCell.m
 //  SmallPig
 
-#import "SPSelectionCell.h"
+#import "YSJHomeTableViewCell.h"
 #import "SPUser.h"
 #import "YSJTeacherModel.h"
-#import "SPSelectionCollectionCell.h"
+#import "YSJHomeTableViewCell.h"
 #import "YSJTeacher_DetailVC.h"
 #import "YSJStudent_DetailVC.h"
 #import "YSJCompany_DetailVC.h"
@@ -15,20 +15,20 @@
 #import "YSJRequimentCell.h"
 #import "YSJCompanysModel.h"
 #import "YSJRequimentModel.h"
-@interface SPSelectionCell ()<UICollectionViewDataSource,UICollectionViewDelegate>
+@interface YSJHomeTableViewCell ()<UICollectionViewDataSource,UICollectionViewDelegate>
 //collection
 @property(nonatomic,strong)UICollectionView*collectionview;
 
 @end
 
-@implementation SPSelectionCell
+@implementation YSJHomeTableViewCell
 
 + (instancetype)cellWithTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath andCellType:(YSJHomeCellType)ceType
 {
-    SPSelectionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"selectionCellID"];
+    YSJHomeTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"selectionCellID"];
     if (cell==nil) {
     
-        cell = [[SPSelectionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"selectionCellID" WithCellType:ceType];
+        cell = [[YSJHomeTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"selectionCellID" WithCellType:ceType];
         
     }
     return cell;

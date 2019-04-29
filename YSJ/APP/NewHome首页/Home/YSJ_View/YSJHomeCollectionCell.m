@@ -1,21 +1,21 @@
-//
-//  SPSelectionCollectionCell.m
-//  SmallPig
-//
-//  Created by 融合互联-------lisen on 17/8/30.
-//  Copyright © 2017年 李智帅. All rights reserved.
-//
-#import "SPUser.h"
-#import "SPSelectionCollectionCell.h"
 
-@implementation SPSelectionCollectionCell
+#import "SPUser.h"
+
+#import "YSJHomeCollectionCell.h"
+
+@implementation YSJHomeCollectionCell
 
 {
     UIImageView *_img;
+    
     UIButton *_level;
+    
     UILabel *_name;
+    
     UIButton *_age;
+    
     UIButton *_constellation;
+    
 }
 
 #pragma mark - init

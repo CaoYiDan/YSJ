@@ -1,23 +1,27 @@
 //
-//  YSJApplication_firstVC.m
+//  YSJApplication_FirstVC.m
 //  SmallPig
 //
 //  Created by xujf on 2019/4/17.
 //  Copyright © 2019年 lisen. All rights reserved.
 
-#import "YSJApplication_secondVC.h"
-#import "YSJCommonArrowView.h"
-#import "YSJApplication_firstVC.h"
+#import "YSJApplication_SecondVC.h"
+#import "YSJPopTextFiledView.h"
+#import "YSJApplication_FirstVC.h"
+#import "YSJFactoryForCellBuilder.h"
+
 #define cellH 70
-@interface YSJApplication_firstVC ()
+@interface YSJApplication_FirstVC ()
 
 @end
 
-@implementation YSJApplication_firstVC
+@implementation YSJApplication_FirstVC
 {
-    YSJCommonArrowView *_nameCell;
+    UIScrollView *_scroll;
+    YSJFactoryForCellBuilder  *_builder;
+    YSJPopTextFiledView *_nameCell;
     UITextField *_identifierTextFiled;
-    YSJCommonArrowView *_sexCell;
+    YSJPopTextFiledView *_sexCell;
     UIView *_tag;
     UIView *_tag0;
     UIView *_tag1;
@@ -34,24 +38,54 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    
     [super viewWillAppear:animated];
+    
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
 -(void)initUI{
     
+    YSJFactoryForCellBuilder *builder = [[YSJFactoryForCellBuilder alloc]init];
+    
+    _builder = builder;
+    
+    _scroll = [builder createViewWithDic:[self getCellDic]];
+    
+    [self.view addSubview:_scroll];
+    
+    _tag =builder.lastBottomView;
+    
     [self topView];
-
-    [self nameView];
-    
-    [self identifierView];
-    
-    [self sexView];
     
     [self setBottomView];
     
 }
 
+-(NSDictionary *)getCellDic{
+    
+    NSDictionary *dic = @{@"cellH":@"76",
+                          @"orY":@"111",
+                          @"arr":@[
+                                  @{
+                                      @"type":@(CellPopCouserChosed),
+                                      @"title":@"姓名",
+                                      },
+                                  @{
+                                      @"type":@(CellTextFiled),
+                                      @"title":@"身份证号",
+                                      @"placeholder":@"请输入身份证号",
+                                      },
+                                  
+                                  @{
+                                      @"type":@(CellPopSheet),
+                                      @"title":@"性别",
+                                      @"sheetText":@"男,女",
+                                      },
+                                  ]
+                          };
+    return dic;
+}
 
 -(void)topView{
     
@@ -59,11 +93,11 @@
     topImg.backgroundColor = [UIColor whiteColor];
     topImg.image = [UIImage imageNamed:@"step1"];
     topImg.contentMode = UIViewContentModeScaleAspectFit;
-    [self.view addSubview:topImg];
+    [_scroll addSubview:topImg];
     
     UIView *bottomLine = [[UIView alloc]init];
     bottomLine.backgroundColor = grayF2F2F2;
-    [self.view addSubview:bottomLine];
+    [_scroll addSubview:bottomLine];
     _tag = bottomLine;
     [bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(0);
@@ -71,98 +105,6 @@
         make.height.offset(6);
         make.top.equalTo(topImg.mas_bottom).offset(32);
     }];
-}
-//姓名
--(void)nameView{
-    
-    YSJCommonArrowView *cell = [[YSJCommonArrowView alloc]initWithFrame:CGRectZero withTitle:@"姓名" subTitle:@""];
-    [self.view addSubview:cell];
-    _nameCell = cell;
-    [cell mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.offset(0);
-        make.width.offset(kWindowW);
-        make.height.offset(cellH);
-    make.top.equalTo(_tag.mas_bottom).offset(10);
-    }];
-     __weak typeof(cell) weakCell = cell;
-    [cell addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
-        [SPCommon creatAlertControllerTitle:@"姓名" subTitle:@"" _alertSure:^(NSString *text) {
-            weakCell.rightSubTitle = text;
-        }];
-    }];
-    _tag0 = cell;
-}
-
--(void)identifierView
-{
-    //身份证号
-    UILabel *leftText2 = [[UILabel alloc]init];
-    leftText2.font = font(16);
-    leftText2.text = @"身份证号";
-    [self.view addSubview:leftText2];
-    [leftText2 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.offset(kMargin);
-        make.width.offset(120);
-        make.height.offset(cellH);
-        make.top.equalTo(_tag0.mas_bottom).offset(0);
-    }];
-    
-    UITextField *identifierFiled = [[UITextField alloc]init];
-    _identifierTextFiled = identifierFiled;
-    identifierFiled.backgroundColor = KWhiteColor;
-    
-    identifierFiled.font = font(14);
-    identifierFiled.placeholder = @"请输入身份证号";
-    identifierFiled.textAlignment = NSTextAlignmentCenter;
-    [self.view addSubview:identifierFiled];
-    [identifierFiled mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.offset(-kMargin-20);
-        make.width.offset(200);
-        make.height.offset(cellH);
-        make.centerY.equalTo(leftText2).offset(0);
-    }];
-    
-    UIImageView *arrowImg2 = [[UIImageView alloc]init];
-    arrowImg2.image = [UIImage imageNamed:@"arrow"];
-    [self.view addSubview:arrowImg2];
-    [arrowImg2 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.offset(-10);
-        make.width.offset(8);
-        make.height.offset(14);
-        make.centerY.equalTo(identifierFiled).offset(0);
-    }];
-    
-    
-    UIView *bottomLine2 = [[UIView alloc]init];
-    bottomLine2.backgroundColor = grayF2F2F2;
-    [self.view addSubview:bottomLine2];
-    [bottomLine2 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.offset(10);
-        make.right.offset(-10);
-        make.height.offset(1);
-        make.bottom.equalTo(identifierFiled.mas_bottom).offset(0);
-    }];
-    
-    _tag1 = bottomLine2;
-}
-
-//性别
--(void)sexView{
-    
-    YSJCommonArrowView *cell = [[YSJCommonArrowView alloc]initWithFrame:CGRectZero withTitle:@"性别" subTitle:@""];
-    [self.view addSubview:cell];
-    _sexCell = cell;
-    [cell mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.offset(0);
-        make.width.offset(kWindowW);
-        make.height.offset(cellH);
-        make.top.equalTo(_tag1.mas_bottom).offset(10);
-    }];
-    WeakSelf;
-    [cell addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
-        [weakSelf showSheet];
-    }];
-    
 }
 
 -(void)setBottomView{
@@ -183,8 +125,37 @@
 }
 
 -(void)next{
-    YSJApplication_secondVC *vc = [[YSJApplication_secondVC alloc]init];
-    [self.navigationController pushViewController:vc animated:YES];
+
+    NSArray *arr = @[@"realname",@"secu_id",@"sex"];
+    NSMutableArray *valueArr = [_builder getAllContent];
+    if (arr.count!=valueArr.count) {
+        Toast(@"请填写完整信息");
+        return;
+    }
+    
+    //网络请求
+    NSMutableDictionary *dic = @{}.mutableCopy;
+    [dic setObject:[StorageUtil getId] forKey:@"token"];
+    int i=0;
+    for (NSString *value in valueArr) {
+         [dic setObject:value  forKey:arr[i]];
+        i++;
+    }
+    
+    NSLog(@"%@",dic);
+    
+    [[HttpRequest sharedClient]httpRequestPOST:YTeacherStep1 parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+        
+        NSLog(@"%@",responseObject);
+        
+        YSJApplication_SecondVC *vc = [[YSJApplication_SecondVC alloc]init];
+        [self.navigationController pushViewController:vc animated:YES];
+        
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        
+    }];
+    
+//
 }
 
 - (void)showSheet{

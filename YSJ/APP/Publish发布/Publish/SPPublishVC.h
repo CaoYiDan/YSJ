@@ -6,14 +6,14 @@
 //  Copyright © 2017年 李智帅. All rights reserved.
 //
 
-#import "SPBaseHomePushVC.h"
+#import "BaseViewController.h"
 
 //2.block传值  typedef void(^returnBlock)();
 typedef void(^dismissBlock) ();
 
 typedef void(^publishFinish)();
 
-@interface SPPublishVC : SPBaseHomePushVC
+@interface SPPublishVC :BaseViewController
 
 /**定位城市*/
 @property(nonatomic,copy)NSString*locationCity;

@@ -5,33 +5,25 @@
 //  Created by xujf on 2019/4/17.
 //  Copyright © 2019年 lisen. All rights reserved.
 #import "YSJCommonSwitchView.h"
-#import "YSJCommonArrowView.h"
-#import "YSJApplication_secondVC.h"
-
-#import "YSJApplicationCompany_firstVC.h"
+#import "YSJPopTextFiledView.h"
+#import "YSJApplication_SecondVC.h"
+#import "YSJApplicationCompany_SecondVC.h"
+#import "YSJApplicationCompany_FirstVC.h"
 
 #define cellH 76
 
-@interface YSJApplicationCompany_firstVC ()
+@interface YSJApplicationCompany_FirstVC ()
 
 @end
 
-@implementation YSJApplicationCompany_firstVC
+@implementation YSJApplicationCompany_FirstVC
 {
     UIScrollView  *_scroll;
-    UILabel *_name;
-    UITextField *_identifierTextFiled;
-    UILabel *_sex;
-    
+  
     YSJCommonSwitchView *_supportHome;
     
     UIView *_tag;
-    UIView *_tag0;
-    UIView *_tag1;
-    UIView *_tag2;
-    UIView *_tag3;
-    UIView *_tag4;
-    
+   
     NSMutableArray *_cellViewArr;
 }
 
@@ -48,6 +40,7 @@
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
+
 #pragma mark - UI
 
 -(void)initUI{
@@ -57,9 +50,7 @@
     [self topView];
     
     [self setView1];
-    
-//    [self setSwitchView];
-    
+
     [self setBottomView];
     
 }
@@ -101,10 +92,12 @@
     
     _cellViewArr = @[].mutableCopy;
     NSArray *arr = @[@"机构名称",@"机构电话",@"营业时间",@"机构地址",@"营业项目"];
+    
     int i=0;
+    
     for (NSString *str in arr) {
         
-        YSJCommonArrowView *cell = [[YSJCommonArrowView alloc]initWithFrame:CGRectMake(0, cellH*i+111, kWindowW, cellH) withTitle:str subTitle:@""];
+        YSJPopTextFiledView *cell = [[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, cellH*i+111, kWindowW, cellH) withTitle:str subTitle:@""];
         [_scroll addSubview:cell];
         [_cellViewArr addObject:cell];
         __weak typeof(cell) weakCell = cell;
@@ -113,6 +106,7 @@
                 weakCell.rightSubTitle = text;
             }];
         }];
+        
         if (i==1) {
             _tag = cell;
         }
@@ -136,9 +130,33 @@
 
 -(void)next{
     
-    for (YSJCommonArrowView *cell in _cellViewArr) {
-        NSLog(@"%@",cell.rightSubTitle);
+    
+    NSArray *keyArr = @[@"name",@"otherphone",@"datetime",@"address",@"sale_item"];
+    
+    int i = 0 ;
+    NSMutableDictionary *dic = @{}.mutableCopy;
+    for (YSJPopTextFiledView *cell in _cellViewArr) {
+        if (isEmptyString(cell.rightSubTitle)) {
+            Toast(@"请填写完整信息");
+            return;
+        }else{
+            [dic setObject:cell.rightSubTitle forKey:keyArr[i]];
+        }
+        i++;
     }
+    
+    [dic setObject:[StorageUtil getId] forKey:@"token"];
+   
+    NSLog(@"%@",dic);
+    
+    [[HttpRequest sharedClient]httpRequestPOST:YcompanyStep1 parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+        
+        NSLog(@"%@",responseObject);
+        pushClass(YSJApplicationCompany_SecondVC);
+        
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        
+    }];
     
 }
 

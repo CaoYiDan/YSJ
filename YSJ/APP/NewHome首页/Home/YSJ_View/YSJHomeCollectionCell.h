@@ -1,5 +1,5 @@
 //
-//  SPSelectionCollectionCell.h
+//  YSJHomeTableViewCell.h
 //  SmallPig
 //
 //  Created by 融合互联-------lisen on 17/8/30.
@@ -10,7 +10,7 @@
 
 @class SPUser;
 
-@interface SPSelectionCollectionCell : UICollectionViewCell
+@interface YSJHomeCollectionCell : UICollectionViewCell
 /**<##>model*/
 @property (nonatomic, strong)SPUser *userModel;
 

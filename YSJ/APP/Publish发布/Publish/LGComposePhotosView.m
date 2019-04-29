@@ -22,7 +22,7 @@
 
 -(void)addBtn{
     UIButton*btn=[[UIButton alloc]init];
-    [btn setImage:[UIImage imageNamed:@"p_add"] forState:UIControlStateNormal];
+    [btn setImage:[UIImage imageNamed:@"add6"] forState:UIControlStateNormal];
     btn.tag = 120;
     [btn addTarget:self action:@selector(click) forControlEvents:UIControlEventTouchDown];
     self.btn=btn;

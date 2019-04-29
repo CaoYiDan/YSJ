@@ -2,13 +2,13 @@
 
 //
 
-#import "YSJApplication_secondVC.h"
+#import "YSJApplication_SecondVC.h"
 #import "SPLzsIdentifiDetailView.h"
 #import "BDImagePicker.h"
-#import "YSJApplication_demoVC.h"
-#import "YSJApplication_certificateVC.h"
-#import "YSJAlpplication_thirdVC.h"
-@interface YSJApplication_secondVC ()
+#import "YSJApplication_DemoVC.h"
+#import "YSJApplication_CertificateVC.h"
+#import "YSJAlpplication_ThirdVC.h"
+@interface YSJApplication_SecondVC ()
 @property (nonatomic,strong)UILabel * cadDetailLab;
 @property (nonatomic,strong)UITextField * cadNumLab;
 @property (nonatomic,strong)UIButton * addPhotobtn1;//手持证件正面照
@@ -26,16 +26,22 @@
 @property (nonatomic,copy)NSString * imgPathBackStr;//背面照路劲
 
 @property(nonatomic,assign)int photoType;
+//资质证书数组
+@property (nonatomic,strong) NSMutableArray  *certifierArr;
 
+//资质证书数组
+@property (nonatomic,strong) NSMutableArray  *imgArr;
 @end
 
-@implementation YSJApplication_secondVC
+@implementation YSJApplication_SecondVC
 {
     UIScrollView *_scrollView;
     
     UIView *_firstBotttomView;
     
     UIView *_secondBotttomView;
+    
+    UIView *_tag;
 }
 - (void)viewDidLoad {
     
@@ -43,6 +49,15 @@
     
     self.title = @"私教申请";
     
+    self.certifierArr = @[].mutableCopy;
+    
+    self.imgArr = [[NSMutableArray alloc]initWithCapacity:3];
+  
+    for (int i =0; i<3; i++) {
+        UIImage *img = [UIImage imageNamed:@"add4"];
+        [self.imgArr addObject:img];
+    }
+   
     [self initUI];
 }
 
@@ -125,68 +140,7 @@
 
 #pragma  mark 调取相册
 
-- (void)upDateHeadIcon:(UIImage *)photo WithImageType:(int)type{
-    
-    //菊花显示
-    
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json",
-                                                         
-                                                         @"text/html",
-                                                         
-                                                         @"image/jpeg",
-                                                         
-                                                         @"image/png",
-                                                         
-                                                         @"application/octet-stream",
-                                                         
-                                                         @"text/json",
-                                                         
-                                                         nil];
-    
-    manager.requestSerializer= [AFHTTPRequestSerializer serializer];
-    
-    NSData * imageData = UIImageJPEGRepresentation(photo,0.5);
-    NSString * fullPath = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]stringByAppendingPathComponent:@"text"];
-    [imageData writeToFile:fullPath atomically:NO];
-    
-    NSMutableDictionary * dictT = [[NSMutableDictionary alloc]init];
-    [dictT setObject:imageData forKey:@"image"];
-    [dictT setObject:@"/usr/local/tomcat/webapps/" forKey:@"imageUploadPath"];
-    [manager POST:kUrlPostImg parameters:dictT constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-        [formData appendPartWithFileData:imageData name:@"image" fileName:@"text.jpg" mimeType:@"image/jpg"];
-    } progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-        //将二进制转为字符串
-        NSString *result2 = [[NSString alloc] initWithData:responseObject  encoding:NSUTF8StringEncoding];
-        //字符串转字典
-        NSDictionary*dict=[self dictionaryWithJsonString:result2];
-        //            [self.photosArr addObject:dict[@"image"]];
-        NSMutableDictionary *dic =[[NSMutableDictionary alloc]init];
-        [dic setObject:dict[@"image"] forKey:@"url"];
-        if (type==1) {//正面照路劲
-            
-            self.imgPathFaceStr = dict[@"image"];
-        }else{
-            
-            self.imgPathBackStr = dict[@"image"];
-        }
-        
-        
-        
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-        //        [self post];
-        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-    }];
-}
+
 
 #pragma  mark  将字符串转成字典
 -(id )dictionaryWithJsonString:(NSString *)jsonString {
@@ -233,7 +187,7 @@
     [self.view addSubview:_scrollView];
     _scrollView.showsVerticalScrollIndicator = NO;
     _scrollView.showsHorizontalScrollIndicator = NO;
-    _scrollView.contentSize = CGSizeMake(kWindowW, 800);
+    _scrollView.contentSize = CGSizeMake(kWindowW, 880);
 }
 #pragma mark  top
 -(void)setTop{
@@ -410,7 +364,7 @@
     self.photoIV4.userInteractionEnabled = YES;
     WeakSelf;
     [self.photoIV4 addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
-        weakSelf.photoType = 4;
+        weakSelf.photoType = 3;
         [weakSelf addPhotobtn1Click];
     }];
     [self.photoIV4 mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -447,6 +401,7 @@
     tipLab.text = @"请上传申请人的资质证书";
     tipLab.textColor = gray999999;
     tipLab.font = Font(12);
+    _tag = tipLab;
     [tipLab mas_makeConstraints:^(MASConstraintMaker *make) {
         
         make.top.equalTo(faceLab.mas_bottom).offset(5);
@@ -556,16 +511,18 @@
     [BDImagePicker showImagePickerFromViewController:self allowsEditing:YES finishAction:^(UIImage *image) {
         
         if (image) {
+            //添加进img数组
+            [self.imgArr replaceObjectAtIndex:self.photoType-1 withObject:image];
             
             if (self.photoType==1) {
                 self.photoIV1.image = image;
-                [weakSelf upDateHeadIcon:image WithImageType:1];
+              
             }else if (self.photoType==2){
                 self.photoIV2.image = image;
-                [weakSelf upDateHeadIcon:image WithImageType:1];
-            }else if (self.photoType==4){
+               
+            }else if (self.photoType==3){
                 self.photoIV4.image = image;
-                [weakSelf upDateHeadIcon:image WithImageType:1];
+               
             }
             
         }
@@ -579,14 +536,128 @@
 //查看实例
 -(void)seeDemo{
     
-    pushClass(YSJApplication_demoVC);
+    pushClass(YSJApplication_DemoVC);
+}
+
+#pragma  mark 上传图片
+- (void)upDateHeadIcon{
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json",
+                                                         
+                                                         @"text/html",
+                                                         
+                                                         @"image/jpeg",
+                                                         
+                                                         @"image/png",
+                                                         
+                                                         @"application/octet-stream",
+                                                         
+                                                         @"text/json",
+                                                         
+                                                         nil];
+    
+    manager.requestSerializer= [AFHTTPRequestSerializer serializer];
+    
+    NSMutableDictionary * dictT = [[NSMutableDictionary alloc]init];
+    
+    [dictT setObject:[StorageUtil getId] forKey:@"token"];
+    [manager POST:YTeacherStep2 parameters:dictT constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+
+        // formData: 专门用于拼接需要上传的数据,在此位置生成一个要上传的数据体
+        // 这里的_photoArr是你存放图片的数组
+        for (int i = 0; i < _imgArr.count; i++) {
+            
+            //压缩-添加-上传图片
+            //遍历你的第一层图片请求数组
+            [self.imgArr enumerateObjectsUsingBlock:^(UIImage * _Nonnull image, NSUInteger idx, BOOL * _Nonnull stop) {
+                //压缩图片转化为data,第一个参数是图片,第二个参数是压缩系数
+                NSData *imageData = UIImageJPEGRepresentation(image, 0.5);
+                //添加转化后的data到body中
+                //data:转化后的imageData
+                //name:服务器需要的标识,服务器根据这个来取图片流,类似parameters里面的key
+                //fileName:服务器保存的图片名字,base64加密后更佳 (如有不对欢迎指出 )
+                //mimeType:图片类型,一般为@"image/jpeg"固定格式,特殊可添加其他格式
+                [formData appendPartWithFileData:imageData name:[NSString stringWithFormat:@"secu_Image%ld",idx+1] fileName:[NSString stringWithFormat:@"%@%lu.jpeg",@"planImage",(unsigned long)idx]mimeType:@"image/jpeg"];
+            }];
+  
+        }
+    
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        NSLog(@"%@",responseObject);
+        
+        //将二进制转为字符串
+        NSString *result2 = [[NSString alloc] initWithData:responseObject  encoding:NSUTF8StringEncoding];
+        //字符串转字典
+        NSDictionary*dict=[result2 stringChangeToDictionary];
+        
+        NSLog(@"%@",dict);
+        
+        YSJAlpplication_ThirdVC *vc = [[YSJAlpplication_ThirdVC alloc]init];
+        vc.certifierString = [self.certifierArr componentsJoinedByString:@","];
+        [self.navigationController pushViewController:vc animated:YES];
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"%@",error);
+    }];
 }
 
 -(void)next{
-    pushClass(YSJAlpplication_thirdVC);
+    
+    
+//    if (self.certifierArr.count == 0) {
+//
+//        Toast(@"请填写完整信息");
+//        return;
+//
+//    }
+//
+    [self upDateHeadIcon];
+   
 }
 
 -(void)addCertifier{
-    pushClass(YSJApplication_certificateVC)
+    
+    YSJApplication_CertificateVC *vc = [[YSJApplication_CertificateVC alloc]init];
+    WeakSelf;
+    vc.block = ^(NSString * _Nonnull certifierName) {
+        [weakSelf.certifierArr addObject:certifierName];
+        [weakSelf reloadCertifierView];
+    };
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+-(void)reloadCertifierView{
+    //资质证书
+    UILabel * faceLab = [[UILabel alloc]init];
+    [_scrollView addSubview:faceLab];
+    faceLab.text = [self.certifierArr lastObject];
+    faceLab.textColor = black666666;
+    faceLab.font = Font(15);
+    faceLab.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
+    [faceLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        
+        make.top.equalTo(_tag.mas_bottom).offset(12);
+        make.left.offset(kMargin);
+        make.width.offset(160);
+        make.height.offset(44);
+        
+    }];
+    
+    UIView *bottomLine = [[UIView alloc]init];
+    bottomLine.backgroundColor = grayF2F2F2;
+    [_scrollView addSubview:bottomLine];
+    [bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.offset(0);
+        make.width.offset(kWindowW);
+        make.height.offset(1);
+        make.bottom.equalTo(faceLab).offset(0);
+    }];
+    
+    _tag = bottomLine;
 }
 @end
