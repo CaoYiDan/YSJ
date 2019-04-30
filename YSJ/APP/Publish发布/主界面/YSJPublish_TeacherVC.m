@@ -13,7 +13,7 @@
 #import "YSJPopTextView.h"
 #import "LGTextView.h"
 #import "SPPublishVC.h"
-
+#import "YSJChoseTagsView.h"
 #import "YSJFactoryForCellBuilder.h"
 
 #define cellH 76
@@ -129,7 +129,6 @@
                                       @"type":@(CellPopNormal),
                                       @"title":@"课程标签",
                                       }
-                                 
                                   ]
                           };
     return dic;
@@ -270,6 +269,10 @@
 #pragma mark  提交申请
 
 -(void)next{
+    
+    YSJChoseTagsView *vc = [[YSJChoseTagsView alloc]init];
+    [self.navigationController pushViewController:vc animated:YES];
+    
     
     NSArray *keyArr = @[@"sale_item",@"address",@"is_at_home",@"occupation",@"school",@"education",@"describe"];
     

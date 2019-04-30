@@ -22,7 +22,7 @@ static CGFloat cellMarginY = 16;
     _tagsArrM = tagsArrM;
     
     CGFloat basedWidth = 37;
-    CGFloat basedHeight = 30;
+    CGFloat basedHeight = 32;
     //x坐标的边距
     CGFloat marginX = 12;
     //y坐标的边距

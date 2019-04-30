@@ -27,11 +27,10 @@
 {
     UIScrollView  *_scroll;
     
-    YSJCommonSwitchView *_supportHome;
-    
     UIView *_tag;
-   
-    NSMutableArray *_cellViewArr;
+    
+    YSJFactoryForCellBuilder *_builder;
+    
 }
 
 - (void)viewDidLoad {
@@ -40,14 +39,32 @@
     
     self.title = @"机构申请";
     
-    YSJFactoryForCellBuilder *builder = [[YSJFactoryForCellBuilder alloc]init];
+    [self initUI];
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    
+    [super viewWillAppear:animated];
+    
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+}
+
+-(void)dealloc{
+    
+    NSLog(@"销毁了");
+}
+
+#pragma mark - UI
+
+-(NSMutableDictionary *)getCellDic{
+    
     NSDictionary *dic = @{@"cellH":@"76",
                           @"orY":@"111",
                           @"arr":@[
                                   @{
                                       @"type":@(CellPopTextView),
                                       @"title":@"机构介绍",
-                                    },
+                                      },
                                   @{
                                       @"type":@(CellPopTextView),
                                       @"title":@"机构特色",
@@ -55,37 +72,29 @@
                                   @{
                                       @"type":@(CellPopNormal),
                                       @"title":@"教师数量",
+                                                @"keyBoard":@(UIKeyboardTypeNumberPad)
                                       }
                                   ]
                           };
-    _scroll = [builder createViewWithDic:dic];
-    [self.view addSubview:_scroll];
-    _tag =builder.lastBottomView;
-    
-    [self initUI];
+    return dic;
 }
-
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
-}
-
--(void)dealloc{
-    NSLog(@"销毁了");
-}
-
-#pragma mark - UI
 
 -(void)initUI{
     
-//    [self setBase];
+    YSJFactoryForCellBuilder *builder = [[YSJFactoryForCellBuilder alloc]init];
+    
+    _builder = builder;
+    
+    _scroll = [builder createViewWithDic:[self getCellDic]];
+    
+    [self.view addSubview:_scroll];
+    
+    _tag =builder.lastBottomView;
     
     [self topView];
-    
-//    [self setView1];
-    
+
     [self setPhotoView];
-//
+
     [self setBottomView];
     
 }
@@ -122,65 +131,17 @@
     }];
 }
 
--(void)setView1{
-    
-    _cellViewArr = @[].mutableCopy;
-    NSArray *arr = @[@"机构介绍",@"机构特色",@"教师数量"];
-    int i=0;
-    
-    for (NSString *str in arr) {
-        
-        YSJPopTextFiledView *cell = [[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, cellH*i+111, kWindowW, cellH) withTitle:str subTitle:@""];
-        [_scroll addSubview:cell];
-        [_cellViewArr addObject:cell];
-       
-        //弱引用，不然内存泄漏
-        __weak typeof(cell) weakCell = cell;
-        WeakSelf;
-        
-        [cell addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
-            if (i==0) {//机构介绍
-                weakSelf.textFiled.title = str;
-                weakSelf.textFiled.originY = 0;
-                weakSelf.textFiled.content = weakSelf.introductionStr;
-                weakSelf.textFiled.block = ^(NSString *reslut){
-                    weakSelf.introductionStr = reslut;
-                    weakCell.rightSubTitle = reslut;
-                };
-            }else if (i==1){//机构特色
-                
-                weakSelf.textFiled.title = str;
-                weakSelf.textFiled.originY = 0;
-                weakSelf.textFiled.content = weakSelf.featureStr;
-                weakSelf.textFiled.block = ^(NSString *reslut){
-                    weakSelf.featureStr = reslut;
-                    weakCell.rightSubTitle = reslut;
-                };
-            }else{//教师数量
-                [SPCommon creatAlertControllerTitle:str subTitle:@"" _alertSure:^(NSString *text) {
-                    weakCell.rightSubTitle = text;
-                }];
-            }
-            
-        }];
-        
-        //参考view
-        _tag = cell;
-        
-        i++;
-    }
-}
 
 -(void)setPhotoView{
     
     //场地图
-    UILabel * faceLab = [[UILabel alloc]init];
-    [_scroll addSubview:faceLab];
-    faceLab.text = @"场地图";
-    faceLab.textColor = KBlack333333;
-    faceLab.font = Font(16);
-    faceLab.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
-    [faceLab mas_makeConstraints:^(MASConstraintMaker *make) {
+    UILabel * labForTitle = [[UILabel alloc]init];
+    [_scroll addSubview:labForTitle];
+    labForTitle.text = @"场地图";
+    labForTitle.textColor = KBlack333333;
+    labForTitle.font = Font(16);
+    labForTitle.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
+    [labForTitle mas_makeConstraints:^(MASConstraintMaker *make) {
         
         make.top.equalTo(_tag.mas_bottom).offset(22);
         make.left.offset(kMargin);
@@ -207,7 +168,7 @@
     }];
     [self.photo mas_makeConstraints:^(MASConstraintMaker *make) {
         
-        make.top.equalTo(faceLab.mas_bottom).offset(20);
+        make.top.equalTo(labForTitle.mas_bottom).offset(20);
         make.left.offset(kMargin);
         make.width.offset(photoW);
         make.height.offset(photoW/351.0*163.0);
@@ -300,22 +261,23 @@
     int i = 0 ;
     NSMutableDictionary *dic = @{}.mutableCopy;
     
-    for (YSJPopTextFiledView *cell in _cellViewArr) {
-        if (isEmptyString(cell.rightSubTitle)) {
+    for (NSString *value in [_builder getAllContent]) {
+        if (isEmptyString(value)) {
             Toast(@"请填写完整信息");
             return;
         }else{
-            [dic setObject:cell.rightSubTitle forKey:keyArr[i]];
+            [dic setObject:value forKey:keyArr[i]];
         }
         i++;
     }
     
     [dic setObject:[StorageUtil getId] forKey:@"token"];
-    [dic setObject:imageData forKey:@"img"];
     NSLog(@"%@",dic);
     
-    [manager POST:kUrlPostImg parameters:dic constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-        [formData appendPartWithFileData:imageData name:@"image" fileName:@"text.jpg" mimeType:@"image/jpg"];
+    [dic setObject:imageData forKey:@"img"];
+  
+    [manager POST:YcompanyStep3 parameters:dic constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        [formData appendPartWithFileData:imageData name:@"img" fileName:@"text.jpg" mimeType:@"image/jpg"];
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -329,7 +291,6 @@
         pushClass(YSJApplication_SuccessVC);
         
         [MBProgressHUD hideHUDForView:self.view animated:YES];
-        //        [self post];
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         

@@ -15,9 +15,10 @@
 - (void)popViewWithTitle:(NSString *)title subTitle:(NSString *)subTitle{
     
     WeakSelf;
-    [SPCommon creatAlertControllerTitle:title subTitle:@"" _alertSure:^(NSString *text) {
+    
+    [SPCommon creatAlertControllerTitle:title subTitle:@"" _alertSure:^(NSString *text ) {
         weakSelf.rightSubTitle = text;
-    }];
+    } keyBoard:self.keyBorad];
     
 }
 

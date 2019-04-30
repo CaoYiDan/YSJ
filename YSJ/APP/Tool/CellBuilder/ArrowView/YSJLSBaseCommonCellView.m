@@ -25,6 +25,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        self.keyBorad = UIKeyboardTypeDefault;
         self.backgroundColor = KWhiteColor;
         [self initUIwithTitle:title subTitle:subTitle];
     }

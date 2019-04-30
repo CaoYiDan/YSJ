@@ -162,14 +162,7 @@
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        //将二进制转为字符串
-        NSString *result2 = [[NSString alloc] initWithData:responseObject  encoding:NSUTF8StringEncoding];
-        //字符串转字典
-        NSDictionary*dict=[self dictionaryWithJsonString:result2];
-        //            [self.photosArr addObject:dict[@"image"]];
-        NSMutableDictionary *dic =[[NSMutableDictionary alloc]init];
-        [dic setObject:dict[@"image"] forKey:@"url"];
-        
+      
         YSJApplicationCompany_ThirdVC *vc = [[YSJApplicationCompany_ThirdVC alloc]init];
         [self.navigationController pushViewController:vc animated:YES];
         
@@ -245,13 +238,13 @@
 -(void)identifierView{
     
     //营业执照
-    UILabel * faceLab = [[UILabel alloc]init];
-    [_scrollView addSubview:faceLab];
-    faceLab.text = @"营业执照";
-    faceLab.textColor = [UIColor blackColor];
-    faceLab.font = Font(16);
-    faceLab.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
-    [faceLab mas_makeConstraints:^(MASConstraintMaker *make) {
+    UILabel * labForTitle = [[UILabel alloc]init];
+    [_scrollView addSubview:labForTitle];
+    labForTitle.text = @"营业执照";
+    labForTitle.textColor = [UIColor blackColor];
+    labForTitle.font = Font(16);
+    labForTitle.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
+    [labForTitle mas_makeConstraints:^(MASConstraintMaker *make) {
         
         make.top.offset(111+6);
         make.left.offset(kMargin);
@@ -268,7 +261,7 @@
     tipLab.font = Font(12);
     [tipLab mas_makeConstraints:^(MASConstraintMaker *make) {
         
-        make.top.equalTo(faceLab.mas_bottom).offset(5);
+        make.top.equalTo(labForTitle.mas_bottom).offset(5);
         make.left.offset(kMargin);
         make.height.offset(20);
         

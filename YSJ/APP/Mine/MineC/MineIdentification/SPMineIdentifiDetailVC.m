@@ -235,13 +235,13 @@
 -(void)firstIdentifierView{
     
     //身份证
-    UILabel * faceLab = [[UILabel alloc]init];
-    [_scrollView addSubview:faceLab];
-    faceLab.text = @"身份证";
-    faceLab.textColor = [UIColor blackColor];
-    faceLab.font = Font(14);
-    faceLab.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
-    [faceLab mas_makeConstraints:^(MASConstraintMaker *make) {
+    UILabel * labForTitle = [[UILabel alloc]init];
+    [_scrollView addSubview:labForTitle];
+    labForTitle.text = @"身份证";
+    labForTitle.textColor = [UIColor blackColor];
+    labForTitle.font = Font(14);
+    labForTitle.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
+    [labForTitle mas_makeConstraints:^(MASConstraintMaker *make) {
         
         make.top.offset(120);
         make.left.offset(kMargin);
@@ -258,7 +258,7 @@
     tipLab.font = Font(12);
     [tipLab mas_makeConstraints:^(MASConstraintMaker *make) {
         
-        make.top.equalTo(faceLab.mas_bottom).offset(5);
+        make.top.equalTo(labForTitle.mas_bottom).offset(5);
         make.left.offset(kMargin);
         make.width.offset(160);
         make.height.offset(20);
@@ -273,7 +273,7 @@
     [_scrollView addSubview:demo];
     [demo mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.offset(80);
-        make.centerY.equalTo(faceLab); make.right.offset(-kMargin);
+        make.centerY.equalTo(labForTitle); make.right.offset(-kMargin);
         make.height.offset(30);
     }];
     
@@ -327,13 +327,13 @@
 -(void)secondIdentifierView{
     
     //手持身份证认证
-    UILabel * faceLab = [[UILabel alloc]init];
-    [_scrollView addSubview:faceLab];
-    faceLab.text = @"手持身份证认证";
-    faceLab.textColor = [UIColor blackColor];
-    faceLab.font = Font(14);
-    faceLab.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
-    [faceLab mas_makeConstraints:^(MASConstraintMaker *make) {
+    UILabel * labForTitle = [[UILabel alloc]init];
+    [_scrollView addSubview:labForTitle];
+    labForTitle.text = @"手持身份证认证";
+    labForTitle.textColor = [UIColor blackColor];
+    labForTitle.font = Font(14);
+    labForTitle.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
+    [labForTitle mas_makeConstraints:^(MASConstraintMaker *make) {
         
         make.top.offset(310);
         make.left.offset(kMargin);
@@ -350,7 +350,7 @@
     tipLab.font = Font(12);
     [tipLab mas_makeConstraints:^(MASConstraintMaker *make) {
         
-        make.top.equalTo(faceLab.mas_bottom).offset(5);
+        make.top.equalTo(labForTitle.mas_bottom).offset(5);
         make.left.offset(kMargin);
         make.height.offset(20);
         
@@ -405,13 +405,13 @@
 -(void)thirdIdentifierView{
     
     //资质证书
-    UILabel * faceLab = [[UILabel alloc]init];
-    [_scrollView addSubview:faceLab];
-    faceLab.text = @"资质证书";
-    faceLab.textColor = [UIColor blackColor];
-    faceLab.font = Font(14);
-    faceLab.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
-    [faceLab mas_makeConstraints:^(MASConstraintMaker *make) {
+    UILabel * labForTitle = [[UILabel alloc]init];
+    [_scrollView addSubview:labForTitle];
+    labForTitle.text = @"资质证书";
+    labForTitle.textColor = [UIColor blackColor];
+    labForTitle.font = Font(14);
+    labForTitle.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
+    [labForTitle mas_makeConstraints:^(MASConstraintMaker *make) {
         
         make.top.offset(500);
         make.left.offset(kMargin);
@@ -428,7 +428,7 @@
     tipLab.font = Font(12);
     [tipLab mas_makeConstraints:^(MASConstraintMaker *make) {
         
-        make.top.equalTo(faceLab.mas_bottom).offset(5);
+        make.top.equalTo(labForTitle.mas_bottom).offset(5);
         make.left.offset(kMargin);
         make.width.offset(160);
         make.height.offset(20);
@@ -442,7 +442,7 @@
     [demo addTarget:self action:@selector(seeDemo) forControlEvents:UIControlEventTouchUpInside];
     [_scrollView addSubview:demo];
     [demo mas_makeConstraints:^(MASConstraintMaker *make) {
-    make.top.equalTo(faceLab.mas_bottom).offset(5);
+    make.top.equalTo(labForTitle.mas_bottom).offset(5);
         make.right.offset(-kMargin);
         make.width.offset(160);
         make.height.offset(20);

@@ -9,6 +9,8 @@
 #import "YSJApplication_SecondVC.h"
 #import "YSJApplicationCompany_SecondVC.h"
 #import "YSJApplicationCompany_FirstVC.h"
+#import "YSJPopCourserCellView.h"
+#import "YSJFactoryForCellBuilder.h"
 
 #define cellH 76
 
@@ -19,12 +21,11 @@
 @implementation YSJApplicationCompany_FirstVC
 {
     UIScrollView  *_scroll;
-  
-    YSJCommonSwitchView *_supportHome;
+
+    YSJFactoryForCellBuilder *_builder;
     
     UIView *_tag;
-   
-    NSMutableArray *_cellViewArr;
+
 }
 
 - (void)viewDidLoad {
@@ -44,28 +45,11 @@
 #pragma mark - UI
 
 -(void)initUI{
-    
-    [self setBase];
-    
-    [self topView];
-    
-    [self setView1];
 
-    [self setBottomView];
-    
+    [self setUI];
+
 }
 
-
--(void)setBase{
-    
-    UIScrollView  *scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, kWindowH)];
-    _scroll = scrollView;
-    _scroll.backgroundColor = KWhiteColor;
-    [self.view addSubview:_scroll];
-    _scroll.showsVerticalScrollIndicator = NO;
-    _scroll.showsHorizontalScrollIndicator = NO;
-    _scroll.contentSize = CGSizeMake(kWindowW, 800);
-}
 
 -(void)topView{
     
@@ -88,30 +72,55 @@
     }];
 }
 
--(void)setView1{
+#pragma mark - UI
+
+-(void)setUI{
     
-    _cellViewArr = @[].mutableCopy;
-    NSArray *arr = @[@"机构名称",@"机构电话",@"营业时间",@"机构地址",@"营业项目"];
+    YSJFactoryForCellBuilder *builder = [[YSJFactoryForCellBuilder alloc]init];
     
-    int i=0;
+    _builder = builder;
     
-    for (NSString *str in arr) {
-        
-        YSJPopTextFiledView *cell = [[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, cellH*i+111, kWindowW, cellH) withTitle:str subTitle:@""];
-        [_scroll addSubview:cell];
-        [_cellViewArr addObject:cell];
-        __weak typeof(cell) weakCell = cell;
-        [cell addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
-            [SPCommon creatAlertControllerTitle:str subTitle:@"" _alertSure:^(NSString *text) {
-                weakCell.rightSubTitle = text;
-            }];
-        }];
-        
-        if (i==1) {
-            _tag = cell;
-        }
-        i++;
-    }
+    _scroll = [builder createViewWithDic:[self getCellDic]];
+    [self.view addSubview:_scroll];
+    _tag =builder.lastBottomView;
+    
+    [self topView];
+    
+    [self setBottomView];
+    
+}
+
+-(NSDictionary *)getCellDic{
+    
+    NSDictionary *dic = @{@"cellH":@"76",
+                          @"orY":@"111",
+                          @"arr":@[
+                                  
+                                  @{
+                                      @"type":@(CellPopNormal),
+                                      @"title":@"机构名称",
+                                      },
+                                  
+                                  @{
+                                      @"type":@(CellPopNormal),
+                                      @"title":@"机构电话",          @"keyBoard":@(UIKeyboardTypePhonePad)
+                                      },
+                                  
+                                  @{
+                                      @"type":@(CellPopNormal),
+                                      @"title":@"营业时间",
+                                      },
+                                  @{
+                                      @"type":@(CellPopNormal),
+                                      @"title":@"机构地址",
+                                      },
+                                 @{
+                                      @"type":@(CellPopCouserChosed),
+                                      @"title":@"营业项目",
+                                      },
+                                  ]
+                          };
+    return dic;
 }
 
 -(void)setBottomView{
@@ -130,17 +139,16 @@
 
 -(void)next{
     
-    
     NSArray *keyArr = @[@"name",@"otherphone",@"datetime",@"address",@"sale_item"];
     
     int i = 0 ;
     NSMutableDictionary *dic = @{}.mutableCopy;
-    for (YSJPopTextFiledView *cell in _cellViewArr) {
-        if (isEmptyString(cell.rightSubTitle)) {
+    for (NSString *value in [_builder getAllContent]) {
+        if (isEmptyString(value)) {
             Toast(@"请填写完整信息");
             return;
         }else{
-            [dic setObject:cell.rightSubTitle forKey:keyArr[i]];
+            [dic setObject:value forKey:keyArr[i]];
         }
         i++;
     }
@@ -152,7 +160,7 @@
     [[HttpRequest sharedClient]httpRequestPOST:YcompanyStep1 parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         
         NSLog(@"%@",responseObject);
-        pushClass(YSJApplicationCompany_SecondVC);
+    pushClass(YSJApplicationCompany_SecondVC);
         
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         

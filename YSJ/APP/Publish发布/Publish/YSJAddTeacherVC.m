@@ -5,17 +5,20 @@
 //  Created by xujf on 2019/4/17.
 //  Copyright © 2019年 lisen. All rights reserved.
 
-#import "YSJApplication_SecondVC.h"
+#import "YSJAddTeacherVC.h"
 #import "YSJPopTextFiledView.h"
-#import "YSJApplication_FirstVC.h"
+#import "BDImagePicker.h"
 #import "YSJFactoryForCellBuilder.h"
 
 #define cellH 70
-@interface YSJApplication_FirstVC ()
+
+@interface YSJAddTeacherVC ()
+
+@property (nonatomic,strong) UIImageView *photo;
 
 @end
 
-@implementation YSJApplication_FirstVC
+@implementation YSJAddTeacherVC
 {
     UIScrollView *_scroll;
     YSJFactoryForCellBuilder  *_builder;
@@ -32,7 +35,7 @@
     
     [super viewDidLoad];
     
-    self.title = @"私教申请";
+    self.title = @"添加老师";
     
     [self initUI];
 }
@@ -65,47 +68,76 @@
 -(NSDictionary *)getCellDic{
     
     NSDictionary *dic = @{@"cellH":@"76",
-                          @"orY":@"111",
+                          @"orY":@"151",
                           @"arr":@[
                                   @{
-                                      @"type":@(CellPopNormal),
-                                      @"title":@"姓名",
-                            
+                                      @"type":@(CellPopCouserChosed),
+                                      @"title":@"老师姓名",
                                       },
                                   @{
-                                      @"type":@(CellTextFiled),
-                                      @"title":@"身份证号",
-                                      @"placeholder":@"请输入身份证号",
+                                      @"type":@(CellPopCouserChosed),
+                                      @"title":@"授课类型",
+                        
                                       },
                                   
                                   @{
+                                      @"type":@(CellPopTextView),
+                                      @"title":@"老师介绍",
+                                      
+                                      },@{
                                       @"type":@(CellPopNormal),
-                                      @"title":@"性别",
-                                      @"sheetText":@"男,女",
+                                      @"title":@"老师标签",
+                                      
                                       },
                                   ]
                           };
     return dic;
 }
 
+#pragma mark  授课老师添加照片
+
 -(void)topView{
     
-    UIImageView *topImg = [[UIImageView alloc]initWithFrame:CGRectMake(27, 32, kWindowW-54, 47)];
-    topImg.backgroundColor = [UIColor whiteColor];
-    topImg.image = [UIImage imageNamed:@"step1"];
-    topImg.contentMode = UIViewContentModeScaleAspectFit;
-    [_scroll addSubview:topImg];
-    
-    UIView *bottomLine = [[UIView alloc]init];
-    bottomLine.backgroundColor = grayF2F2F2;
-    [_scroll addSubview:bottomLine];
-    _tag = bottomLine;
-    [bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.offset(0);
-        make.right.offset(0);
-        make.height.offset(6);
-        make.top.equalTo(topImg.mas_bottom).offset(32);
+    //授课老师
+    UILabel * labForTitle = [[UILabel alloc]init];
+    [_scroll addSubview:labForTitle];
+    labForTitle.text = @"授课老师";
+    labForTitle.textColor = [UIColor blackColor];
+    labForTitle.font = Font(16);
+    labForTitle.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
+    [labForTitle mas_makeConstraints:^(MASConstraintMaker *make) {
+        
+        make.top.offset(22);
+        make.left.offset(kMargin);
+        make.width.offset(160);
+        make.height.offset(20);
+        
     }];
+    
+    CGFloat photoW = 70;
+    //身份证正面照
+    self.photo = [[UIImageView alloc]init];
+    [_scroll addSubview:self.photo];
+    self.photo.clipsToBounds = YES;
+    self.photo.backgroundColor =grayF2F2F2;
+    self.photo.layer.cornerRadius = photoW/2;
+    self.photo.contentMode = UIViewContentModeScaleAspectFill;
+    self.photo.userInteractionEnabled = YES;
+    self.photo.image = [UIImage imageNamed:@"add_btn7"];
+    
+    [self.photo mas_makeConstraints:^(MASConstraintMaker *make) {
+        
+        make.top.equalTo(labForTitle.mas_bottom).offset(15);
+        make.left.offset(kMargin);
+        make.width.offset(photoW);
+        make.height.offset(photoW);
+    }];
+    WeakSelf;
+    [self.photo addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
+        
+        [weakSelf addPhotobtn1Click];
+    }];
+    
 }
 
 -(void)setBottomView{
@@ -126,7 +158,7 @@
 }
 
 -(void)next{
-
+    
     NSArray *arr = @[@"realname",@"secu_id",@"sex"];
     NSMutableArray *valueArr = [_builder getAllContent];
     if (arr.count!=valueArr.count) {
@@ -139,7 +171,7 @@
     [dic setObject:[StorageUtil getId] forKey:@"token"];
     int i=0;
     for (NSString *value in valueArr) {
-         [dic setObject:value  forKey:arr[i]];
+        [dic setObject:value  forKey:arr[i]];
         i++;
     }
     
@@ -149,14 +181,10 @@
         
         NSLog(@"%@",responseObject);
         
-        YSJApplication_SecondVC *vc = [[YSJApplication_SecondVC alloc]init];
-        [self.navigationController pushViewController:vc animated:YES];
-        
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         
     }];
-    
-//
+
 }
 
 - (void)showSheet{
@@ -179,11 +207,27 @@
                                                        handler:^(UIAlertAction * action) {
                                                            //响应事件
                                                            NSLog(@"action = %@", action);
-                                  _sexCell.rightSubTitle = @"女";                      }];
+                                                           _sexCell.rightSubTitle = @"女";                      }];
     [alert addAction:saveAction];
     [alert addAction:cancelAction];
     [alert addAction:deleteAction];
     [self presentViewController:alert animated:YES completion:nil];
 }
 
+- (void)addPhotobtn1Click{
+    
+    //吊起相册
+    WeakSelf;
+    [BDImagePicker showImagePickerFromViewController:self allowsEditing:YES finishAction:^(UIImage *image) {
+        
+        if (image) {
+            //添加进img数组
+           
+         self.photo.image = image;
+            
+        }
+        
+    }];
+    
+}
 @end

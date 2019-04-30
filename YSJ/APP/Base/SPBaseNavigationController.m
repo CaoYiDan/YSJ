@@ -13,14 +13,34 @@
     [super viewDidLoad];
     /* 设置title的字体颜色*/
     [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:KWhiteColor}];
+    
+    UIView *backView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 64)];
+    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+    gradientLayer.colors = @[(__bridge id)[UIColor hexColor:@"FF8960"].CGColor, (__bridge id)[UIColor hexColor:@"FF6960"].CGColor];
+//    gradientLayer.locations = @[@0.3, @0.5, @1.0];
+    gradientLayer.startPoint = CGPointMake(0, 0);
+    gradientLayer.endPoint = CGPointMake(.0, 1.0);
+    gradientLayer.frame = backView.frame;
+    [backView.layer addSublayer:gradientLayer];
+    
     //设施导航控制器导航栏的背景图片(遮盖后面的过度黑影（系统自带）)
-    [self.navigationBar setBackgroundImage:[UIImage imageWithColor:KMainColor] forBarMetrics:UIBarMetricsDefault];
+    [self.navigationBar setBackgroundImage:[self convertViewToImage:backView] forBarMetrics:UIBarMetricsDefault];
     
     //渐变背景色
 //    [self.navigationBar.layer addSublayer:[UIColor setGradualChangingColor:self.view fromColor:@"FF8960" toColor:@"FF62A5"]];
     
     //去掉黑线
     [self.navigationBar setShadowImage:[UIImage new]];
+}
+
+-(UIImage*)convertViewToImage:(UIView*)v{
+    CGSize s = v.bounds.size;
+    // 下面方法，第一个参数表示区域大小。第二个参数表示是否是非透明的。如果需  要显示半透明效果，需要传NO，否则传YES。第三个参数就是屏幕密度了
+    UIGraphicsBeginImageContextWithOptions(s, YES, [UIScreen mainScreen].scale);
+    [v.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage*image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
 }
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {

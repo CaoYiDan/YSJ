@@ -530,9 +530,9 @@
     }
         
     if(!haveLabels){
-            return 110;
+            return 120;
     }else{
-        return 131;
+        return 141;
     }
 }
 
@@ -607,7 +607,7 @@
 -(void)setTopSliderSwitchView{
     YSJSwitchView *topSwitchView = [[YSJSwitchView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, 44)];
     topSwitchView.delegate = self;
-    topSwitchView.backgroundColor = KMainColor;
+    topSwitchView.backgroundColor = [UIColor hexColor:@"FF6960"];
     topSwitchView.listArr = self.categorys;
     [self.view addSubview:topSwitchView];
 }
@@ -622,6 +622,7 @@
     // 添加下拉菜单
     DOPDropDownMenu *menu = [[DOPDropDownMenu alloc] initWithOrigin:CGPointMake(0,firstMenuH) andHeight:44];
     menu.textColor = [UIColor hexColor:@"666666"];
+    menu.indicatorColor = [UIColor hexColor:@"666666"];
     menu.delegate = self;
     menu.dataSource = self;
     [self.view addSubview:menu];

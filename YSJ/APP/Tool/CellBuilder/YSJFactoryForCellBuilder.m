@@ -54,6 +54,9 @@
             if (type==CellPopNormal) {
                 
                 arrow =[[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
+                
+                arrow.keyBorad = [cellDic[@"keyBoard"] intValue];
+                
             }else if (type == CellPopSheet){
                 
                 arrow =[[YSJPopSheetView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];

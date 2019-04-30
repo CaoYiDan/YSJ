@@ -82,7 +82,7 @@
     }];
     
     //评分
-    XHStarRateView *starRateView = [[XHStarRateView alloc] initWithFrame:CGRectMake(10, 40, 70, 20) numberOfStars:5 rateStyle:IncompleteStar isAnination:NO foreBackgroundStarImage:@"full_Star" backgroundStarImage:@"Star" finish:nil];
+    XHStarRateView *starRateView = [[XHStarRateView alloc] initWithFrame:CGRectMake(10, 40, 70, 30) numberOfStars:5 rateStyle:IncompleteStar isAnination:NO foreBackgroundStarImage:@"full_Star" backgroundStarImage:@"Star" finish:nil];
     _starRateView = starRateView;
     starRateView.backgroundColor = KWhiteColor;
     [self.contentView addSubview:starRateView];
@@ -90,7 +90,7 @@
     [_starRateView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(_name).offset(0);
         make.width.offset(70);
-        make.height.offset(20);
+        make.height.offset(30);
         make.top.equalTo(_name.mas_bottom).offset(6);
     }];
     
@@ -122,7 +122,7 @@
     _price = [[UILabel alloc]init];
     _price.font = font(20);
     _price.textAlignment = NSTextAlignmentRight;
-    _price.textColor = yellowEE9900;
+    _price.textColor = [UIColor hexColor:@"FE8600"];
     _price.backgroundColor = KWhiteColor;
     [self.contentView addSubview:_price];
     [_price mas_makeConstraints:^(MASConstraintMaker *make) {

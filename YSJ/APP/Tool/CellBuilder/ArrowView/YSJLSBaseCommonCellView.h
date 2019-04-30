@@ -22,6 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic,copy) NSString *rightSubTitle;
 
+@property (nonatomic,assign) UIKeyboardType keyBorad;
+
 - (instancetype)initWithFrame:(CGRect)frame withTitle:(NSString *)title subTitle:(NSString *)subTitle;
 
 @end

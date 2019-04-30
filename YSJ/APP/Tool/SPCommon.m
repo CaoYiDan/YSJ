@@ -220,7 +220,7 @@ animation.calculationMode = kCAAnimationCubic;
     //可以给alertview中添加一个输入框
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.placeholder = @"";
-        
+    
     }];
     
     UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -238,5 +238,33 @@ animation.calculationMode = kCAAnimationCubic;
     
     [[self getCurrentVC] presentViewController:alert animated:YES completion:nil];
 }
-
+#pragma mark - 弹出编辑框
++(void)creatAlertControllerTitle:(NSString*) title subTitle:(NSString *)subTitle _alertSure:(void (^)(NSString *text)) resultText keyBoard:(UIKeyboardType)keyBoard{
+    //跟上面的流程差不多，记得要把preferredStyle换成UIAlertControllerStyleAlert
+    
+    NSLog(@"%ld",keyBoard);
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:[NSString stringWithFormat:@"请输入%@",title] preferredStyle:UIAlertControllerStyleAlert];
+    
+    //可以给alertview中添加一个输入框
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = @"";
+        textField.keyboardType = keyBoard;
+    }];
+    
+    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+        resultText(alert.textFields.lastObject.text);
+        
+    }];
+    
+    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSLog(@"点击了取消");
+    }];
+    
+    [alert addAction:action1];
+    [alert addAction:action2];
+    
+    [[self getCurrentVC] presentViewController:alert animated:YES completion:nil];
+}
 @end

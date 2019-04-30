@@ -37,23 +37,24 @@
     
     CGFloat imgH = 70;
     
-    _img =  [[UIImageView alloc]initWithFrame:CGRectMake(0, 10, imgWid, imgH)];
+    _img =  [[UIImageView alloc]initWithFrame:CGRectMake(self.frameWidth/2-imgWid/2, 10, imgWid, imgH)];
     _img.backgroundColor = KMainColor;
     _img.contentMode = UIViewContentModeScaleAspectFill;
     _img.layer.cornerRadius = 35;
     _img.clipsToBounds = YES;
     _img.clipsToBounds = YES;
+ 
     [self.contentView addSubview:_img];
     
     
-    _name = [[UILabel alloc]initWithFrame:CGRectMake(0, imgH+17, imgWid, 30)];
+    _name = [[UILabel alloc]initWithFrame:CGRectMake(0, imgH+17, self.frameWidth, 30)];
     _name.font = Font(16);
     _name.textColor = KBlack333333;
     _name.textAlignment = NSTextAlignmentCenter;
     _name.backgroundColor = [UIColor whiteColor];
     [self.contentView addSubview:_name];
     
-    _introduction = [[UILabel alloc]initWithFrame:CGRectMake(0, imgH+45, imgWid, 20)];
+    _introduction = [[UILabel alloc]initWithFrame:CGRectMake(0, imgH+45, self.frameWidth, 20)];
     _introduction.font = font(12);
     _introduction.textAlignment = NSTextAlignmentCenter;
     _introduction.textColor = gray999999;

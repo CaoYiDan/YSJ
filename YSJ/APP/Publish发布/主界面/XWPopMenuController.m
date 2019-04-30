@@ -294,7 +294,7 @@
     }else{
         
         YSJPublish_CompanyVC *vc = [[YSJPublish_CompanyVC alloc]init];
-//        [self.navigationController pushViewController:vc animated:YES];
+        [self.navigationController pushViewController:vc animated:YES];
         
     }
     

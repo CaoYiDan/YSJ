@@ -206,13 +206,13 @@
 -(void)firstIdentifierView{
     
     //身份证
-    UILabel * faceLab = [[UILabel alloc]init];
-    [_scrollView addSubview:faceLab];
-    faceLab.text = @"身份证";
-    faceLab.textColor = [UIColor blackColor];
-    faceLab.font = Font(16);
-    faceLab.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
-    [faceLab mas_makeConstraints:^(MASConstraintMaker *make) {
+    UILabel * labForTitle = [[UILabel alloc]init];
+    [_scrollView addSubview:labForTitle];
+    labForTitle.text = @"身份证";
+    labForTitle.textColor = [UIColor blackColor];
+    labForTitle.font = Font(16);
+    labForTitle.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
+    [labForTitle mas_makeConstraints:^(MASConstraintMaker *make) {
         
         make.top.offset(130);
         make.left.offset(kMargin);
@@ -229,7 +229,7 @@
     tipLab.font = Font(12);
     [tipLab mas_makeConstraints:^(MASConstraintMaker *make) {
         
-        make.top.equalTo(faceLab.mas_bottom).offset(5);
+        make.top.equalTo(labForTitle.mas_bottom).offset(5);
         make.left.offset(kMargin);
         make.width.offset(160);
         make.height.offset(20);
@@ -245,7 +245,7 @@
     [_scrollView addSubview:demoa];
     [demoa mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.offset(80);
-        make.centerY.equalTo(faceLab); make.left.offset(kWindowW-80-kMargin);
+        make.centerY.equalTo(labForTitle); make.left.offset(kWindowW-80-kMargin);
         make.height.offset(30);
     }];
     
@@ -302,13 +302,13 @@
 -(void)secondIdentifierView{
     
     //手持身份证认证
-    UILabel * faceLab = [[UILabel alloc]init];
-    [_scrollView addSubview:faceLab];
-    faceLab.text = @"手持身份证认证";
-    faceLab.textColor = [UIColor blackColor];
-    faceLab.font = Font(16);
-    faceLab.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
-    [faceLab mas_makeConstraints:^(MASConstraintMaker *make) {
+    UILabel * labForTitle = [[UILabel alloc]init];
+    [_scrollView addSubview:labForTitle];
+    labForTitle.text = @"手持身份证认证";
+    labForTitle.textColor = [UIColor blackColor];
+    labForTitle.font = Font(16);
+    labForTitle.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
+    [labForTitle mas_makeConstraints:^(MASConstraintMaker *make) {
         
         make.top.equalTo(self.photoIV2.mas_bottom).offset(22);
         make.left.offset(kMargin);
@@ -325,7 +325,7 @@
     tipLab.font = Font(12);
     [tipLab mas_makeConstraints:^(MASConstraintMaker *make) {
         
-        make.top.equalTo(faceLab.mas_bottom).offset(5);
+        make.top.equalTo(labForTitle.mas_bottom).offset(5);
         make.left.offset(kMargin);
         make.height.offset(20);
         
@@ -380,13 +380,13 @@
 -(void)thirdIdentifierView{
     
     //资质证书
-    UILabel * faceLab = [[UILabel alloc]init];
-    [_scrollView addSubview:faceLab];
-    faceLab.text = @"资质证书";
-    faceLab.textColor = [UIColor blackColor];
-    faceLab.font = Font(16);
-    faceLab.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
-    [faceLab mas_makeConstraints:^(MASConstraintMaker *make) {
+    UILabel * labForTitle = [[UILabel alloc]init];
+    [_scrollView addSubview:labForTitle];
+    labForTitle.text = @"资质证书";
+    labForTitle.textColor = [UIColor blackColor];
+    labForTitle.font = Font(16);
+    labForTitle.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
+    [labForTitle mas_makeConstraints:^(MASConstraintMaker *make) {
         
     make.top.equalTo(self.photoIV4.mas_bottom).offset(22);
         make.left.offset(kMargin);
@@ -404,7 +404,7 @@
     _tag = tipLab;
     [tipLab mas_makeConstraints:^(MASConstraintMaker *make) {
         
-        make.top.equalTo(faceLab.mas_bottom).offset(5);
+        make.top.equalTo(labForTitle.mas_bottom).offset(5);
         make.left.offset(kMargin);
         make.width.offset(160);
         make.height.offset(20);
@@ -419,7 +419,7 @@
     [demo addTarget:self action:@selector(addCertifier) forControlEvents:UIControlEventTouchUpInside];
     [_scrollView addSubview:demo];
     [demo mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(faceLab).offset(0);
+        make.centerY.equalTo(labForTitle).offset(0);
         make.left.offset(kWindowW-40-kMargin);
         make.width.offset(40);
         make.height.offset(40);
@@ -633,13 +633,13 @@
 
 -(void)reloadCertifierView{
     //资质证书
-    UILabel * faceLab = [[UILabel alloc]init];
-    [_scrollView addSubview:faceLab];
-    faceLab.text = [self.certifierArr lastObject];
-    faceLab.textColor = black666666;
-    faceLab.font = Font(15);
-    faceLab.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
-    [faceLab mas_makeConstraints:^(MASConstraintMaker *make) {
+    UILabel * labForTitle = [[UILabel alloc]init];
+    [_scrollView addSubview:labForTitle];
+    labForTitle.text = [self.certifierArr lastObject];
+    labForTitle.textColor = black666666;
+    labForTitle.font = Font(15);
+    labForTitle.baselineAdjustment =UIBaselineAdjustmentAlignCenters;
+    [labForTitle mas_makeConstraints:^(MASConstraintMaker *make) {
         
         make.top.equalTo(_tag.mas_bottom).offset(12);
         make.left.offset(kMargin);
@@ -655,7 +655,7 @@
         make.left.offset(0);
         make.width.offset(kWindowW);
         make.height.offset(1);
-        make.bottom.equalTo(faceLab).offset(0);
+        make.bottom.equalTo(labForTitle).offset(0);
     }];
     
     _tag = bottomLine;

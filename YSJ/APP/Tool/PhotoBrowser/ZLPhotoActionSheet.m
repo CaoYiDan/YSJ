@@ -231,7 +231,7 @@ double const ScalePhotoWidth = 1000;
     } else {
         if (status == PHAuthorizationStatusAuthorized) {
             [self.sender.view addSubview:self];
-            [self btnPhotoLibrary_Click:nil];
+            [self  btnPhotoLibrary_Click:nil];
         } else if (status == PHAuthorizationStatusRestricted ||
                    status == PHAuthorizationStatusDenied) {
             [self showNoAuthorityVC];

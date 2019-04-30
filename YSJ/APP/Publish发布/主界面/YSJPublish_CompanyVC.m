@@ -12,6 +12,7 @@
 #import "YSJPopTeachTypeView.h"
 #import "YSJPopTextView.h"
 #import "LGTextView.h"
+#import "YSJDetailForCompanyPublishVC.h"
 
 #import "YSJFactoryForCellBuilder.h"
 
@@ -75,6 +76,9 @@
     _scroll.contentSize = CGSizeMake(0, 1300);
     [self.view addSubview:_scroll];
     
+    //首次选中（）
+    [_builder publishForTeachOneByOne];
+    
     [self topView];
     
     [self setBottomView];
@@ -84,7 +88,7 @@
 -(NSDictionary *)getCellDic{
     
     NSDictionary *dic = @{@"cellH":@"76",
-                          @"orY":@"320",
+                          @"orY":@"230",
                           @"arr":@[
                                   @{
                                       @"type":@(CellPopCouserChosed),
@@ -92,27 +96,28 @@
                                       },
                                   @{
                                       @"type":@(CellPopNormal),
-                                      @"title":@"价格",
+                                      @"title":@"课程特色",
+                                      },
+                                  
+                                  @{
+                                      @"type":@(CellPopMoreTextFiledView),
+                                      @"title":@"课程价格",
+                                      @"arr":@"现价,原价"
                                       },
                                   
                                   @{
                                       @"type":@(CellPopNormal),
-                                      @"title":@"上课时段",
+                                      @"title":@"适用人群",
                                       },
                                   
                                   @{
-                                      @"type":@(CellSwitch),
-                                      @"title":@"上门服务",
+                                      @"type":@(CellPopNormal),
+                                      @"title":@"课程人数",
                                       },
                                   
                                   @{
                                       @"type":@(CellPopNormal),
                                       @"title":@"上课地址",
-                                      },
-                                  
-                                  @{
-                                      @"type":@(CellPopNormal),
-                                      @"title":@"可接受距离",
                                       },
                                   
                                   @{
@@ -122,52 +127,60 @@
                                   
                                   @{
                                       @"type":@(CellPopNormal),
-                                      @"title":@"需求标签",
-                                      },
-                                  @{
-                                      @"type":@(CellPopTextView),
-                                      @"title":@"自身标签",
+                                      @"title":@"课程标签",
                                       }
+                                  
                                   ]
                           };
     return dic;
 }
 
-
 -(void)topView{
     
-    YSJPopTextFiledView *xuTitle = [[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, 76) withTitle:@"需求标题" subTitle:@"请输入您的需求"];
+    YSJPopTextFiledView *xuTitle = [[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, 76) withTitle:@"课程标题" subTitle:@"请输入课程标题"];
     self.xuTitleCell = xuTitle;
     [_scroll addSubview:xuTitle];
     
     //需求内容
     UILabel * xuTextTitle = [[UILabel alloc]init];
     xuTextTitle.font = font(16);
-    xuTextTitle.text = @"需求内容";
+    xuTextTitle.text = @"课程详情";
     xuTextTitle.textColor = KBlack333333;
+    xuTextTitle.userInteractionEnabled = YES;
     [_scroll addSubview:xuTextTitle];
     [xuTextTitle mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(kMargin);
-        make.height.offset(60);
+        make.height.offset(76);
+        make.width.offset(kWindowW);
         make.top.equalTo(xuTitle.mas_bottom).offset(0);
     }];
     
-    self.xuTextView = [[LGTextView alloc]initWithFrame:CGRectMake(kMargin, 76+60, kWindowW-2*kMargin, 120)];
-    self.xuTextView .placeholder = @"详细描述会为您快速匹配合适的老师或机构\n1.描述想找哪一类艺术老师/机构\n2.描述你希望找什么样的老师/机构\n3.描述自己现阶段的水平如何";
-    self.xuTextView.placeholderColor = gray999999;
-    self.xuTextView.font = font(14);
-    self.xuTextView.textColor = black666666;
-    [_scroll addSubview:self.xuTextView];
+    WeakSelf;
+    [xuTextTitle addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
+        YSJDetailForCompanyPublishVC *vc = [[YSJDetailForCompanyPublishVC alloc]init];
+        [weakSelf.navigationController pushViewController:vc animated:YES];
+    }];
+    
+    
+    UIImageView *arrowImg = [[UIImageView alloc]init];
+    arrowImg.image = [UIImage imageNamed:@"arrow"];
+    [xuTextTitle addSubview:arrowImg];
+    [arrowImg mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.offset(kWindowW-kMargin-8-kMargin);
+        make.width.offset(8);
+        make.height.offset(14);
+        make.centerY.offset(0);
+    }];
+    
     
     UIView *bottomLine = [[UIView alloc]init];
     bottomLine.backgroundColor = grayF2F2F2;
     [_scroll addSubview:bottomLine];
-    
     [bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(0);
         make.width.offset(kWindowW);
         make.height.offset(6);
-        make.top.equalTo(self.xuTextView.mas_bottom).offset(5);
+        make.top.equalTo(xuTextTitle.mas_bottom).offset(5);
     }];
     
     UIView *baseSwitchView = [[UIView alloc]init];
@@ -181,7 +194,7 @@
     }];
     
     int i = 0 ;
-    NSArray *arr = @[@"找私教",@"找机构"];
+    NSArray *arr = @[@"明星课程",@"精品课程",@"试听课程"];
     CGFloat btnW = kWindowW/arr.count;
     for (NSString *str in arr) {
         UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(i*btnW, 0, btnW,55)];
@@ -205,7 +218,7 @@
     [line mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(0);
         make.width.offset(kWindowW);
-        make.height.offset(4);
+        make.height.offset(3);
         make.bottom.offset(0);
     }];
     
@@ -215,9 +228,9 @@
     _tag = silderLine;
     [baseSwitchView addSubview:silderLine];
     [silderLine mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.offset(kWindowW/4-25);
+        make.left.offset(kWindowW/6-25);
         make.width.offset(50);
-        make.height.offset(4);
+        make.height.offset(3);
         make.bottom.offset(0);
     }];
 }
@@ -233,10 +246,10 @@
     self.selectedBtn = btn;
     _mySilderLine.centerX = btn.centerX;
     
-    if (btn.tag==0) {
-        [_builder showViewForRequement];
+    if (btn.tag==1) {
+        [_builder publishForTeachPinDan];
     }else{
-        [_builder hiddenViewForRequement];
+        [_builder publishForTeachOneByOne];
     }
 }
 

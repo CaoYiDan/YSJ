@@ -51,4 +51,7 @@
 
 #pragma mark - 弹出编辑框
 +(void)creatAlertControllerTitle:(NSString*) title subTitle:(NSString *)subTitle _alertSure:(void (^)(NSString *text)) resultText;
+
+#pragma mark - 弹出编辑框
++(void)creatAlertControllerTitle:(NSString*) title subTitle:(NSString *)subTitle _alertSure:(void (^)(NSString *text)) resultText keyBoard:(UIKeyboardType)keyBoard;
 @end
