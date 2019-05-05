@@ -59,7 +59,7 @@
    
     self.title = @"课程详情";
     
-    [self getLocation];//请求位置信息
+//    [self getLocation];//请求位置信息
 
     self.limitStr = @"ALL";
     

@@ -71,7 +71,7 @@
     _builder = builder;
     
     _scroll = [builder createViewWithDic:[self getCellDic]];
-    _scroll.contentSize = CGSizeMake(0, 1300);
+    _scroll.contentSize = CGSizeMake(0, 1150);
     [self.view addSubview:_scroll];
    
     [self topView];
@@ -82,9 +82,9 @@
 
 -(NSDictionary *)getCellDic{
     
-    NSDictionary *dic = @{@"cellH":@"76",
-                          @"orY":@"320",
-                          @"arr":@[
+    NSDictionary *dic = @{cb_cellH:@"76",
+                          cb_orY:@"320",
+                         cb_cellArr:@[
                                   @{
                                       @"type":@(CellPopCouserChosed),
                                       @"title":@"分类",
@@ -120,12 +120,14 @@
                                       },
                                   
                                   @{
-                                      @"type":@(CellPopNormal),
-                                      @"title":@"需求标签",
+                                      cb_type:@(CellPushVC),
+                                      cb_title:@"需求标签",
+                                      cb_pushvc:@"YSJChoseTagsVC"
                                       },
                                   @{
-                                      @"type":@(CellPopTextView),
-                                      @"title":@"自身标签",
+                                      cb_type:@(CellPushVC),
+                                      cb_title:@"自身标签",
+                                      cb_pushvc:@"YSJChoseTagsVC"
                                       }
                                   ]
                           };

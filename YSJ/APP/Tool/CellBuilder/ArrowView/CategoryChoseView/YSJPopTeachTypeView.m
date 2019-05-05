@@ -214,7 +214,7 @@ static CGFloat tabWid = 150;
 
 
 -(UIView *)baseView{
-    UIView *base = [[UIView alloc]initWithFrame:CGRectMake(0,0, tabWid*2,340+60)];
+    UIView *base = [[UIView alloc]initWithFrame:CGRectMake(0,0, tabWid*2,350+0)];
     base.layer.cornerRadius = 5;
     base.clipsToBounds= YES;
     base.backgroundColor = [UIColor whiteColor];

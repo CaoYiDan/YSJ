@@ -38,7 +38,8 @@
     
     UIView *base = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWindowW-60, h*arr.count+20)];
     base.backgroundColor = [UIColor hexColor:@"F5F5F5"];
-    base.center = self.center;
+    base.centerX = self.centerX;
+    base.centerY = self.centerY - SafeAreaTopHeight;
     base.layer.cornerRadius = 4;
     base.clipsToBounds = YES;
     [self addSubview:base];
@@ -49,10 +50,11 @@
     
     for (NSString *str in arr) {
         
-        UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake(leftM,10+h*i, 60, 50)];
+        UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake(leftM,5+h*i, 70, 50)];
         lab.textAlignment = NSTextAlignmentCenter;
         lab.font = font(16);
         lab.text = str;
+        lab.adjustsFontSizeToFitWidth = YES;
         lab.textColor = KBlack333333;
         [base addSubview:lab];
         
@@ -69,6 +71,16 @@
         if (i==0) {
             [textField becomeFirstResponder];
         }
+        
+        UIView *bottomLine = [[UIView alloc]init];
+        bottomLine.backgroundColor = [UIColor lightGrayColor];
+        [base addSubview:bottomLine];
+        [bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.offset(leftM);
+            make.right.offset(-80);
+            make.height.offset(1);
+            make.bottom.equalTo(textField).offset(1);
+        }];
         i++;
     }
     
@@ -92,6 +104,7 @@
 -(void)sure{
  
     NSMutableArray *arr = @[].mutableCopy;
+    
     int i = 0;
     
     for (UITextField *textFiled in _textFiledArr) {

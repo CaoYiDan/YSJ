@@ -92,8 +92,8 @@
 
 -(NSDictionary *)getCellDic{
     
-    NSDictionary *dic = @{@"cellH":@"76",
-                          @"orY":@"111",
+    NSDictionary *dic = @{cb_cellH:@"76",
+                          cb_orY:@"111",
                           @"arr":@[
                                   
                                   @{

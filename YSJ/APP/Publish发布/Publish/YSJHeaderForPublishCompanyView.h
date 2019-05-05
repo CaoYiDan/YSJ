@@ -9,7 +9,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef  void (^headerBlock) (CGFloat h);
+
 @interface YSJHeaderForPublishCompanyView : UICollectionReusableView
+
+/*self.block
+ 返回 0 ,约定的是点击了“添加老师”按钮
+ 返回 不是0 ,约定的返回的“h” 是添加图片引发的header的高度的动态变化高度
+ */
+@property (nonatomic,copy) headerBlock block;
 
 @end
 

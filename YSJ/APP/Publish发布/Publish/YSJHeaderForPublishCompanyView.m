@@ -4,7 +4,6 @@
 //
 //  Created by xujf on 2019/4/30.
 //  Copyright © 2019年 lisen. All rights reserved.
-//
 
 #import "YSJAddTeacherVC.h"
 #import "ZLPhotoActionSheet.h"
@@ -115,6 +114,7 @@
     WeakSelf;
     __typeof(photoView)weakPhotoView=photoView;
     photoView .clickblock=^(NSInteger tag){
+        //这里的tag ，其实是按图片的高度赋值的，
         if (tag == 110) {
             
             [self showWithPreview:NO];
@@ -122,6 +122,12 @@
         }else if (tag >120){
             [UIView animateWithDuration:0.3 animations:^{
                 weakSelf.middleView.frameHeight = tag;
+                
+                /*self.block
+                 返回 0 ,约定的是点击了“添加老师”按钮
+                 返回 不是0 ,约定的返回的“h” 是添加图片引发的header的高度的动态变化高度
+                 */
+                !weakSelf.block?:weakSelf.block(tag-120);
             }];
         }else{
             [weakSelf.lastSelectAssets removeObjectAtIndex:tag];
@@ -148,7 +154,7 @@
         
         _bottomView=[[UIView alloc]init];
         [self  addSubview:self.bottomView];
-        _bottomView.backgroundColor = [UIColor brownColor];
+        _bottomView.backgroundColor = [UIColor whiteColor];
         [_bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.offset(0);
             make.top.equalTo(_middleView.mas_bottom).offset(0);
@@ -220,7 +226,7 @@
     actionSheet.allowSelectLivePhoto = NO;
     actionSheet.allowForceTouch = NO;
     //如果调用的方法没有传sender，则该属性必须提前赋值
-    actionSheet.sender = self;
+    actionSheet.sender = [SPCommon getCurrentVC];
     
     actionSheet.arrSelectedAssets = self.lastSelectAssets;
     
@@ -238,8 +244,14 @@
     
     return actionSheet;
 }
+
 -(void)add{
-    YSJAddTeacherVC *vc = [[YSJAddTeacherVC alloc]init];
-    [[SPCommon getCurrentVC].navigationController pushViewController:vc animated:YES];
+    
+    /*self.block
+    返回 0 ,约定的是点击了“添加老师”按钮
+    返回 不是0 ,约定的返回的“h” 是添加图片引发的header的高度的动态变化高度
+     */
+    !self.block?:self.block(0.0);
 }
+
 @end

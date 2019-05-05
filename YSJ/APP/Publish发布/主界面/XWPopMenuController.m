@@ -55,7 +55,7 @@
         
         _ary = [NSArray array];
         
-        _ary = @[@"fb_zq",@"fb_zr",@"fb_zr"];
+        _ary = @[@"xuqiu",@"sijiao",@"jigoufabu"];
     }
     
     return _ary;
@@ -284,7 +284,7 @@
     if (btn.tag == 1000) {
         
         YSJPublish_RequementVC *vc = [[YSJPublish_RequementVC alloc]init];
-//                [self.navigationController pushViewController:vc animated:YES];
+        [self.navigationController pushViewController:vc animated:YES];
         
     }else if(btn.tag == 1001){
         

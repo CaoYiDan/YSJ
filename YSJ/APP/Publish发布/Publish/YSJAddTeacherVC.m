@@ -67,11 +67,11 @@
 
 -(NSDictionary *)getCellDic{
     
-    NSDictionary *dic = @{@"cellH":@"76",
-                          @"orY":@"151",
-                          @"arr":@[
+    NSDictionary *dic = @{cb_cellH:@"76",
+                          cb_orY:@"151",
+                         cb_cellArr:@[
                                   @{
-                                      @"type":@(CellPopCouserChosed),
+                                      @"type":@(CellPopNormal),
                                       @"title":@"老师姓名",
                                       },
                                   @{
@@ -85,8 +85,8 @@
                                       @"title":@"老师介绍",
                                       
                                       },@{
-                                      @"type":@(CellPopNormal),
-                                      @"title":@"老师标签",
+                                      cb_type:@(CellPushVC),
+                                      cb_title:@"老师标签",
                                       
                                       },
                                   ]

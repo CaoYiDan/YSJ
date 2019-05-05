@@ -12,8 +12,8 @@
 #import "YSJPopTeachTypeView.h"
 #import "YSJPopTextView.h"
 #import "LGTextView.h"
-#import "SPPublishVC.h"
-#import "YSJChoseTagsView.h"
+#import "YSJVDetailForTeacherPublishVC.h"
+#import "YSJChoseTagsVC.h"
 #import "YSJFactoryForCellBuilder.h"
 
 #define cellH 76
@@ -73,7 +73,7 @@
     _builder = builder;
     
     _scroll = [builder createViewWithDic:[self getCellDic]];
-    _scroll.contentSize = CGSizeMake(0, 1300);
+    _scroll.contentSize = CGSizeMake(0, 1000);
     [self.view addSubview:_scroll];
     
     //首次选中（）
@@ -87,9 +87,9 @@
 
 -(NSDictionary *)getCellDic{
     
-    NSDictionary *dic = @{@"cellH":@"76",
-                          @"orY":@"230",
-                          @"arr":@[
+    NSDictionary *dic = @{cb_cellH:@"76",
+                          cb_orY:@"230",
+                         cb_cellArr:@[
                                   @{
                                       @"type":@(CellPopCouserChosed),
                                       @"title":@"分类",
@@ -102,7 +102,7 @@
                                   @{
                                       @"type":@(CellPopMoreTextFiledView),
                                       @"title":@"课程价格",
-                                      @"arr":@"现价,原价"
+                                      @"arr":@"现价,原价,拼单价"
                                       },
                                   
                                   @{
@@ -156,7 +156,7 @@
     
     WeakSelf;
     [xuTextTitle addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
-        SPPublishVC *vc = [[SPPublishVC alloc]init];
+        YSJVDetailForTeacherPublishVC *vc = [[YSJVDetailForTeacherPublishVC alloc]init];
         [weakSelf.navigationController pushViewController:vc animated:YES];
     }];
     
@@ -270,7 +270,7 @@
 
 -(void)next{
     
-    YSJChoseTagsView *vc = [[YSJChoseTagsView alloc]init];
+    YSJChoseTagsVC *vc = [[YSJChoseTagsVC alloc]init];
     [self.navigationController pushViewController:vc animated:YES];
     
     

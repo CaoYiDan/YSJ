@@ -73,11 +73,11 @@
     _builder = builder;
     
     _scroll = [builder createViewWithDic:[self getCellDic]];
-    _scroll.contentSize = CGSizeMake(0, 1300);
+    _scroll.contentSize = CGSizeMake(0, 1000);
     [self.view addSubview:_scroll];
     
     //首次选中（）
-    [_builder publishForTeachOneByOne];
+//    [_builder publishForTeachOneByOne];
     
     [self topView];
     
@@ -87,15 +87,15 @@
 
 -(NSDictionary *)getCellDic{
     
-    NSDictionary *dic = @{@"cellH":@"76",
-                          @"orY":@"230",
-                          @"arr":@[
+    NSDictionary *dic = @{cb_cellH:@"76",
+                          cb_orY:@"230",
+                         cb_cellArr:@[
                                   @{
                                       @"type":@(CellPopCouserChosed),
                                       @"title":@"分类",
                                       },
                                   @{
-                                      @"type":@(CellPopNormal),
+                                      @"type":@(CellPopTextView),
                                       @"title":@"课程特色",
                                       },
                                   
@@ -111,8 +111,8 @@
                                       },
                                   
                                   @{
-                                      @"type":@(CellPopNormal),
-                                      @"title":@"课程人数",
+                                      @"type":@(CellPopMoreTextFiledView),
+                                      @"title":@"课程人数", @"arr":@"最少人数,最多人数"
                                       },
                                   
                                   @{
@@ -236,9 +236,19 @@
 }
 
 -(void)typeClick:(UIButton *)btn{
-    
+
     if (self.selectedBtn==btn) {
+        //如果是同一个按钮，则不做操作
         return;
+    }
+    
+    //如果是点击了第三个按钮，则是 试听课程
+    if (btn.tag==2) {
+        [_builder publishForCompanyFree];
+    }else if( self.selectedBtn.tag==2){//如果上次点击的是 第三个按钮，到这里，这里点击的肯定是第一个或者第二个按钮
+        [_builder publishForCompanyFamousCourseOrJingPin];
+    }else{
+        //其他的，由于明星课程 和 精品课程 是一样的布局 所以不用其他操作
     }
     
     self.selectedBtn.selected = NO;
@@ -246,11 +256,8 @@
     self.selectedBtn = btn;
     _mySilderLine.centerX = btn.centerX;
     
-    if (btn.tag==1) {
-        [_builder publishForTeachPinDan];
-    }else{
-        [_builder publishForTeachOneByOne];
-    }
+   
+    
 }
 
 -(void)setBottomView{

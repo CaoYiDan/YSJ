@@ -30,7 +30,7 @@
 #import "SPLZSHeader.h"
 #import "SPApi.h"
 #import "YSJPopViewProtocol.h"
-
+#import "YSJCellBuilderDefine.h"
 #import "YSJTagsView.h"
 #import "UILabel+Extension.h"
 #import "SPCommon.h"

@@ -14,7 +14,7 @@
 #import "LGComposePhotosView.h"
 #import "SPPublishLimitVC.h"
 #import "SPPublishLocationVC.h"
-
+#import "YSJChoseTeachersVC.h"
 #import "YSJDetailForCompanyPublishVC.h"
 #import "ZLPhotoActionSheet.h"
 
@@ -26,7 +26,7 @@
 //collection
 @property(nonatomic,strong)UICollectionView*collectionview;
 @property (nonatomic, strong) UIView *headerView;
-
+@property(nonatomic,assign) CGFloat headerH;
 
 @property (nonatomic,strong) NSMutableArray *listArr;
 
@@ -45,14 +45,14 @@
 {
     NSInteger _limitIndex;
     NSInteger _locationIndex;
-    
+   
     BOOL _locationEnabled;
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.title = @"课程详情";
-    
+    _headerH = 380;
     [self creatCollection];
 }
 
@@ -438,14 +438,26 @@
 
 // 要先设置表头大小
 - (CGSize)collectionView:(UICollectionView*)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
-    CGSize size = CGSizeMake([UIScreen mainScreen].bounds.size.width, 380);
+    CGSize size = CGSizeMake([UIScreen mainScreen].bounds.size.width, _headerH);
     return size;
 }
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
     YSJHeaderForPublishCompanyView *view = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"YSJHeaderForPublishCompanyViewID" forIndexPath:indexPath];
     if (!view) {
-        view = [[YSJHeaderForPublishCompanyView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, 380)];
+        view = [[YSJHeaderForPublishCompanyView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, _headerH)];
     }
+    WeakSelf;
+    view.block = ^(CGFloat h) {
+        //返回 0 ,约定的是点击了“添加老师”按钮
+        if (h==0) {
+            YSJChoseTeachersVC *vc = [[YSJChoseTeachersVC alloc]init];
+            [weakSelf.navigationController pushViewController:vc animated:YES];
+        }else{
+             //返回 不是0 ,约定的返回的“h” 是添加图片引发的header的高度的动态变化高度
+            weakSelf.headerH = 380+h;
+            [weakSelf.collectionview reloadData];
+        }
+    };
     return view;
 }
 
@@ -453,8 +465,8 @@
     
 }
 
-
 -(void)creatCollection{
+    
     // 创建瀑布流布局
     UICollectionViewFlowLayout*layout = [[UICollectionViewFlowLayout alloc] init];
     

@@ -28,12 +28,15 @@ typedef enum
     CellPopTextView,//
     /** 系统自带的sheet */
     CellPopSheet,//
+    /**pushVC*/
+    CellPushVC,
     /** //课程选择器 */
     CellPopCouserChosed,
     /** 开关switch */
     CellSwitch,
     /** 输入textField,带placeholder的那种*/
     CellTextFiled,
+ 
     /** 分割线 */
     CellPopLine,//
     /** 展示多个textFiled */

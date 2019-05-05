@@ -1,20 +1,19 @@
 //
-//  YSJChoseTagsView.m
+//  YSJChoseTagsVC.m
 //  SmallPig
 //
 //  Created by xujf on 2019/4/30.
 //  Copyright © 2019年 lisen. All rights reserved.
-//
 
 #import "SPProfileCommentCell.h"
 #import "YSJChoseTagCell.h"
-#import "YSJChoseTagsView.h"
+#import "YSJChoseTagsVC.h"
 #import "FFDifferentWidthTagModel.h"
-@interface YSJChoseTagsView ()<UITableViewDelegate,UITableViewDataSource>
+@interface YSJChoseTagsVC ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong) UITableView *tableView;
 @end
 
-@implementation YSJChoseTagsView
+@implementation YSJChoseTagsVC
 {
     //标签模型
     FFDifferentWidthTagModel *_commentModel;
@@ -26,10 +25,8 @@
     
     self.title = @"选择标签";
     
-    
     _commentModel = [FFDifferentWidthTagModel new];
 
-    
     NSMutableArray *tagsArrM = [NSMutableArray array];
     NSArray *arr = @[@"fdfjsfkj将放到事就烦",@"fjdsjfls九分裤大V是"];
     for (int j = 0; j < arr.count; j++){
@@ -123,13 +120,24 @@
 
 -(void)addTagClick{
     
+    WeakSelf;
+    
+    [SPCommon creatAlertControllerTitle:@"新标签" subTitle:@"" _alertSure:^(NSString *text ) {
+        NSMutableArray *arr = _commentModel.tagsArrM;
+        [arr addObject:text];
+        
+        _commentModel = [FFDifferentWidthTagModel new];
+         _commentModel.tagsArrM = arr;
+        [weakSelf.tableView reloadData];
+        
+    } keyBoard:UIKeyboardTypeDefault];
 }
 
 -(UITableView *)tableView
 {
     if (!_tableView )
     {
-        _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0,0, SCREEN_W, SCREEN_H-60-KBottomHeight) style:UITableViewStyleGrouped];
+        _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0,-20, SCREEN_W, SCREEN_H-60-KBottomHeight) style:UITableViewStyleGrouped];
         _tableView.delegate = self;
         _tableView.dataSource = self;
         _tableView.backgroundColor = [UIColor whiteColor];
@@ -141,15 +149,5 @@
     
     return _tableView;
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

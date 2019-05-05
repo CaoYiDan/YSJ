@@ -51,6 +51,19 @@ NS_ASSUME_NONNULL_BEGIN
  */
 -(void)publishForTeachPinDan;
 
+
+#pragma mark - 专门为 发布机构 写的方法
+
+/**
+ 明星课程 he 精品课程 布局一样
+ */
+-(void)publishForCompanyFamousCourseOrJingPin;
+
+/**
+ 试听课程
+ */
+-(void)publishForCompanyFree;
+
 @end
 
 NS_ASSUME_NONNULL_END

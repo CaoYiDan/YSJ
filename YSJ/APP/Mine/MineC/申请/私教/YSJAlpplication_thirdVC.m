@@ -80,9 +80,9 @@
 
 -(NSDictionary *)getCellDic{
     
-    NSDictionary *dic = @{@"cellH":@"76",
-                          @"orY":@"111",
-                          @"arr":@[
+    NSDictionary *dic = @{cb_cellH:@"76",
+                          cb_orY:@"111",
+                         cb_cellArr:@[
                                   @{
                                       @"type":@(CellPopCouserChosed),
                                       @"title":@"可授课程",

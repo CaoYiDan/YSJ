@@ -10,6 +10,7 @@
 #import "YSJPopSheetView.h"
 #import "YSJPopMoreTextFiledView.h"
 #import "YSJPopProtocol.h"
+#import "YSJPushVCArrowView.h"
 #import "YSJPopViewProtocol.h"
 #import "YSJFactoryForCellBuilder.h"
 #import "YSJCommonSwitchView.h"
@@ -23,15 +24,16 @@
     CGFloat orY;
     CGFloat cellH;
     NSMutableArray *_cellViewArr;
+    NSMutableArray *_sepLineViewArr;//分割线数组
 }
 
 -(UIScrollView *)createViewWithDic:(NSDictionary *)dic
 {
     orY = [dic[@"orY"] doubleValue];
     
-    cellH = [dic[@"cellH"] doubleValue];
+    cellH = [dic[cb_cellH] doubleValue];
     
-    NSArray *cellArr = dic[@"arr"];
+    NSArray *cellArr = dic[cb_cellArr];
     
     UIScrollView  *_scroll = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, kWindowH)];
     _scrollView = _scroll;
@@ -42,13 +44,14 @@
     _tagView = _scroll;
     
     _cellViewArr = @[].mutableCopy;
+    _sepLineViewArr = @[].mutableCopy;
     
     for (NSDictionary *cellDic in cellArr) {
         
         
         NSInteger type = [cellDic[@"type"] integerValue];
         
-        if ( type==CellPopNormal || type == CellPopTextView || type == CellPopSheet|| type == CellPopCouserChosed) {
+        if ( type==CellPopNormal || type == CellPopTextView || type == CellPopSheet|| type == CellPopCouserChosed || type == CellPushVC) {
             
             YSJLSBaseCommonCellView *arrow = nil;
             if (type==CellPopNormal) {
@@ -68,6 +71,10 @@
             }else if (type == CellPopCouserChosed){
                 
                 arrow =[[YSJPopCourserCellView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
+            }else if (type==CellPushVC) {
+                
+                arrow =[[YSJPushVCArrowView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
+                arrow.otherStr = cellDic[cb_pushvc];
             }
             
             [_scroll addSubview:arrow];
@@ -98,7 +105,7 @@
         }else if (type == CellPopMoreTextFiledView) {
             
             YSJPopMoreTextFiledView *arrow = [[YSJPopMoreTextFiledView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
-            arrow.otherStr = cellDic[@"arr"];
+            arrow.otherStr = cellDic[@"moreTextFiledArr"];
             [_scroll addSubview:arrow];
             orY+=cellH;
             self.lastBottomView = arrow;
@@ -108,22 +115,16 @@
         }else if ([cellDic[@"type"] integerValue]==CellPopLine) {
             
             CGFloat lineH =[cellDic[@"lineH"] doubleValue];
-            UIView *bottomLine = [[UIView alloc]init];
+            UIView *bottomLine = [[UIView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, lineH)];
             bottomLine.backgroundColor = grayF2F2F2;
             [_scroll addSubview:bottomLine];
-            [bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.left.offset(0);
-                make.width.offset(kWindowW);
-                make.height.offset(lineH);
-                make.top.offset(orY);
-            }];
-            
+           
             self.lastBottomView =bottomLine;
             
             orY+=lineH;
             
             //注意，lineView  并没有加入到_cellViewArr数组中;
-            //[_cellViewArr addObject:arrow];
+            [_sepLineViewArr addObject:bottomLine];
             
         }
         
@@ -242,7 +243,9 @@
             //移除
             [vi removeFromSuperview];
             //生成新的cell
-            YSJPopTextFiledView *newCell = [[YSJPopTextFiledView alloc]initWithFrame:frame withTitle:@"拼单人数" subTitle:@""];
+            YSJPopMoreTextFiledView *newCell = [[YSJPopMoreTextFiledView alloc]initWithFrame:frame withTitle:@"拼单人数" subTitle:@""];
+            
+            newCell.otherStr = @"最少人数,最多人数";
             [_scrollView addSubview:newCell];
             //数组插入原先的位置
             [_cellViewArr insertObject:newCell atIndex:4];
@@ -250,6 +253,69 @@
             break;
         }
         i++;
+    }
+}
+
+#pragma mark - 专门为 发布机构 写的方法
+
+/**
+  明星课程 he 精品课程 布局一样
+ */
+-(void)publishForCompanyFamousCourseOrJingPin{
+    int i=0;
+    
+    for (UIView *vi in _cellViewArr) {
+        
+        if (i==2|| i==4) {
+            
+        }else{
+            
+            [UIView animateWithDuration:0.2 animations:^{
+                
+                if (i==3) {
+                    vi.originY += cellH;
+                }else if (i>3){
+                    vi.originY += cellH*2;
+                }
+            }];
+        }
+        i++;
+    }
+    
+    //分割线的变动
+    for (UIView *line in _sepLineViewArr) {
+        line.originY += cellH*2;
+    }
+}
+
+
+/**
+ 试听课程
+ */
+-(void)publishForCompanyFree{
+    
+    int i=0;
+    
+    for (UIView *vi in _cellViewArr) {
+        
+        if (i==2|| i==4) {
+            
+        }else{
+            [UIView animateWithDuration:0.2 animations:^{
+               
+                if (i==3) {
+                     vi.originY -= cellH;
+                }else if (i>3){
+                    vi.originY -= cellH*2;
+                }
+            }];
+        }
+        i++;
+    }
+    
+    //分割线的变动
+    for (UIView *line in _sepLineViewArr) {
+        line.originY -= cellH*2;
     }
 }
 

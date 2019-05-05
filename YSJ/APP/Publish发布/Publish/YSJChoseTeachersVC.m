@@ -6,37 +6,29 @@
 //  Copyright © 2017年 XJS_oxpc. All rights reserved.
 //
 
+#import "YSJHeaderForPublishCompanyView.h"
+#import "YSJTeacherForCompanyCollectionCell.h"
 #import "YSJPopTextFiledView.h"
 #import "LGTextView.h"
-#import "YSJPopMoreTextFiledView.h"
 #import "SLLocationHelp.h"
 #import "LGComposePhotosView.h"
 #import "SPPublishLimitVC.h"
 #import "SPPublishLocationVC.h"
-#import "BDImagePicker.h"
-#import "YSJVDetailForTeacherPublishVC.h"
+#import "YSJAddTeacherVC.h"
+#import "YSJChoseTeachersVC.h"
 #import "ZLPhotoActionSheet.h"
 
 #import "SPCommon.h"
 //定位服务
 #import <CoreLocation/CoreLocation.h>
 
-@interface YSJVDetailForTeacherPublishVC ()<UITextViewDelegate>
+@interface YSJChoseTeachersVC ()<UITextViewDelegate,UICollectionViewDataSource,UICollectionViewDelegate>
+//collection
+@property(nonatomic,strong)UICollectionView*collectionview;
+@property (nonatomic, strong) UIView *headerView;
 
-@property (nonatomic, strong) UIScrollView *scrollView;
-@property (nonatomic, strong) UIView *topView;
-@property (nonatomic, strong) UIView *middleView;
-@property (nonatomic, strong) UIView *bottomView;
-@property (nonatomic, strong) UILabel *cityLab;
-@property (nonatomic, strong) UILabel *limitLab;
-@property(nonatomic,weak)LGComposePhotosView *photoView;
-@property(nonatomic,weak)LGTextView *textView;
-@property(nonatomic,copy)NSString *limitStr;
-@property (nonatomic, strong) NSMutableArray *imgArr;
 
-@property (nonatomic, strong) NSMutableArray<PHAsset *> *lastSelectAssets;
-
-@property (nonatomic, strong) NSMutableArray *photos;
+@property (nonatomic,strong) NSMutableArray *listArr;
 
 /**
  上课时间
@@ -45,10 +37,11 @@
 /**
  课时数
  */
-@property (nonatomic,strong) YSJPopMoreTextFiledView *classNums;
+@property (nonatomic,strong) YSJPopTextFiledView *classNums;
+
 @end
 
-@implementation YSJVDetailForTeacherPublishVC
+@implementation YSJChoseTeachersVC
 {
     NSInteger _limitIndex;
     NSInteger _locationIndex;
@@ -58,31 +51,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = @"课程详情";
+    self.title = @"选择老师";
     
-//    [self getLocation];//请求位置信息
+    [self creatCollection];
     
-    self.limitStr = @"ALL";
-    
-    _limitIndex = 0;
-    
-    [self.view addSubview:self.scrollView];
-    [self.scrollView addSubview:self.topView];
-    [self.scrollView addSubview:self.middleView];
-    self.bottomView.backgroundColor = KWhiteColor;
-    [self  setSaveButton];
+    [self setBottomView];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
-}
-
--(NSMutableArray *)imgArr{
-    if (!_imgArr) {
-        _imgArr = [[NSMutableArray alloc]init];
-    }
-    return _imgArr;
 }
 
 #pragma  mark - setter
@@ -121,140 +99,14 @@
     
 }
 
-- (UIScrollView *)scrollView{
-    if (!_scrollView) {
-        _scrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_W, SCREEN_H)];
-        _scrollView.contentSize=CGSizeMake(0, 900);
+- (UIView *)headerView{
+    if (!_headerView) {
+        _headerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_W, 500)];
     }
-    return _scrollView;
+    return _headerView;
 }
 
-//上半部分创建
-- (UIView *)topView{
-    if (!_topView) {
-        _topView =[[UIView alloc]initWithFrame:CGRectMake(0,0, SCREEN_W, 156)];
-        _topView.backgroundColor = [UIColor whiteColor];
-        [self topUI];
-    }
-    return _topView;
-}
 
-- (void)topUI{
-    
-    //需求内容
-    UILabel * xuTextTitle = [[UILabel alloc]init];
-    xuTextTitle.font = font(16);
-    xuTextTitle.text = @"课程详情";
-    xuTextTitle.textColor = KBlack333333;
-    [self.topView addSubview:xuTextTitle];
-    [xuTextTitle mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.offset(kMargin);
-        make.height.offset(20);
-        make.top.offset(18);
-    }];
-    
-    LGTextView *textView=[[LGTextView alloc]initWithFrame:CGRectMake(kMargin, 56, SCREEN_W-2*kMargin, 84)];
-    self.textView = textView;
-    [self.topView addSubview:textView];
-    textView.placeholderColor = [UIColor hexColor:@"BBBBBB"];
-    textView.textColor = black666666;
-    textView.delegate = self;
-    textView.font  = font(14);
-    textView.placeholder = @"详细描述课程内容\n1.描述课程内容特色、学习目标、教学理念等\n2.描述老师授课特色\n3.描述课程为学生带来的影响是什么";
-    [self.topView addSubview:textView];
-    
-    UIView *bottomLine = [[UIView alloc]init];
-    bottomLine.backgroundColor = grayF2F2F2;
-    [self.topView addSubview:bottomLine];
-    [bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.offset(kMargin);
-        make.width.offset(kWindowW);
-        make.height.offset(1);
-        make.bottom.offset(0);
-    }];
-}
-
-//中间视图创建
-- (UIView *)middleView{
-    if (!_middleView) {
-        _middleView=[[UIView alloc]initWithFrame:CGRectMake(0, self.topView.frameHeight+28, SCREEN_W, 120)];
-        _middleView.backgroundColor = [UIColor whiteColor];
-        [self middleUI];
-    }
-    return _middleView;
-}
-
-- (void)middleUI{
-    
-    LGComposePhotosView *photoView=[[LGComposePhotosView alloc]init];
-    [self.middleView addSubview:photoView];
-    self.photoView = photoView;
-    [photoView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.offset(0);
-    }];
-    photoView.photosAsset = self.lastSelectAssets;
-    WeakSelf;
-    __typeof(photoView)weakPhotoView=photoView;
-    photoView .clickblock=^(NSInteger tag){
-        if (tag == 110) {
-            
-            [self showWithPreview:NO];
-            
-        }else if (tag >120){
-            [UIView animateWithDuration:0.3 animations:^{
-                weakSelf.middleView.frameHeight = tag;
-            }];
-        }else{
-            [weakSelf.lastSelectAssets removeObjectAtIndex:tag];
-            [weakSelf.photos removeObjectAtIndex:tag];
-            [weakSelf.photoView setImgs:weakSelf.photos];
-        }
-    };
-    
-    UIView *bottomLine = [[UIView alloc]init];
-    bottomLine.backgroundColor = grayF2F2F2;
-    [self.middleView addSubview:bottomLine];
-    [bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.offset(kMargin);
-        make.width.offset(kWindowW);
-        make.height.offset(1);
-        make.bottom.offset(0);
-    }];
-}
-
-//下部分视图创建
--(UIView *)bottomView{
-    
-    if (!_bottomView) {
-        
-        _bottomView=[[UIView alloc]init];
-        [self.scrollView addSubview:self.bottomView];
-        
-        [_bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.offset(0);
-            make.top.equalTo(_middleView.mas_bottom).offset(0);
-            make.size.mas_offset(CGSizeMake(SCREEN_W-20, normaelCellH*2));
-        }];
-        
-        [self bottomUI];
-    }
-    return _bottomView;
-}
-
-- (void)bottomUI{
-    
-    YSJPopTextFiledView *cell = [[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, 0, kWindowW,normaelCellH) withTitle:@"上课时间" subTitle:@""];
-    self.classTime = cell;
-    [self.bottomView addSubview:cell];
-    
-    
-    //生成新的cell
-    YSJPopMoreTextFiledView *cell2 = [[YSJPopMoreTextFiledView alloc]initWithFrame:CGRectMake(0, normaelCellH, kWindowW,normaelCellH) withTitle:@"课时数" subTitle:@""];
-    cell2.otherStr = @"最少课时数,建议课时数";
-    self.classNums = cell2;
-    [self.bottomView addSubview:cell2];
-    
-}
 
 -(void)setSaveButton{
     
@@ -298,10 +150,7 @@
     //    [self dismissViewControllerAnimated:YES completion:nil];
     [self.navigationController popViewControllerAnimated:YES];
 }
-//block声明方法
--(void)toDissmissSelf:(dismissBlock)block{
-    self.mDismissBlock = block;
-}
+
 #pragma mark - textViewDelegate
 
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
@@ -330,83 +179,39 @@
     return l+(int)ceilf((float)(a+b)/2.0);
 }
 
-#pragma  mark - -----------------调取相册-----------------
 
-- (void)showWithPreview:(BOOL)preview
-{
-    ZLPhotoActionSheet *a = [self getPas];
-    
-    if (preview) {
-        [a showPreviewAnimated:YES];
-    } else {
-        [a showPhotoLibrary];
-    }
-}
-
-- (ZLPhotoActionSheet *)getPas
-{
-    ZLPhotoActionSheet *actionSheet = [[ZLPhotoActionSheet alloc] init];
-    
-    actionSheet.maxSelectCount =9;
-    
-    //设置在内部拍照按钮上实时显示相机俘获画面
-    actionSheet.showCaptureImageOnTakePhotoBtn = NO;
-    actionSheet.allowSelectImage =YES;
-    actionSheet.allowSelectGif = NO;
-    actionSheet.allowSelectVideo = NO;
-    actionSheet.allowSelectLivePhoto = NO;
-    actionSheet.allowForceTouch = NO;
-    //如果调用的方法没有传sender，则该属性必须提前赋值
-    actionSheet.sender = self;
-    
-    actionSheet.arrSelectedAssets = self.lastSelectAssets;
-    
-    weakify(self);
-    
-    [actionSheet setSelectImageBlock:^(NSArray<UIImage *> * _Nonnull images, NSArray<PHAsset *> * _Nonnull assets, BOOL isOriginal) {
-        strongify(weakSelf);
-        //for (UIImage *img in images) {
-        //  [strongSelf.photoView addPhoto:img];
-        //}
-        [strongSelf.photoView setImgs:images];
-        strongSelf.photos = images.mutableCopy;
-        strongSelf.lastSelectAssets = assets.mutableCopy;
-    }];
-    
-    return actionSheet;
-}
 
 #pragma  mark - -----------------发送-----------------
 
-- (void)onRightClick{
-    
-    if (isEmptyString([StorageUtil getCity])) {
-        [self locationAlterShow];
-        return;
-    }
-    
-    if (isEmptyString(self.textView.text)) {
-        Toast(@"写一写您此时此刻的感受吧");
-        return;
-    }
-    
-    [self.view endEditing:YES];
-    
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    
-    self.rightButton.enabled = NO;
-    
-    NSMutableArray *arr = [[NSMutableArray alloc]init];
-    
-    for (UIView *vi  in self.photoView.subviews) {
-        if ([vi isKindOfClass:[UIImageView class]]) {
-            [arr addObject:vi];
-        }
-    }
-    //上传图片获取地址
-    [self upDateHeadIcon:arr];
-    
-}
+//- (void)onRightClick{
+//
+//    if (isEmptyString([StorageUtil getCity])) {
+//        [self locationAlterShow];
+//        return;
+//    }
+//
+//    if (isEmptyString(self.textView.text)) {
+//        Toast(@"写一写您此时此刻的感受吧");
+//        return;
+//    }
+//
+//    [self.view endEditing:YES];
+//
+//    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//
+//    self.rightButton.enabled = NO;
+//
+//    NSMutableArray *arr = [[NSMutableArray alloc]init];
+//
+//    for (UIView *vi  in self.photoView.subviews) {
+//        if ([vi isKindOfClass:[UIImageView class]]) {
+//            [arr addObject:vi];
+//        }
+//    }
+//    //上传图片获取地址
+//    [self upDateHeadIcon:arr];
+//
+//}
 
 #pragma  mark 上传图片
 - (void)upDateHeadIcon:(NSArray *)photos{
@@ -426,10 +231,10 @@
     
     //    self.imgArr = [NSMutableArray arrayWithCapacity:photos.count];
     
-    for (UIImageView *img  in photos) {
-        [self.imgArr addObject:@""];
-    }
-    
+    //    for (UIImageView *img  in photos) {
+    //        [self.imgArr addObject:@""];
+    //    }
+    //
     for (int i=0;i<photos.count;i++) {
         
         dispatch_group_enter(group);
@@ -475,9 +280,9 @@
             NSDictionary*dict=[self dictionaryWithJsonString:result2];
             NSLog(@"%@",dict);
             // NSMutableArray 是线程不安全的，所以加个同步锁
-            @synchronized (self.imgArr) {
-                [self.imgArr replaceObjectAtIndex:i withObject:dict[@"image"]];
-            }
+            //            @synchronized (self.imgArr) {
+            //                [self.imgArr replaceObjectAtIndex:i withObject:dict[@"image"]];
+            //            }
             
             dispatch_group_leave(group);
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -501,43 +306,43 @@
     NSMutableDictionary *paramenters= [[NSMutableDictionary alloc]init];
     
     NSMutableDictionary *contentDict= [[NSMutableDictionary alloc]init];
-    [contentDict setObject:_textView.text forKey:@"content"];
-    
+    //    [contentDict setObject:_textView.text forKey:@"content"];
+    //
     
     if (!isEmptyString([StorageUtil getCity])) {
         [contentDict setObject:@"" forKey:@"at"];
         [paramenters setObject:[StorageUtil getCity] forKey:@"city"];
     }
     
-    [contentDict setObject:self.imgArr forKey:@"imgs"];
-    [contentDict setObject:@"" forKey:@"subject"];
-    
-    [paramenters setObject:contentDict forKey:@"content"];
-    
-    [paramenters setObject:[SPCommon getLoncationDic] forKey:@"location"];
-    
-    [paramenters setObject:[_cityLab.text isEqualToString:@"所在位置"]?@"":_cityLab.text forKey:@"locationValue"];
-    
-    [paramenters setObject:self.limitStr forKey:@"receiver"];
-    
-    [paramenters setObject:@"CATEGORY" forKey:@"receiverType"];
-    
-    [paramenters setObject:[StorageUtil getCode] forKey:@"promulgator"];
-    NSLog(@"%@",paramenters);
-    [[HttpRequest sharedClient]httpRequestPOST:kUrlFeedAdd parameters:paramenters progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
-        Toast(@"发布成功");
-        //发送通知 ，刷新界面
-        [[NSNotificationCenter defaultCenter]postNotificationName:NotificationPublishFinish object:nil];
-        
-        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
-        
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-        
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        Toast(@"请检查网络是否错误");
-        self.rightButton.enabled = YES;
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-    }];
+    //    [contentDict setObject:self.imgArr forKey:@"imgs"];
+    //    [contentDict setObject:@"" forKey:@"subject"];
+    //
+    //    [paramenters setObject:contentDict forKey:@"content"];
+    //
+    //    [paramenters setObject:[SPCommon getLoncationDic] forKey:@"location"];
+    //
+    //    [paramenters setObject:[_cityLab.text isEqualToString:@"所在位置"]?@"":_cityLab.text forKey:@"locationValue"];
+    //
+    //    [paramenters setObject:self.limitStr forKey:@"receiver"];
+    //
+    //    [paramenters setObject:@"CATEGORY" forKey:@"receiverType"];
+    //
+    //    [paramenters setObject:[StorageUtil getCode] forKey:@"promulgator"];
+    //    NSLog(@"%@",paramenters);
+    //    [[HttpRequest sharedClient]httpRequestPOST:kUrlFeedAdd parameters:paramenters progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+    //        Toast(@"发布成功");
+    //        //发送通知 ，刷新界面
+    //        [[NSNotificationCenter defaultCenter]postNotificationName:NotificationPublishFinish object:nil];
+    //
+    //        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    //
+    //        [MBProgressHUD hideHUDForView:self.view animated:YES];
+    //
+    //    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+    //        Toast(@"请检查网络是否错误");
+    //        self.rightButton.enabled = YES;
+    //        [MBProgressHUD hideHUDForView:self.view animated:YES];
+    //    }];
 }
 
 #pragma  mark  将字符串转成字典
@@ -572,22 +377,173 @@
     SPPublishLocationVC *vc = [[SPPublishLocationVC alloc]init];
     vc.selectedIndex = _locationIndex;
     vc.publishLocationBlock = ^(NSString *result,NSInteger index){
-        self.cityLab.text = result;
-        self.locationCity = result;
+        
+        
         _locationIndex = index;
     };
     [self.navigationController pushViewController:vc animated:YES];
 }
 
 //谁可以看
+
 -(void)limit{
+    
     SPPublishLimitVC *vc = [[SPPublishLimitVC alloc]init];
     vc.selectedIndex = _limitIndex;
     vc.publishLimitBLock = ^(NSString *limitStr,NSString *limitText,NSInteger index){
-        self.limitStr = limitStr;
-        self.limitLab.text = limitText;
+        
         _limitIndex = index;
     };
     [self.navigationController pushViewController:vc animated:YES];
+}
+
+#pragma mark - UICollectionViewDelegate
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return 1;
+}
+
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+    return 22;
+    return self.listArr.count+1;
+}
+
+-(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if (indexPath.item==21) {
+        
+        UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"nothingCell" forIndexPath:indexPath];
+        
+        CGFloat imgWid = 70;
+        
+        CGFloat imgH = 70;
+        
+      UIImageView  *_img =  [[UIImageView alloc]initWithFrame:CGRectMake(cell.frameWidth/2-imgWid/2, 10, imgWid, imgH)];
+        _img.image = [UIImage imageNamed:@"add_btn7"];
+        _img.backgroundColor = KMainColor;
+        _img.contentMode = UIViewContentModeScaleAspectFill;
+        _img.layer.cornerRadius = 35;
+        _img.clipsToBounds = YES;
+        _img.clipsToBounds = YES;
+        
+        [cell addSubview:_img];
+        
+        return cell;
+        
+    }else{
+        
+    YSJTeacherForCompanyCollectionCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:YSJTeacherCollectionCellID forIndexPath:indexPath];
+    cell.dic = @{@"photo":@"",@"name":@"孙二娘",@"teaching_type":@"喝酒"};
+    //    cell.dic = self.listArr[indexPath.row];
+    //    cell.userModel= self.listArr[indexPath.row];
+    return cell;
+        
+    }
+    return nil;
+}
+
+-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+{
+    return UIEdgeInsetsMake(30, 10, 0, 10);
+}
+
+-(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
+{
+    return 10;
+    
+}
+
+-(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
+{
+    return 10;
+}
+
+
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if (indexPath.item == 21) {
+        YSJAddTeacherVC *vc = [[YSJAddTeacherVC alloc]init];
+        [self.navigationController pushViewController:vc animated:YES];
+        
+    }else{
+        
+    }
+  
+}
+
+-(void)creatCollection{
+    // 创建瀑布流布局
+    UICollectionViewFlowLayout*layout = [[UICollectionViewFlowLayout alloc] init];
+    
+    CGFloat cellH = 150;
+    
+    layout.itemSize = CGSizeMake(SCREEN_W/4, cellH);
+    layout.scrollDirection = UICollectionViewScrollDirectionVertical;
+    
+    _collectionview=[[UICollectionView alloc]initWithFrame:CGRectMake(0,0, kWindowW,kWindowH-SafeAreaTopHeight-KBottomHeight) collectionViewLayout:layout];
+    //代理
+    _collectionview.delegate=self;
+    _collectionview.dataSource=self;
+    _collectionview.backgroundColor=[UIColor whiteColor];
+    _collectionview.contentInset = UIEdgeInsetsMake(0, 0, KBottomHeight +80, 0); _collectionview.showsVerticalScrollIndicator = NO;
+ _collectionview.showsHorizontalScrollIndicator = NO;
+    
+    [_collectionview registerClass:[YSJTeacherForCompanyCollectionCell class] forCellWithReuseIdentifier:YSJTeacherCollectionCellID];
+    [_collectionview registerClass:[YSJHeaderForPublishCompanyView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"YSJHeaderForPublishCompanyViewID"];
+     [_collectionview registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"nothingCell"];
+    
+    [self.view addSubview:_collectionview];
+    
+}
+
+-(void)setBottomView{
+    
+    CGFloat btnW = (kWindowW-40-10)/2;
+    
+    //取消
+    UIButton *cancleBtn = [[UIButton alloc]init];
+    cancleBtn.backgroundColor = KWhiteColor;
+    [cancleBtn setTitle:@"取消" forState:0];
+    [cancleBtn setTitleColor:[UIColor hexColor:@"FE8600"] forState:0];
+    cancleBtn.layer.cornerRadius = 5;
+    cancleBtn.clipsToBounds = YES;
+    cancleBtn.titleLabel.font = font(16);
+    cancleBtn.layer.borderColor = [UIColor hexColor:@"FE8600"].CGColor;
+    cancleBtn.layer.borderWidth = 1.0;
+   
+    [cancleBtn addTarget:self action:@selector(cancle) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:cancleBtn];
+    [cancleBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.offset(20);
+        make.width.offset(btnW);
+        make.height.offset(50);
+        make.bottom.offset(-KBottomHeight-25);
+    }];
+    
+    //确定
+    UIButton *sureBtn = [[UIButton alloc]init];
+    sureBtn.backgroundColor = KMainColor;
+    [sureBtn setTitle:@"确定" forState:0];
+    sureBtn.layer.cornerRadius = 5;
+    sureBtn.clipsToBounds = YES;
+    sureBtn.titleLabel.font = font(16);
+    [sureBtn addTarget:self action:@selector(sure) forControlEvents:UIControlEventTouchDown];
+  
+    [self.view addSubview:sureBtn];
+    [sureBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(cancleBtn.mas_right).offset(10);
+        make.width.offset(btnW);
+        make.height.offset(50);
+        make.bottom.offset(-KBottomHeight-25);
+    }];
+    
+}
+
+-(void)cancle{
+    
+}
+
+-(void)sure{
+    
 }
 @end
