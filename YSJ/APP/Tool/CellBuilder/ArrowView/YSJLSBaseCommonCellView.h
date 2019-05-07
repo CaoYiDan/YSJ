@@ -14,10 +14,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#define normaelCellH 76
+#define normalCellH 76
 
 @interface YSJLSBaseCommonCellView : UIView <YSJPopViewProtocol>
 
+/**
+ 附加信息
+ */
 @property (nonatomic,copy) NSString *otherStr;
 
 @property (nonatomic,copy) NSString *rightSubTitle;

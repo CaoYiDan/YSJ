@@ -25,40 +25,36 @@
     
     self.title = @"选择标签";
     
-    _commentModel = [FFDifferentWidthTagModel new];
-
-    NSMutableArray *tagsArrM = [NSMutableArray array];
-    NSArray *arr = @[@"fdfjsfkj将放到事就烦",@"fjdsjfls九分裤大V是"];
-    for (int j = 0; j < arr.count; j++){
-        
-        [tagsArrM addObject:arr[j]];
-    }
+    [self  getTagRequestisScu:^(BOOL isScu) {
+        [self.view addSubview:self.tableView];
+    }];
     
-    _commentModel.tagsArrM = tagsArrM;
-    
-    [self.view addSubview:self.tableView];
+    [self setBottomView];
 }
 
 #pragma mark - 获取标签
 
 - (void)getTagRequestisScu:(void(^)(BOOL isScu))requestisScu{
     
-  
-    [[HttpRequest sharedClient]httpRequestGET:[NSString stringWithFormat:@"%@?teacherid=%@",YTeacherPingJia,@""] parameters:nil progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+    NSString *url = [NSString stringWithFormat:@"%@?type=%@",YLables,self.type];
+    url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+    [[HttpRequest sharedClient]httpRequestGET:url parameters:nil progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         
         NSLog(@"%@",responseObject);
         
-      
-        NSArray *arr = responseObject[@"label_count"];
+        NSArray *arr = responseObject[@"label_list"];
         
         _commentModel = [FFDifferentWidthTagModel new];
-        
-        _commentModel.reputation = [responseObject[@"reputation"] doubleValue];
+        _commentModel.selectedArr = @[].mutableCopy;
         
         NSMutableArray *tagsArrM = [NSMutableArray array];
+        
         for (int j = 0; j < arr.count; j++){
             
-            [tagsArrM addObject:[NSString stringWithFormat:@"%@ %@",arr[j][@"label"],arr[j][@"num"]]];
+            [_commentModel.selectedArr addObject:@(0)];
+            
+            [tagsArrM addObject:arr[j]];
         }
         
         _commentModel.tagsArrM = tagsArrM;
@@ -88,6 +84,7 @@
     
     YSJChoseTagCell *cell = [YSJChoseTagCell loadCode:tableView];
     cell.tagModel = _commentModel;
+    
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
  
@@ -123,21 +120,51 @@
     WeakSelf;
     
     [SPCommon creatAlertControllerTitle:@"新标签" subTitle:@"" _alertSure:^(NSString *text ) {
-        NSMutableArray *arr = _commentModel.tagsArrM;
-        [arr addObject:text];
         
-        _commentModel = [FFDifferentWidthTagModel new];
-         _commentModel.tagsArrM = arr;
-        [weakSelf.tableView reloadData];
+        [weakSelf addTag:text];
         
     } keyBoard:UIKeyboardTypeDefault];
+}
+
+-(void)addTag:(NSString *)text{
+    
+    //保存tagsArr
+    NSMutableArray *arr = _commentModel.tagsArrM;
+    [arr addObject:text];
+    
+    //保存selectedArr
+    NSMutableArray *selectedArr = _commentModel.selectedArr;
+    [selectedArr addObject:@(1)];
+    
+    //重新创建一个新的model
+    _commentModel = [FFDifferentWidthTagModel new];
+    _commentModel.tagsArrM = arr;
+    _commentModel.selectedArr = selectedArr;
+    
+    [self.tableView reloadData];
+    
+    //每添加一个标签，需要向后台发送一个添加标签的请求
+    [self postTag:text];
+}
+
+//每添加一个标签，需要向后台发送一个添加标签的请求
+-(void)postTag:(NSString *)text{
+    
+    NSMutableDictionary *dic = @{}.mutableCopy;
+    [dic setObject:text forKey:@"name"];
+    [dic setObject:self.type forKey:@"type"];
+    
+    [[HttpRequest sharedClient]httpRequestPOST:YLables parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+        NSLog(@"%@",responseObject);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+    }];
 }
 
 -(UITableView *)tableView
 {
     if (!_tableView )
     {
-        _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0,-20, SCREEN_W, SCREEN_H-60-KBottomHeight) style:UITableViewStyleGrouped];
+        _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0,-20, SCREEN_W, SCREEN_H-60-KBottomHeight-SafeAreaTopHeight-25) style:UITableViewStyleGrouped];
         _tableView.delegate = self;
         _tableView.dataSource = self;
         _tableView.backgroundColor = [UIColor whiteColor];
@@ -147,7 +174,34 @@
         
     }
     
+    
     return _tableView;
 }
 
+-(void)setBottomView{
+    
+    UIButton *connectBtn = [[UIButton alloc]initWithFrame:CGRectMake(20, kWindowH-SafeAreaTopHeight-25-50-KBottomHeight, kWindowW-40, 50)];
+    connectBtn.backgroundColor = KMainColor;
+    [connectBtn setTitle:@"确认" forState:0];
+    connectBtn.layer.cornerRadius = 5;
+    connectBtn.clipsToBounds = YES;
+    [connectBtn addTarget:self action:@selector(next) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:connectBtn];
+    
+}
+
+-(void)next{
+    
+    NSMutableArray *arr = @[].mutableCopy;
+    int i = 0;
+    for (NSNumber *num in _commentModel.selectedArr) {
+        if ([num integerValue]==1) {
+            [arr addObject:_commentModel.tagsArrM[i]];
+        }
+        i++;
+    }
+    !self.block?:self.block(arr);
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
 @end

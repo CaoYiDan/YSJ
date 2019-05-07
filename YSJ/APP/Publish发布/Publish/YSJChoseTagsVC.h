@@ -11,7 +11,11 @@ typedef  void(^choseResult) (NSMutableArray *arr);
 NS_ASSUME_NONNULL_BEGIN
 
 @interface YSJChoseTagsVC : BaseViewController
+
 @property (nonatomic,copy) choseResult block;
+
+@property (nonatomic,copy) NSString *type;
+
 @end
 
 NS_ASSUME_NONNULL_END

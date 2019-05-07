@@ -51,66 +51,57 @@
         
         NSInteger type = [cellDic[@"type"] integerValue];
         
-        if ( type==CellPopNormal || type == CellPopTextView || type == CellPopSheet|| type == CellPopCouserChosed || type == CellPushVC) {
+        
+        if (type==CellPopNormal) {
             
-            YSJLSBaseCommonCellView *arrow = nil;
-            if (type==CellPopNormal) {
-                
-                arrow =[[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
-                
-                arrow.keyBorad = [cellDic[@"keyBoard"] intValue];
-                
-            }else if (type == CellPopSheet){
-                
-                arrow =[[YSJPopSheetView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
-                arrow.otherStr = cellDic[@"sheetText"];
-                
-            }else if (type == CellPopTextView){
-                
-                arrow =[[YSJPopTextViewView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
-            }else if (type == CellPopCouserChosed){
-                
-                arrow =[[YSJPopCourserCellView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
-            }else if (type==CellPushVC) {
-                
-                arrow =[[YSJPushVCArrowView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
-                arrow.otherStr = cellDic[cb_pushvc];
-            }
+            YSJPopTextFiledView  *arrow =[[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
             
-            [_scroll addSubview:arrow];
+            arrow.keyBorad = [cellDic[@"keyBoard"] intValue];
             
-            orY+=cellH;
+            [self p_addView:arrow];
             
-            self.lastBottomView = arrow;
+        }else if (type == CellPopSheet){
             
-            [_cellViewArr addObject:arrow];
+            YSJPopTextFiledView *arrow =[[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
+            arrow.otherStr = cellDic[@"sheetText"];
+            [self p_addView:arrow];
+            
+        }else if (type == CellPopTextView){
+            
+            YSJPopTextViewView *arrow =[[YSJPopTextViewView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
+            [self p_addView:arrow];
+            
+        }else if (type == CellPopCouserChosed){
+            
+            YSJPopCourserCellView  *arrow =[[YSJPopCourserCellView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
+            arrow.type = [cellDic[cb_courseCategoryType] integerValue];
+            [self p_addView:arrow];
+            
+        }else if (type==CellPushVC) {
+            
+            YSJPushVCArrowView *arrow =[[YSJPushVCArrowView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
+            arrow.otherStr = cellDic[cb_otherString];
+            [self p_addView:arrow];
+            
             
         }else if (type ==CellSwitch) {
             
             YSJCommonSwitchView *arrow = [[YSJCommonSwitchView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] selected:YES];
-            [_scroll addSubview:arrow];
-            orY+=cellH;
-            self.lastBottomView = arrow;
             
-            [_cellViewArr addObject:arrow];
+            [self p_addView:arrow];
             
         }else if (type == CellTextFiled) {
             YSJTextFiledCellView *arrow = [[YSJTextFiledCellView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) title:cellDic[@"title"] placholder:cellDic[@"placeholder"]];
-            [_scroll addSubview:arrow];
-            orY+=cellH;
-            self.lastBottomView = arrow;
             
-            [_cellViewArr addObject:arrow];
+            [self p_addView:arrow];
             
         }else if (type == CellPopMoreTextFiledView) {
             
             YSJPopMoreTextFiledView *arrow = [[YSJPopMoreTextFiledView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
-            arrow.otherStr = cellDic[@"moreTextFiledArr"];
-            [_scroll addSubview:arrow];
-            orY+=cellH;
-            self.lastBottomView = arrow;
+            arrow.otherStr = cellDic[cb_moreTextFiledArr];
             
-            [_cellViewArr addObject:arrow];
+            [self p_addView:arrow];
+            
             
         }else if ([cellDic[@"type"] integerValue]==CellPopLine) {
             
@@ -118,7 +109,7 @@
             UIView *bottomLine = [[UIView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, lineH)];
             bottomLine.backgroundColor = grayF2F2F2;
             [_scroll addSubview:bottomLine];
-           
+            
             self.lastBottomView =bottomLine;
             
             orY+=lineH;
@@ -127,15 +118,27 @@
             [_sepLineViewArr addObject:bottomLine];
             
         }
-        
     }
     
     return  _scroll;
 }
 
+
+-(void)p_addView:(UIView *)arrow{
+    
+    [_scrollView addSubview:arrow];
+    
+    orY+=cellH;
+    
+    self.lastBottomView = arrow;
+    
+    [_cellViewArr addObject:arrow];
+    
+}
+
 /**
  获取所有cell的信息（lineView除外）
-
+ 
  @return 返回数组
  */
 - (NSMutableArray *)getAllContent{
@@ -159,7 +162,7 @@
     for (UIView *vi in _cellViewArr) {
         [vi removeFromSuperview];
     }
-
+    
 }
 
 #pragma mark - 专门为 发布需求 写的方法
@@ -211,11 +214,14 @@
     
     for (UIView *vi in _cellViewArr) {
         
-        if (i==4) {
+         if (i==4) {
+            
             //获取坐标
             CGRect frame = vi.frame;
             //移除
             [vi removeFromSuperview];
+            [_cellViewArr removeObjectAtIndex:4];
+            
             //生成新的cell
             YSJCommonSwitchView *newCell = [[YSJCommonSwitchView alloc]initWithFrame:frame withTitle:@"上门服务" selected:YES];
             [_scrollView addSubview:newCell];
@@ -225,6 +231,34 @@
         }
         i++;
     }
+    
+    int j=0;
+    
+    for (UIView *vi in _cellViewArr) {
+        
+        if (j == 2) {
+            
+            //获取坐标
+            CGRect frame = vi.frame;
+            //移除
+            [vi removeFromSuperview];
+            [_cellViewArr removeObjectAtIndex:2];
+            
+            //生成新的cell
+            YSJPopMoreTextFiledView *newCell = [[YSJPopMoreTextFiledView alloc]initWithFrame:frame withTitle:@"课程价格" subTitle:@""];
+            
+            newCell.otherStr = @"现价,原价";
+            [_scrollView addSubview:newCell];
+            //数组插入原先的位置
+            [_cellViewArr insertObject:newCell atIndex:2];
+            
+            break;
+
+        }
+        j++;
+        
+    }
+
 }
 
 /**
@@ -242,6 +276,8 @@
             CGRect frame = vi.frame;
             //移除
             [vi removeFromSuperview];
+            [_cellViewArr removeObjectAtIndex:4];
+            
             //生成新的cell
             YSJPopMoreTextFiledView *newCell = [[YSJPopMoreTextFiledView alloc]initWithFrame:frame withTitle:@"拼单人数" subTitle:@""];
             
@@ -254,12 +290,38 @@
         }
         i++;
     }
+    
+    int j=0;
+    
+    for (UIView *vi in _cellViewArr) {
+        
+        if (j == 2) {
+            
+            //获取坐标
+            CGRect frame = vi.frame;
+            //移除
+            [vi removeFromSuperview];
+            [_cellViewArr removeObjectAtIndex:2];
+            
+            //生成新的cell
+            YSJPopMoreTextFiledView *newCell = [[YSJPopMoreTextFiledView alloc]initWithFrame:frame withTitle:@"课程价格" subTitle:@""];
+            
+            newCell.otherStr = @"现价,原价,拼单价";
+            [_scrollView addSubview:newCell];
+            //数组插入原先的位置
+            [_cellViewArr insertObject:newCell atIndex:2];
+            
+            break;
+        }
+        j++;
+        
+    }
 }
 
 #pragma mark - 专门为 发布机构 写的方法
 
 /**
-  明星课程 he 精品课程 布局一样
+ 明星课程 he 精品课程 布局一样
  */
 -(void)publishForCompanyFamousCourseOrJingPin{
     int i=0;
@@ -302,9 +364,9 @@
             
         }else{
             [UIView animateWithDuration:0.2 animations:^{
-               
+                
                 if (i==3) {
-                     vi.originY -= cellH;
+                    vi.originY -= cellH;
                 }else if (i>3){
                     vi.originY -= cellH*2;
                 }

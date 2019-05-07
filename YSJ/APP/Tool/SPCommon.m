@@ -248,7 +248,11 @@ animation.calculationMode = kCAAnimationCubic;
     
     //可以给alertview中添加一个输入框
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        textField.placeholder = @"";
+//        可接受距离(单位km)
+        if ([title isEqualToString:@"可接受距离(km)"]) {
+             textField.placeholder = @"单位（km）";
+        }
+       
         textField.keyboardType = keyBoard;
     }];
     

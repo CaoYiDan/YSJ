@@ -232,7 +232,8 @@
         [_bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.offset(0);
             make.top.equalTo(_middleView.mas_bottom).offset(0);
-            make.size.mas_offset(CGSizeMake(SCREEN_W-20, normaelCellH*2));
+            make.size.mas_offset(CGSizeMake(SCREEN_W-20, normalCellH
+                                  *2));
         }];
         
           [self bottomUI];
@@ -242,11 +243,14 @@
 
 - (void)bottomUI{
     
-    YSJPopTextFiledView *cell = [[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, 0, kWindowW,normaelCellH) withTitle:@"上课时间" subTitle:@""];
+    YSJPopTextFiledView *cell = [[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, 0, kWindowW,normalCellH
+                                  ) withTitle:@"上课时间" subTitle:@""];
     self.classTime = cell;
     [self.bottomView addSubview:cell];
     
-    YSJPopTextFiledView *cell2 = [[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, normaelCellH, kWindowW,normaelCellH) withTitle:@"课时数" subTitle:@""];
+    YSJPopTextFiledView *cell2 = [[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, normalCellH
+                                  , kWindowW,normalCellH
+                                  ) withTitle:@"课时数" subTitle:@""];
     self.classNums = cell2;
     [self.bottomView addSubview:cell2];
   

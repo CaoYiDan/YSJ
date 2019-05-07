@@ -16,4 +16,9 @@ static NSString *YSJTeacherCollectionCellID = @"YSJTeacherCollectionCellID";
 
 @property (nonatomic,strong) NSDictionary *dic;
 
+/**
+ 选中状态
+ */
+@property (nonatomic,assign) BOOL selectedStatus;
+
 @end

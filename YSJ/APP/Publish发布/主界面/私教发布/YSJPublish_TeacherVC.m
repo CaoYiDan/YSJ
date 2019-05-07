@@ -12,7 +12,7 @@
 #import "YSJPopTeachTypeView.h"
 #import "YSJPopTextView.h"
 #import "LGTextView.h"
-#import "YSJVDetailForTeacherPublishVC.h"
+#import "YSJDetailForTeacherPublishVC.h"
 #import "YSJChoseTagsVC.h"
 #import "YSJFactoryForCellBuilder.h"
 
@@ -22,8 +22,14 @@
 @property (nonatomic,strong) YSJPopTeachTypeView *teachTypeView;
 //需求标题cell
 @property (nonatomic,strong) YSJPopTextFiledView *xuTitleCell;
-
-@property (nonatomic,strong) LGTextView *xuTextView;
+//需求详情label
+@property (nonatomic,strong) UILabel *xuDetailLabel;
+//图片数组
+@property (nonatomic,strong) NSMutableArray *imgArr;
+//上课时间
+@property (nonatomic,strong) NSString  *courseTime;
+//课时数
+@property (nonatomic,strong) NSString  *courseNum;
 
 @property (nonatomic,strong) UIButton  *selectedBtn;
 
@@ -90,45 +96,47 @@
     NSDictionary *dic = @{cb_cellH:@"76",
                           cb_orY:@"230",
                          cb_cellArr:@[
-                                  @{
-                                      @"type":@(CellPopCouserChosed),
-                                      @"title":@"分类",
-                                      },
-                                  @{
-                                      @"type":@(CellPopNormal),
-                                      @"title":@"课程特色",
-                                      },
-                                  
-                                  @{
-                                      @"type":@(CellPopMoreTextFiledView),
-                                      @"title":@"课程价格",
-                                      @"arr":@"现价,原价,拼单价"
-                                      },
-                                  
-                                  @{
-                                      @"type":@(CellPopNormal),
-                                      @"title":@"适用人群",
-                                      },
-                                  
-                                  @{
-                                      @"type":@(CellSwitch),
-                                      @"title":@"上门服务",
-                                      },
-                                  
-                                  @{
-                                      @"type":@(CellPopNormal),
-                                      @"title":@"上课地址",
-                                      },
-                                  
-                                  @{
-                                      @"type":@(CellPopLine),
-                                      @"lineH":@"6",
-                                      },
-                                  
-                                  @{
-                                      @"type":@(CellPopNormal),
-                                      @"title":@"课程标签",
-                                      }
+      @{
+          @"type":@(CellPopCouserChosed),
+          @"title":@"分类",
+          cb_courseCategoryType:@(1)
+          },
+      @{
+          @"type":@(CellPopNormal),
+          @"title":@"课程特色",
+          },
+      
+      @{
+          @"type":@(CellPopMoreTextFiledView),
+          @"title":@"课程价格",
+          cb_moreTextFiledArr:@"现价,原价,拼单价"
+          },
+      
+      @{
+          @"type":@(CellPopNormal),
+          @"title":@"适用人群",
+          },
+      
+      @{
+          @"type":@(CellSwitch),
+          @"title":@"上门服务",
+          },
+      
+      @{
+          @"type":@(CellPopNormal),
+          @"title":@"上课地址",
+          },
+      
+      @{
+          @"type":@(CellPopLine),
+          @"lineH":@"6",
+          },
+      
+      @{
+          @"type":@(CellPushVC),
+          @"title":@"课程标签",
+          cb_otherString:@"学生-需求",
+          }
                                   ]
                           };
     return dic;
@@ -154,12 +162,32 @@
         make.top.equalTo(xuTitle.mas_bottom).offset(0);
     }];
     
+    #pragma mark 跳转到课程详情
+    
     WeakSelf;
     [xuTextTitle addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
-        YSJVDetailForTeacherPublishVC *vc = [[YSJVDetailForTeacherPublishVC alloc]init];
+        YSJDetailForTeacherPublishVC *vc = [[YSJDetailForTeacherPublishVC alloc]init];
+        vc.block = ^(NSString *detailText, NSMutableArray *imgArr, NSString *courseTime, NSString *courseNum) {
+            weakSelf.xuDetailLabel.text = detailText;
+            weakSelf.imgArr = imgArr;
+            weakSelf.courseNum = courseNum;
+            weakSelf.courseTime = courseTime;
+        };
         [weakSelf.navigationController pushViewController:vc animated:YES];
     }];
     
+    _xuDetailLabel = [[UILabel alloc]init];
+    _xuDetailLabel.textAlignment = NSTextAlignmentRight;
+    _xuDetailLabel.textColor = gray999999;
+    _xuDetailLabel.font = font(14);
+    [xuTextTitle addSubview:_xuDetailLabel];
+    [_xuDetailLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.offset(-kMargin-20-20);
+        make.left.offset(140);
+        make.height.offset(normalCellH
+                           );
+        make.top.offset(0);
+    }];
     
     UIImageView *arrowImg = [[UIImageView alloc]init];
     arrowImg.image = [UIImage imageNamed:@"arrow"];
@@ -193,7 +221,7 @@
     }];
     
     int i = 0 ;
-    NSArray *arr = @[@"找私教",@"找机构"];
+    NSArray *arr = @[@"私教课程",@"拼单课程"];
     CGFloat btnW = kWindowW/arr.count;
     for (NSString *str in arr) {
         UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(i*btnW, 0, btnW,55)];
@@ -270,12 +298,15 @@
 
 -(void)next{
     
-    YSJChoseTagsVC *vc = [[YSJChoseTagsVC alloc]init];
-    [self.navigationController pushViewController:vc animated:YES];
+    if (isEmptyString(_xuTitleCell.rightSubTitle) || [_xuTitleCell.rightSubTitle isEqualToString:@"课程标题"] || isEmptyString(_xuDetailLabel.text)) {
+        Toast(@"请填写完整信息");
+        return;
+    }
     
+    //从第二个字段开始罗列"key"数组（第0个和第1个 的拼接方式不一样）
+    NSArray *keyArr = @[@"",@"feaatures",@"",@"suitable_range",@"is_at_home",@"address",@"lables"];
     
-    NSArray *keyArr = @[@"sale_item",@"address",@"is_at_home",@"occupation",@"school",@"education",@"describe"];
-    
+    //获取value数组
     NSMutableArray *valueArr = [_builder getAllContent];
     
     int i = 0 ;
@@ -286,31 +317,124 @@
             Toast(@"请填写完整信息");
             return;
         }else{
+            
+            if (i==0 || i==2) {
+                //第0个和第2个 的拼接方式不一样
+            }else{
+                
             [dic setObject:value forKey:keyArr[i]];
+                
+            }
         }
         i++;
     }
     
+    [dic setObject:_xuTitleCell.rightSubTitle forKey:@"title"];
+    
+    [dic setObject:_xuDetailLabel.text forKey:@"describe"];
+    
+    [dic setObject:self.courseTime forKey:@"course_time"];
+    
+    //最少课时数
+    [dic setObject:[[self.courseNum componentsSeparatedByString:@","][0] componentsSeparatedByString:@":"][1] forKey:@"min_times"];
+    [dic setObject:@(2) forKey:@"min_times"];
+    //建议课时数
+     [dic setObject:[[self.courseNum componentsSeparatedByString:@","][1] componentsSeparatedByString:@":"][1] forKey:@"r_times"];
+    [dic setObject:@(2) forKey:@"r_times"];
+    //课程大类
+    [dic setObject:[valueArr[0] componentsSeparatedByString:@"-"][0] forKey:@"coursetype"];
+    //课程小类
+    [dic setObject:[valueArr[0] componentsSeparatedByString:@"-"][1] forKey:@"coursetypes"];
+    //现价
+    [dic setObject:[[valueArr[2] componentsSeparatedByString:@","][0] componentsSeparatedByString:@":"][1] forKey:@"price"];
+    [dic setObject:@(21) forKey:@"price"];
+    //原价
+    [dic setObject:[[valueArr[2] componentsSeparatedByString:@","][1]componentsSeparatedByString:@":"][1] forKey:@"old_price"];
+    [dic setObject:@(21.2) forKey:@"old_price"];
+    
+    //需求种类(私教、机构)
+    [dic setObject:self.selectedBtn.tag==0?@"一对一课程":@"拼单课程" forKey:@"course_kind"];
+    //token
     [dic setObject:[StorageUtil getId] forKey:@"token"];
+    
+    if (self.selectedBtn.tag==0) {
+        
+        [dic setObject:@(0) forKey:@"min_user"];
+        [dic setObject:@(0) forKey:@"max_user"];
+        
+    }else{
+        //拼单价
+        [dic setObject:[[valueArr[2] componentsSeparatedByString:@","][2]componentsSeparatedByString:@":"][1] forKey:@"multi_price"];
+        [dic setObject:@(22.2) forKey:@"multi_price"];
+    }
     
     NSLog(@"%@",dic);
     
-    [[HttpRequest sharedClient]httpRequestPOST:YTeacherStep3 parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:
+                                                         
+        @"application/json",
+     
+        @"text/html",
+
+        @"image/jpeg",
+
+        @"image/png",
+
+        @"application/octet-stream",
+
+        @"text/json",
+
+        nil];
+    
+    manager.requestSerializer= [AFHTTPRequestSerializer serializer];
+
+    [manager POST:YPublishTeacherCourse parameters:dic constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        
+        // formData: 专门用于拼接需要上传的数据,在此位置生成一个要上传的数据体
+        // 这里的_photoArr是你存放图片的数组
+        for (int i = 0; i < _imgArr.count; i++) {
+            
+            //压缩-添加-上传图片
+            //遍历你的第一层图片请求数组
+            [self.imgArr enumerateObjectsUsingBlock:^(UIImage * _Nonnull image, NSUInteger idx, BOOL * _Nonnull stop) {
+                //压缩图片转化为data,第一个参数是图片,第二个参数是压缩系数
+                NSData *imageData = UIImageJPEGRepresentation(image, 0.5);
+                //添加转化后的data到body中
+                //data:转化后的imageData
+                //name:服务器需要的标识,服务器根据这个来取图片流,类似parameters里面的key
+                //fileName:服务器保存的图片名字,base64加密后更佳 (如有不对欢迎指出 )
+                //mimeType:图片类型,一般为@"image/jpeg"固定格式,特殊可添加其他格式
+                [formData appendPartWithFileData:imageData name:[NSString stringWithFormat:@"publish_teacher_Image%ld",idx+1] fileName:[NSString stringWithFormat:@"%@%lu.jpeg",@"planImage",(unsigned long)idx]mimeType:@"image/jpeg"];
+            }];
+            
+        }
+        
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         NSLog(@"%@",responseObject);
         
-        YSJApplication_SuccessVC *vc = [[YSJApplication_SuccessVC alloc]init];
+        //将二进制转为字符串
+        NSString *result2 = [[NSString alloc] initWithData:responseObject  encoding:NSUTF8StringEncoding];
+        //字符串转字典
+        NSDictionary*dict=[result2 stringChangeToDictionary];
         
-        [self.navigationController pushViewController:vc animated:YES];
+        NSLog(@"%@",dict);
         
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        if ([dict[@"status"] integerValue]==200) {
+            Toast(@"发布成功");
+            [self.navigationController popToRootViewControllerAnimated:YES];
+        }else{
+            Toast(@"错误格式");
+        }
         
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"%@",error);
     }];
-    
-}
-
-//显示弹出框列表选择
-- (void)showSheet{
     
 }
 

@@ -66,3 +66,17 @@
 #define YPhoto YUrlBase_YSJ@"/user/photo"
 #define YAllCourseType YUrlBase_YSJ@"/home/find/coursetype/all"
 
+#pragma mark - 发布
+
+#define YPublishDemands YUrlBase_YSJ@"/publish/user/demands"
+
+#define YLables YUrlBase_YSJ@"/lables"
+
+#define YPublishTeacherCourse  YUrlBase_YSJ@"/publish/teacher/course"
+
+#define YGetTeacherList  YUrlBase_YSJ@"/publish/company/getteacher"
+
+#define YAddTeacher  YUrlBase_YSJ@"/publish/company/addteacher"
+
+#define YPublishCompany  YUrlBase_YSJ@"/publish/company/course"
+

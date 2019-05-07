@@ -81,7 +81,9 @@
     _builder = builder;
     
     _scroll = [builder createViewWithDic:[self getCellDic]];
+    
     [self.view addSubview:_scroll];
+    
     _tag =builder.lastBottomView;
     
     [self topView];
@@ -94,7 +96,7 @@
     
     NSDictionary *dic = @{cb_cellH:@"76",
                           cb_orY:@"111",
-                          @"arr":@[
+                          cb_cellArr:@[
                                   
                                   @{
                                       @"type":@(CellPopNormal),

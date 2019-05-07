@@ -16,12 +16,10 @@
 @property (nonatomic, strong) UIView *middleView;
 @property (nonatomic, strong) UIView *bottomView;
 @property(nonatomic,weak)LGComposePhotosView *photoView;
-@property(nonatomic,weak)LGTextView *textView;
-@property(nonatomic,copy)NSString *limitStr;
+
 @property (nonatomic, strong) NSMutableArray *imgArr;
 @property (nonatomic, strong) NSMutableArray<PHAsset *> *lastSelectAssets;
 
-@property (nonatomic, strong) NSMutableArray *photos;
 
 @end
 

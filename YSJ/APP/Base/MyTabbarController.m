@@ -356,6 +356,7 @@
     {
         XWPopMenuController *vc = [[XWPopMenuController alloc]init];
         SPBaseNavigationController *nav = [[SPBaseNavigationController alloc]initWithRootViewController:vc];
+        vc.title = @"fabu";
         //虚化背景
         UIImage *image = [UIImage imageWithCaputureView:self.view];
         

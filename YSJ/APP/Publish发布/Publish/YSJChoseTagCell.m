@@ -50,15 +50,43 @@
         
         UILabel *label = [UILabel new];
         label.textAlignment = NSTextAlignmentCenter;
-        label.textColor = [UIColor hexColor:@"888888"];
+       
         label.font = Font(12);
         label.frame = frame;
         label.layer.cornerRadius = 4;
         label.clipsToBounds = YES;
         label.text = title;
-        label.backgroundColor = grayF2F2F2;
+        label.userInteractionEnabled = YES;
+        
+        NSLog(@"%@",tagModel.selectedArr);
+        
+        if ([tagModel.selectedArr[i] integerValue]==1) {
+            label.backgroundColor = KMainColor;
+            label.textColor = KWhiteColor;
+        }else{
+            label.backgroundColor = grayF2F2F2;
+            label.textColor = [UIColor hexColor:@"888888"];
+        }
+        
+  
         [self addSubview:label];
         [self.labelArrM addObject:label];
+        
+        
+        __weak typeof(label) weakLabel = label;
+        [label addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
+            
+            //选中表现
+            if ([tagModel.selectedArr[i] integerValue]==1) {
+                weakLabel.backgroundColor = grayF2F2F2;
+                weakLabel.textColor = [UIColor hexColor:@"888888"];
+                _tagModel.selectedArr[i] = @(0);
+            }else{
+                weakLabel.backgroundColor = KMainColor;
+                weakLabel.textColor = KWhiteColor;
+                _tagModel.selectedArr[i] = @(1);
+            }
+        }];
     }
 }
 

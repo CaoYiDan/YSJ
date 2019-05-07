@@ -14,6 +14,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface YSJPopCourserCellView :  YSJLSBaseCommonCellView
 
+/**
+ 0：多选
+ 1：只能选择一个
+ */
+@property (nonatomic,assign) NSInteger type;
 @end
 
 NS_ASSUME_NONNULL_END

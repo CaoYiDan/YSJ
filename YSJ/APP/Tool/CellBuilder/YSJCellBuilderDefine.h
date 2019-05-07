@@ -45,8 +45,17 @@
  分割线的高度
  */
 #define cb_lineH @"lineH"
+/*
+ 分类选择 0:多选 1:单选
+ */
+#define cb_courseCategoryType @"courseCategoryType"
 
 /*
  发送通知
  */
 #define CB_NSNotification @"CB_NSNotification"
+
+/*
+ 附加的信息
+ */
+#define cb_otherString @"otherString"

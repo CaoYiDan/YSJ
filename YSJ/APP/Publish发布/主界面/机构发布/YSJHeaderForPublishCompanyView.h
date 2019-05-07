@@ -10,7 +10,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef  void (^headerBlock) (CGFloat h);
-
+@class  LGTextView;
 @interface YSJHeaderForPublishCompanyView : UICollectionReusableView
 
 /*self.block
@@ -18,6 +18,10 @@ typedef  void (^headerBlock) (CGFloat h);
  返回 不是0 ,约定的返回的“h” 是添加图片引发的header的高度的动态变化高度
  */
 @property (nonatomic,copy) headerBlock block;
+
+@property(nonatomic,weak)LGTextView *textView;
+
+@property (nonatomic, strong) NSMutableArray *photos;
 
 @end
 

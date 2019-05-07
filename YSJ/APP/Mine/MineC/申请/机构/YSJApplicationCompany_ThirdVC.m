@@ -285,7 +285,7 @@
         //将二进制转为字符串
         NSString *result2 = [[NSString alloc] initWithData:responseObject  encoding:NSUTF8StringEncoding];
         //字符串转字典
-        NSDictionary*dict=[self dictionaryWithJsonString:result2];
+        NSDictionary*dict=[SPCommon dictionaryWithJsonString:result2];
         NSLog(@"%@",dict);
         
         pushClass(YSJApplication_SuccessVC);
@@ -298,23 +298,5 @@
     }];
 }
 
-#pragma  mark  将字符串转成字典
--(id )dictionaryWithJsonString:(NSString *)jsonString {
-    if (jsonString == nil) {
-        return nil;
-    }
-    NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-    NSError *err;
-    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData
-                         
-                                                        options:NSJSONReadingMutableContainers
-                         
-                                                          error:&err];
-    if(err) {
-        
-        return nil;
-    }
-    
-    return dic;
-}
+
 @end

@@ -29,8 +29,10 @@
 //    }];
     
     YSJChoseTagsVC *vc = [[YSJChoseTagsVC alloc]init];
+    vc.type = self.otherStr;
+    WeakSelf;
     vc.block = ^(NSMutableArray *arr) {
-        
+        weakSelf.rightSubTitle = [arr componentsJoinedByString:@","];
     };
     [[SPCommon getCurrentVC].navigationController pushViewController:vc animated:YES];
 }

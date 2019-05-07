@@ -14,14 +14,14 @@
 #import "SPPublishLimitVC.h"
 #import "SPPublishLocationVC.h"
 #import "BDImagePicker.h"
-#import "YSJVDetailForTeacherPublishVC.h"
+#import "YSJDetailForTeacherPublishVC.h"
 #import "ZLPhotoActionSheet.h"
 
 #import "SPCommon.h"
 //定位服务
 #import <CoreLocation/CoreLocation.h>
 
-@interface YSJVDetailForTeacherPublishVC ()<UITextViewDelegate>
+@interface YSJDetailForTeacherPublishVC ()<UITextViewDelegate>
 
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIView *topView;
@@ -48,7 +48,7 @@
 @property (nonatomic,strong) YSJPopMoreTextFiledView *classNums;
 @end
 
-@implementation YSJVDetailForTeacherPublishVC
+@implementation YSJDetailForTeacherPublishVC
 {
     NSInteger _limitIndex;
     NSInteger _locationIndex;
@@ -233,7 +233,8 @@
         [_bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.offset(0);
             make.top.equalTo(_middleView.mas_bottom).offset(0);
-            make.size.mas_offset(CGSizeMake(SCREEN_W-20, normaelCellH*2));
+            make.size.mas_offset(CGSizeMake(SCREEN_W-20, normalCellH
+                                  *2));
         }];
         
         [self bottomUI];
@@ -243,13 +244,16 @@
 
 - (void)bottomUI{
     
-    YSJPopTextFiledView *cell = [[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, 0, kWindowW,normaelCellH) withTitle:@"上课时间" subTitle:@""];
+    YSJPopTextFiledView *cell = [[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, 0, kWindowW,normalCellH
+                                  ) withTitle:@"上课时间" subTitle:@""];
     self.classTime = cell;
     [self.bottomView addSubview:cell];
     
     
     //生成新的cell
-    YSJPopMoreTextFiledView *cell2 = [[YSJPopMoreTextFiledView alloc]initWithFrame:CGRectMake(0, normaelCellH, kWindowW,normaelCellH) withTitle:@"课时数" subTitle:@""];
+    YSJPopMoreTextFiledView *cell2 = [[YSJPopMoreTextFiledView alloc]initWithFrame:CGRectMake(0, normalCellH
+                                  , kWindowW,normalCellH
+                                  ) withTitle:@"课时数" subTitle:@""];
     cell2.otherStr = @"最少课时数,建议课时数";
     self.classNums = cell2;
     [self.bottomView addSubview:cell2];
@@ -270,6 +274,12 @@
 
 -(void)save{
     
+    if (isEmptyString(self.textView.text)) {
+        Toast(@"请填写完整信息");
+        return;
+    }
+    !self.block?:self.block(self.textView.text,self.imgArr,self.classTime.rightSubTitle,self.classNums.rightSubTitle);
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 //添加取消按钮->
@@ -298,10 +308,7 @@
     //    [self dismissViewControllerAnimated:YES completion:nil];
     [self.navigationController popViewControllerAnimated:YES];
 }
-//block声明方法
--(void)toDissmissSelf:(dismissBlock)block{
-    self.mDismissBlock = block;
-}
+
 #pragma mark - textViewDelegate
 
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
@@ -376,191 +383,7 @@
     return actionSheet;
 }
 
-#pragma  mark - -----------------发送-----------------
 
-- (void)onRightClick{
-    
-    if (isEmptyString([StorageUtil getCity])) {
-        [self locationAlterShow];
-        return;
-    }
-    
-    if (isEmptyString(self.textView.text)) {
-        Toast(@"写一写您此时此刻的感受吧");
-        return;
-    }
-    
-    [self.view endEditing:YES];
-    
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    
-    self.rightButton.enabled = NO;
-    
-    NSMutableArray *arr = [[NSMutableArray alloc]init];
-    
-    for (UIView *vi  in self.photoView.subviews) {
-        if ([vi isKindOfClass:[UIImageView class]]) {
-            [arr addObject:vi];
-        }
-    }
-    //上传图片获取地址
-    [self upDateHeadIcon:arr];
-    
-}
-
-#pragma  mark 上传图片
-- (void)upDateHeadIcon:(NSArray *)photos{
-    if (photos.count==0) {
-        [self post];
-        return;
-    }
-    
-    dispatch_group_t group = dispatch_group_create();
-    
-    //菊花显示
-    //    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    
-    
-    
-    //      __block int i=0;
-    
-    //    self.imgArr = [NSMutableArray arrayWithCapacity:photos.count];
-    
-    for (UIImageView *img  in photos) {
-        [self.imgArr addObject:@""];
-    }
-    
-    for (int i=0;i<photos.count;i++) {
-        
-        dispatch_group_enter(group);
-        
-        UIImageView *photo = photos[i];
-        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json",
-                                                             
-                                                             @"text/html",
-                                                             
-                                                             @"image/jpeg",
-                                                             
-                                                             @"image/png",
-                                                             
-                                                             @"application/octet-stream",
-                                                             
-                                                             @"text/json",
-                                                             
-                                                             nil];
-        
-        manager.requestSerializer= [AFHTTPRequestSerializer serializer];
-        
-        NSData * imageData = UIImageJPEGRepresentation(photo.image,0.5);
-        //        NSData *imageData = UIImagePNGRepresentation(photo.image);
-        NSString * fullPath = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]stringByAppendingPathComponent:@"text"];
-        [imageData writeToFile:fullPath atomically:NO];
-        
-        NSMutableDictionary * dictT = [[NSMutableDictionary alloc]init];
-        [dictT setObject:imageData forKey:@"image"];
-        [dictT setObject:@"/usr/local/tomcat/webapps/" forKey:@"imageUploadPath"];
-        NSLog(@"%@",kUrlPostImg);
-        [manager POST:kUrlPostImg parameters:dictT constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-            [formData appendPartWithFileData:imageData name:@"image" fileName:@"text.jpg" mimeType:@"image/jpg"];
-        } progress:^(NSProgress * _Nonnull uploadProgress) {
-            
-        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            NSLog(@"%@",responseObject);
-            
-            //将二进制转为字符串
-            NSString *result2 = [[NSString alloc] initWithData:responseObject  encoding:NSUTF8StringEncoding];
-            //字符串转字典
-            NSDictionary*dict=[self dictionaryWithJsonString:result2];
-            NSLog(@"%@",dict);
-            // NSMutableArray 是线程不安全的，所以加个同步锁
-            @synchronized (self.imgArr) {
-                [self.imgArr replaceObjectAtIndex:i withObject:dict[@"image"]];
-            }
-            
-            dispatch_group_leave(group);
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            Toast(@"请检查网络是否错误");
-            self.rightButton.enabled = YES;
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-            dispatch_group_leave(group);
-        }];
-    }
-    
-    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-        NSLog(@"上传完成!");
-        [self post];
-    });
-}
-
-#pragma  mark - -----------------发布接口-----------------
-
--(void)post{
-    
-    NSMutableDictionary *paramenters= [[NSMutableDictionary alloc]init];
-    
-    NSMutableDictionary *contentDict= [[NSMutableDictionary alloc]init];
-    [contentDict setObject:_textView.text forKey:@"content"];
-    
-    
-    if (!isEmptyString([StorageUtil getCity])) {
-        [contentDict setObject:@"" forKey:@"at"];
-        [paramenters setObject:[StorageUtil getCity] forKey:@"city"];
-    }
-    
-    [contentDict setObject:self.imgArr forKey:@"imgs"];
-    [contentDict setObject:@"" forKey:@"subject"];
-    
-    [paramenters setObject:contentDict forKey:@"content"];
-    
-    [paramenters setObject:[SPCommon getLoncationDic] forKey:@"location"];
-    
-    [paramenters setObject:[_cityLab.text isEqualToString:@"所在位置"]?@"":_cityLab.text forKey:@"locationValue"];
-    
-    [paramenters setObject:self.limitStr forKey:@"receiver"];
-    
-    [paramenters setObject:@"CATEGORY" forKey:@"receiverType"];
-    
-    [paramenters setObject:[StorageUtil getCode] forKey:@"promulgator"];
-    NSLog(@"%@",paramenters);
-    [[HttpRequest sharedClient]httpRequestPOST:kUrlFeedAdd parameters:paramenters progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
-        Toast(@"发布成功");
-        //发送通知 ，刷新界面
-        [[NSNotificationCenter defaultCenter]postNotificationName:NotificationPublishFinish object:nil];
-        
-        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
-        
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-        
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        Toast(@"请检查网络是否错误");
-        self.rightButton.enabled = YES;
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-    }];
-}
-
-#pragma  mark  将字符串转成字典
--(id )dictionaryWithJsonString:(NSString *)jsonString {
-    if (jsonString == nil) {
-        return nil;
-    }
-    NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-    NSError *err;
-    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData
-                         
-                                                        options:NSJSONReadingMutableContainers
-                         
-                                                          error:&err];
-    if(err) {
-        
-        return nil;
-    }
-    
-    return dic;
-}
-
-//定位
 -(void)city{
     
     if (![CLLocationManager locationServicesEnabled]) {

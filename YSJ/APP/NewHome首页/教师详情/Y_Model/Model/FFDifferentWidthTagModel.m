@@ -63,6 +63,11 @@ static CGFloat cellMarginY = 16;
     
 }
 
+- (void)addTag:(NSString *)tag{
+    NSMutableArray *arr = _tagsArrM;
+    [arr addObject:tag];
+    self.tagsArrM = arr;
+}
 /***********************************懒加载***********************************/
 #pragma mark - 懒加载
 - (NSMutableArray *)tagsLabelFramesM {

@@ -163,6 +163,17 @@ static CGFloat tabWid = 150;
         [self  setTab1ChosedWithModel1:model1];
         
         [self.levelTab2 reloadData];
+        
+        /** type
+         0：多选
+         1：只能选择一个
+         */
+        if (self.type==1) {
+            [self confirmClick];
+            //单选 要把这个chose置于NO
+            model2.chosed = NO;
+        }
+        
     }
 }
 
@@ -234,6 +245,8 @@ static CGFloat tabWid = 150;
         _levelTab1.dataSource = self;
         _levelTab1.rowHeight = 40;
         _levelTab1.contentInset = UIEdgeInsetsMake(-38, 0, 0, 0);
+        _levelTab1.showsVerticalScrollIndicator = NO;
+        _levelTab1.showsHorizontalScrollIndicator = NO;
     }
     return _levelTab1;
 }
@@ -241,6 +254,8 @@ static CGFloat tabWid = 150;
 -(UITableView *)levelTab2{
     if (!_levelTab2 ) {
         _levelTab2 = [[UITableView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.levelTab1.frame)+1,50, tabWid, 300)style:UITableViewStyleGrouped];
+        _levelTab2.showsVerticalScrollIndicator = NO;
+        _levelTab2.showsHorizontalScrollIndicator = NO;
         _levelTab2.delegate = self;
         _levelTab2.dataSource = self;
         _levelTab2.rowHeight = 40;

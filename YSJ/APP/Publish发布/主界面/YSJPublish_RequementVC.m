@@ -73,7 +73,7 @@
     _scroll = [builder createViewWithDic:[self getCellDic]];
     _scroll.contentSize = CGSizeMake(0, 1150);
     [self.view addSubview:_scroll];
-   
+    
     [self topView];
     
     [self setBottomView];
@@ -84,52 +84,57 @@
     
     NSDictionary *dic = @{cb_cellH:@"76",
                           cb_orY:@"320",
-                         cb_cellArr:@[
-                                  @{
-                                      @"type":@(CellPopCouserChosed),
-                                      @"title":@"分类",
-                                      },
-                                  @{
-                                      @"type":@(CellPopNormal),
-                                      @"title":@"价格",
-                                      },
-                                  
-                                  @{
-                                      @"type":@(CellPopNormal),
-                                      @"title":@"上课时段",
-                                      },
-                                  
-                                  @{
-                                      @"type":@(CellSwitch),
-                                      @"title":@"上门服务",
-                                      },
-                                  
-                                  @{
-                                      @"type":@(CellPopNormal),
-                                      @"title":@"上课地址",
-                                      },
-                                 
-                                  @{
-                                      @"type":@(CellPopNormal),
-                                      @"title":@"可接受距离",
-                                      },
-                                  
-                                  @{
-                                      @"type":@(CellPopLine),
-                                      @"lineH":@"6",
-                                      },
-                                  
-                                  @{
-                                      cb_type:@(CellPushVC),
-                                      cb_title:@"需求标签",
-                                      cb_pushvc:@"YSJChoseTagsVC"
-                                      },
-                                  @{
-                                      cb_type:@(CellPushVC),
-                                      cb_title:@"自身标签",
-                                      cb_pushvc:@"YSJChoseTagsVC"
-                                      }
-                                  ]
+                          cb_cellArr:@[
+      @{
+          @"type":@(CellPopCouserChosed),
+          @"title":@"分类",
+          cb_courseCategoryType:@(1),
+          },
+      @{
+          @"type":@(CellPopMoreTextFiledView),
+          @"title":@"课程价格",
+          cb_moreTextFiledArr:@"最低价格,最高价格"
+          },
+      
+      @{
+          @"type":@(CellPopNormal),
+          @"title":@"上课时段",
+          },
+      
+      @{
+          @"type":@(CellSwitch),
+          @"title":@"上门服务",
+          },
+      
+      @{
+          @"type":@(CellPopNormal),
+          @"title":@"上课地址",
+          },
+      
+      @{
+          @"type":@(CellPopNormal),
+          @"title":@"可接受距离(km)",
+          cb_keyBoard:@(UIKeyboardTypeNumberPad),
+          },
+      
+      @{
+          @"type":@(CellPopLine),
+          @"lineH":@"6",
+          },
+      
+      @{
+          cb_type:@(CellPushVC),
+          cb_title:@"需求标签",
+          cb_pushvc:@"YSJChoseTagsVC",
+          cb_otherString:@"学生-需求",
+          },
+      @{
+          cb_type:@(CellPushVC),
+          cb_title:@"自身标签",
+          cb_pushvc:@"YSJChoseTagsVC",
+          cb_otherString:@"学生-学生",
+          }
+      ]
                           };
     return dic;
 }
@@ -163,7 +168,7 @@
     UIView *bottomLine = [[UIView alloc]init];
     bottomLine.backgroundColor = grayF2F2F2;
     [_scroll addSubview:bottomLine];
-
+    
     [bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(0);
         make.width.offset(kWindowW);
@@ -259,10 +264,17 @@
 
 -(void)next{
     
-    NSArray *keyArr = @[@"sale_item",@"address",@"is_at_home",@"occupation",@"school",@"education",@"describe"];
+    if (isEmptyString(_xuTitleCell.rightSubTitle) || [_xuTitleCell.rightSubTitle isEqualToString:@"需求标题"] || isEmptyString(_xuTextView.text)) {
+        Toast(@"请填写完整信息");
+        return;
+    }
     
+    //从第二个字段开始罗列"key"数组（第0个和第1个 的拼接方式不一样）
+    NSArray *keyArr = @[@"course_time",@"is_at_home",@"address",@"distance",@"lables",@"userlables"];
+    
+    //获取value数组
     NSMutableArray *valueArr = [_builder getAllContent];
-    
+
     int i = 0 ;
     
     NSMutableDictionary *dic = @{}.mutableCopy;
@@ -271,22 +283,39 @@
             Toast(@"请填写完整信息");
             return;
         }else{
-            [dic setObject:value forKey:keyArr[i]];
+            //从第二个字段开始罗列"key"数组（第0个和第1个 的拼接方式不一样）
+            if (i>=2) {
+                [dic setObject:value forKey:keyArr[i-2]];
+            }
+            
         }
         i++;
     }
     
+    [dic setObject:_xuTitleCell.rightSubTitle forKey:@"title"];
+    
+    [dic setObject:_xuTextView.text forKey:@"describe"];
+    
+    //课程大类
+    [dic setObject:[valueArr[0] componentsSeparatedByString:@"-"][0] forKey:@"coursetype"];
+    //课程小类
+     [dic setObject:[valueArr[0] componentsSeparatedByString:@"-"][1] forKey:@"coursetypes"];
+    //最低价格
+    [dic setObject:[[valueArr[1] componentsSeparatedByString:@","][0] componentsSeparatedByString:@":"][1] forKey:@"lowprice"];
+    //最高价格
+    [dic setObject:[[valueArr[1] componentsSeparatedByString:@","][1]componentsSeparatedByString:@":"][1] forKey:@"highprice"];
+    //需求种类(私教、机构)
+    [dic setObject:self.selectedBtn.tag==0?@"私教":@"机构" forKey:@"course_kind"];
+    //token
     [dic setObject:[StorageUtil getId] forKey:@"token"];
     
     NSLog(@"%@",dic);
     
-    [[HttpRequest sharedClient]httpRequestPOST:YTeacherStep3 parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+    [[HttpRequest sharedClient]httpRequestPOST:YPublishDemands parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         
         NSLog(@"%@",responseObject);
-        
-        YSJApplication_SuccessVC *vc = [[YSJApplication_SuccessVC alloc]init];
-        
-        [self.navigationController pushViewController:vc animated:YES];
+        Toast(@"发布成功");
+        [self.navigationController popToRootViewControllerAnimated:YES];
         
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         
@@ -307,7 +336,7 @@
         _teachTypeView.block = ^(NSMutableArray *chosedArr) {
             //             [weakSelf.tableView reloadData];
             NSLog(@"%@",chosedArr);
-           
+            
         };
     }
     return _teachTypeView;

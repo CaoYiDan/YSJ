@@ -32,6 +32,7 @@
     if (!_popView) {
         _popView = [[YSJPopTeachTypeView
                        alloc]initWithFrame:CGRectMake(0, 0, kWindowW, kWindowH)];
+        _popView.type = self.type;
         [[SPCommon getCurrentVC].view addSubview:_popView];
     }
     return _popView;

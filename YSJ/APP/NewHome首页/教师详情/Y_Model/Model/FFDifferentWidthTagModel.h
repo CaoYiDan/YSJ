@@ -15,6 +15,8 @@
 
 /** 标签数组 */
 @property (nonatomic, strong) NSMutableArray<NSString *> *tagsArrM;
+/** 标签选中状态数组 */
+@property (nonatomic, strong) NSMutableArray *selectedArr;
 
 /** 标签数组对应label的frame 数组 */
 @property (nonatomic, strong) NSMutableArray<NSValue *> *tagsLabelFramesM;
@@ -26,5 +28,12 @@
 @property (nonatomic, assign) CGFloat cellHeight;
 //评分
 @property (nonatomic,assign)CGFloat reputation;
+
+/**
+ 添加一个标签
+
+ @param tag 标签
+ */
+-(void)addTag:(NSString *)tag;
 
 @end

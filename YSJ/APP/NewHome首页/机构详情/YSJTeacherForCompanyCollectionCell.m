@@ -1,11 +1,4 @@
-//
-//  YSJTeacherCell.m
-//  SmallPig
-//
-//  Created by xujf on 2019/3/20.
-//  Copyright © 2019年 lisen. All rights reserved.
-//
-//
+
 
 #import "YSJTeacherForCompanyCollectionCell.h"
 
@@ -17,7 +10,8 @@
     UIImageView *_img;
     UILabel *_name;
     UILabel *_introduction;
-   
+    //被选中的遮挡view
+    UIView *_selectedView;
 }
 
 #pragma mark - init
@@ -25,6 +19,7 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        self.clipsToBounds = YES;
         [self setUp];
         self.backgroundColor=[UIColor whiteColor];
     }
@@ -61,7 +56,23 @@
     _introduction.backgroundColor = [UIColor whiteColor];
     [self.contentView addSubview:_introduction];
     
-   
+    _selectedView = [[UIView alloc]init];
+    _selectedView.backgroundColor = RGBCOLORA(0, 0, 0, 0.3);
+    [self.contentView addSubview:_selectedView];
+    [_selectedView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.offset(0);
+    }];
+    
+    UIImageView *selectedImg = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 17, 16)];
+    selectedImg.image = [UIImage imageNamed:@"xuanzhong"];
+    [_selectedView addSubview:selectedImg];
+    selectedImg.center = _selectedView.center;
+    [selectedImg mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.offset(0);
+        make.width.offset(17);
+        make.height.offset(16);
+    }];
+    _selectedView.hidden = YES;
 }
 
 - (void)setDic:(NSDictionary *)dic{
@@ -73,6 +84,13 @@
     _introduction.text = dic[@"teaching_type"];
 }
 
-
+- (void)setSelectedStatus:(BOOL)selectedStatus{
+    
+    _selectedStatus = selectedStatus;
+    
+    _selectedView.hidden = !selectedStatus;
+    
+   
+}
 
 @end

@@ -27,6 +27,7 @@
 }
 
 - (void)popViewWithTitle:(NSString *)title subTitle:(NSString *)subTitle{
+    
     _textArr = [subTitle componentsSeparatedByString:@","];
     self.popView.originY = 0;
     

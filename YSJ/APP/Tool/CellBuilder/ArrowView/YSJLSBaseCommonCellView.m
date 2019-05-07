@@ -41,20 +41,23 @@
     [self addSubview:_leftText];
     [_leftText mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(kMargin);
-        make.height.offset(normaelCellH);
+        make.height.offset(normalCellH
+                                  );
         make.top.equalTo(self).offset(0);
     }];
     
     _rightText = [[UILabel alloc]init];
     _rightText.textAlignment = NSTextAlignmentRight;
-    _rightText.text = subTitle;
+    _rightText.text = title;
+    self.rightSubTitle = title;
     _rightText.textColor = gray999999;
     _rightText.font = font(14);
     [self addSubview:_rightText];
     [_rightText mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.offset(-kMargin-20);
         make.left.equalTo(_leftText.mas_right).offset(10);
-        make.height.offset(normaelCellH);
+        make.height.offset(normalCellH
+                                  );
         make.top.offset(0);
     }];
     

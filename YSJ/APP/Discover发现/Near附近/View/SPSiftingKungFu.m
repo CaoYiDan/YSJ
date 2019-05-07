@@ -37,6 +37,7 @@ static CGFloat tabWid = 150;
 -(void)load{
     
     [MBProgressHUD showHUDAddedTo:self animated:YES];
+    
     [[HttpRequest sharedClient]httpRequestGET:[NSString stringWithFormat:@"%@%@",kUrlBase,@"/v1/user/listSkills/false"] parameters:nil progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         NSLog(@"%@",responseObject);
         self.listArray1 = [SPKungFuModel mj_objectArrayWithKeyValuesArray:responseObject[@"data"]];
