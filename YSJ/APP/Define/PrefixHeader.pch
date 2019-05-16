@@ -68,6 +68,8 @@
 #import "NSObject+propertyCode.h"
 #import "UIView+SPAnimation.h"
 #import "HttpRequest.h"
+#import "YSJRightYellowCell.h"
+#import "YSJRightGrayCell.h"
 //字体
 //#define Font(x) [UIFont systemFontOfSize:x]
 #import "UIColor+LGhex.h"
@@ -102,6 +104,12 @@ _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Wshadow\"") \
 metamacro_foreach(rac_strongify_,, __VA_ARGS__) \
 _Pragma("clang diagnostic pop")
+
+
+#define User_Normal @"普通用户"
+#define User_Teacher @"私教"
+#define User_Company @"机构"
+
 
 //屏幕坐标
 #define kWindowW [UIScreen mainScreen].bounds.size.width

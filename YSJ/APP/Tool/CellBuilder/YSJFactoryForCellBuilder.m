@@ -48,9 +48,7 @@
     
     for (NSDictionary *cellDic in cellArr) {
         
-        
         NSInteger type = [cellDic[@"type"] integerValue];
-        
         
         if (type==CellPopNormal) {
             
@@ -62,27 +60,32 @@
             
         }else if (type == CellPopSheet){
             
-            YSJPopTextFiledView *arrow =[[YSJPopTextFiledView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
+            YSJPopSheetView *arrow =[[YSJPopSheetView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
+            
             arrow.otherStr = cellDic[@"sheetText"];
+            
             [self p_addView:arrow];
             
         }else if (type == CellPopTextView){
             
             YSJPopTextViewView *arrow =[[YSJPopTextViewView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
+            
             [self p_addView:arrow];
             
         }else if (type == CellPopCouserChosed){
             
             YSJPopCourserCellView  *arrow =[[YSJPopCourserCellView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
+            //单选 还是 多选
             arrow.type = [cellDic[cb_courseCategoryType] integerValue];
+            
             [self p_addView:arrow];
             
         }else if (type==CellPushVC) {
             
-            YSJPushVCArrowView *arrow =[[YSJPushVCArrowView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
+            YSJPushVCArrowView *arrow = [[YSJPushVCArrowView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
             arrow.otherStr = cellDic[cb_otherString];
-            [self p_addView:arrow];
             
+            [self p_addView:arrow];
             
         }else if (type ==CellSwitch) {
             
@@ -91,6 +94,7 @@
             [self p_addView:arrow];
             
         }else if (type == CellTextFiled) {
+            
             YSJTextFiledCellView *arrow = [[YSJTextFiledCellView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) title:cellDic[@"title"] placholder:cellDic[@"placeholder"]];
             
             [self p_addView:arrow];
@@ -98,10 +102,10 @@
         }else if (type == CellPopMoreTextFiledView) {
             
             YSJPopMoreTextFiledView *arrow = [[YSJPopMoreTextFiledView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
+            
             arrow.otherStr = cellDic[cb_moreTextFiledArr];
             
             [self p_addView:arrow];
-            
             
         }else if ([cellDic[@"type"] integerValue]==CellPopLine) {
             
@@ -136,6 +140,7 @@
     
 }
 
+#pragma mark - 获取所有cell的信息（lineView除外）
 /**
  获取所有cell的信息（lineView除外）
  
@@ -151,6 +156,8 @@
         
         if (!isEmptyString(content)) {
             [arr addObject:content];
+        }else{
+            [arr addObject:@""];
         }
     }
     NSLog(@"%@",arr);
@@ -176,6 +183,7 @@
         if (i==3 || i==4) {
             //            [vi removeFromSuperview];
         }else{
+            
             [UIView animateWithDuration:0.2 animations:^{
                 //大于4的view 坐标上移2个单位
                 vi.originY -= i>4?cellH*2:0;
@@ -328,13 +336,13 @@
     
     for (UIView *vi in _cellViewArr) {
         
-        if (i==2|| i==4) {
+        if (i==2) {
             
         }else{
             
             [UIView animateWithDuration:0.2 animations:^{
                 
-                if (i==3) {
+                if (i==3 || i==4) {
                     vi.originY += cellH;
                 }else if (i>3){
                     vi.originY += cellH*2;
@@ -360,12 +368,12 @@
     
     for (UIView *vi in _cellViewArr) {
         
-        if (i==2|| i==4) {
+        if (i==2 ) {
             
         }else{
             [UIView animateWithDuration:0.2 animations:^{
                 
-                if (i==3) {
+                if (i==3 || i==4) {
                     vi.originY -= cellH;
                 }else if (i>3){
                     vi.originY -= cellH*2;

@@ -64,13 +64,14 @@
     _introduction.font = font(11);
     _introduction.textColor = gray999999;
     _introduction.backgroundColor = [UIColor whiteColor];
+    _introduction.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:_introduction];
     
     UIImageView *xingImg = [[UIImageView alloc]init];
     xingImg.image = [UIImage imageNamed:@"full_Star"];
     [self.contentView addSubview:xingImg];
     [xingImg mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.offset(0);
+        make.left.offset(10);
         make.width.offset(11);
         make.height.offset(11);
     make.top.equalTo(_introduction.mas_bottom).offset(10);
@@ -98,7 +99,7 @@
     _price.backgroundColor = KWhiteColor;
     [self.contentView addSubview:_price];
     [_price mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(xing.mas_right).offset(15);
+        make.right.offset(-10);
         
         make.height.offset(20);
         make.centerY.equalTo(xingImg);

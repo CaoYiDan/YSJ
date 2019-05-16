@@ -52,8 +52,8 @@
     bottomLine.backgroundColor = grayF2F2F2;
     [self addSubview:bottomLine];
     [bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.offset(0);
-        make.width.offset(kWindowW);
+        make.left.offset(kMargin);
+        make.width.offset(kWindowW-2*kMargin);
         make.height.offset(1);
         make.bottom.offset(0);
     }];
@@ -66,7 +66,9 @@
 }
 
 - (NSString *)getContent{
+    
     return _switch.isOn?@"1":@"0";
+    
 }
 
 @end

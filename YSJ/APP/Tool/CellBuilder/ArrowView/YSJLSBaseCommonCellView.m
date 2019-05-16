@@ -48,8 +48,8 @@
     
     _rightText = [[UILabel alloc]init];
     _rightText.textAlignment = NSTextAlignmentRight;
-    _rightText.text = title;
-    self.rightSubTitle = title;
+    _rightText.text = @"";
+//    self.rightSubTitle = title;
     _rightText.textColor = gray999999;
     _rightText.font = font(14);
     [self addSubview:_rightText];
@@ -76,7 +76,7 @@
     [self addSubview:bottomLine];
     [bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(10);
-        make.right.offset(0);
+        make.right.offset(-kMargin);
         make.height.offset(1);
         make.bottom.offset(0);
     }];

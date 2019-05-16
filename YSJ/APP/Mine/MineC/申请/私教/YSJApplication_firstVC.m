@@ -79,7 +79,7 @@
                                       },
                                   
                                   @{
-                                      @"type":@(CellPopNormal),
+                                      @"type":@(CellPopSheet),
                                       @"title":@"性别",
                                       @"sheetText":@"男,女",
                                       },

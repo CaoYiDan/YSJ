@@ -47,13 +47,13 @@
     
     _name = [[UILabel alloc]initWithFrame:CGRectMake(0, imgH+17, imgWid, 20)];
     _name.font = Font(15);
-//    _name.textAlignment = NSTextAlignmentCenter;
+    _name.textAlignment = NSTextAlignmentCenter;
     _name.backgroundColor = [UIColor whiteColor];
     [self.contentView addSubview:_name];
     
     _introduction = [[UILabel alloc]initWithFrame:CGRectMake(0, imgH+40, imgWid, 20)];
     _introduction.font = font(11);
-//    _introduction.textAlignment = NSTextAlignmentCenter;
+    _introduction.textAlignment = NSTextAlignmentCenter;
     _introduction.textColor = gray999999;
     _introduction.backgroundColor = [UIColor whiteColor];
     [self.contentView addSubview:_introduction];
@@ -63,7 +63,7 @@
     xingImg.image = [UIImage imageNamed:@"full_Star"];
     [self.contentView addSubview:xingImg];
     [xingImg mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.offset(0);
+        make.centerX.offset(-5);
         make.width.offset(13);
         make.height.offset(13);
         make.top.equalTo(_introduction.mas_bottom).offset(10);
@@ -104,7 +104,8 @@
     _introductionView.backgroundColor = KWhiteColor;
     [self.contentView addSubview:_introductionView];
     [_introductionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(_name).offset(0);
+        make.right.offset(0);
+        make.left.offset(0);
         make.height.offset(30);
         make.top.equalTo(xing.mas_bottom).offset(5);
     }];
@@ -144,7 +145,7 @@
         label.text = [NSString stringWithFormat:@"%@名资深老师",model.num_teacher];
        CGFloat width= [label.text sizeWithFont:font(11) maxW:150].width+20;
         [label mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.offset(i*100);
+            make.centerX.offset(0);
             make.width.offset(width);
             make.height.offset(20);
             make.bottom.offset(-5);

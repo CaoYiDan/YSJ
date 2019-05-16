@@ -4,13 +4,19 @@
 #import "YSJMyCenterVC.h"
 #import "YSJMineHeaderView.h"
 #import "GTBProfileVC.h"
+#import "YSJBuyManagerVC.h"
+#import "YSJMyPublish_RequimentVC.h"
 #import "YSJPopApplicationView.h"
+#import "YSJSellManagerVC.h"
+#import "YSJOrderDeatilVC.h"
 @interface YSJMyCenterVC ()<UITableViewDelegate,UITableViewDataSource,MineHeaderViewDelegate>
+
 @property (nonatomic,strong) UITableView *tableView;
 @property (nonatomic,strong) YSJUserModel *model;
 @property (nonatomic,strong) NSArray * titleArr;
 @property (nonatomic,strong) NSArray * titleImageArr;
 @property (nonatomic,strong) YSJMineHeaderView *headerView;
+
 @end
 
 @implementation YSJMyCenterVC
@@ -130,10 +136,13 @@
 #pragma mark - header点击代理事件
 
 - (void)mineHeaderViewDidSelectedType:(NSString *)type index:(NSInteger)index{
+    
     NSLog(@"%@",type);
+    
     if ([type isEqualToString:@"set"]) {
         
     }else if ([type isEqualToString:@"insert"]){
+        
         GTBProfileVC *vc = [[GTBProfileVC alloc]init];
         vc.model = self.model;
         [self.navigationController pushViewController:vc animated:YES];
@@ -142,20 +151,37 @@
         
     }else if ([type isEqualToString:@"topBottom"]){
         
+//        YSJMyPublish_RequimentVC *vc = [[YSJMyPublish_RequimentVC alloc]init];
+//        [self.navigationController pushViewController:vc animated:YES];
+//
     }else if ([type isEqualToString:@"middle"]){
         
+        if (index==0) {
+            
+            YSJMyPublish_RequimentVC *vc = [[YSJMyPublish_RequimentVC alloc]init];
+            vc.identifier = User_Teacher;
+            [self.navigationController pushViewController:vc animated:YES];
+//
+        }else if (index==1){
+            YSJBuyManagerVC* vc = [[YSJBuyManagerVC alloc]init];
+            [self.navigationController pushViewController:vc animated:YES];
+        }else if (index==2){
+            YSJSellManagerVC* vc = [[YSJSellManagerVC alloc]init];
+            [self.navigationController pushViewController:vc animated:YES];
+        }else if (index==3){
+            YSJOrderDeatilVC* vc = [[YSJOrderDeatilVC alloc]init];
+            [self.navigationController pushViewController:vc animated:YES];
+        }
+        
+//
+//
     }else if ([type isEqualToString:@"application"]){
+        
         YSJPopApplicationView *popView = [[YSJPopApplicationView alloc]initWithFrame:self.view.bounds];
         popView.type = index;
         [self.view addSubview:popView];
     }
 }
-
-#pragma mark  - CustomDelegate
-
-#pragma mark event response
-
-#pragma mark private methods
 
 #pragma mark - LazyLoad
 
@@ -175,13 +201,12 @@
         _tableView.contentInset =UIEdgeInsetsMake(0, 0, 10+KBottomHeight-80, 0);
         [self.view addSubview:_tableView];
         
-        
         UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake(0, kWindowH+500, kWindowW, 80)];
         lab.font = font(11);
         lab.textColor = KWhiteColor;
         lab.numberOfLines = 0;
         lab.textAlignment = NSTextAlignmentCenter;
-        lab.text = @"哇，这都被你找到了，好吧，我承认...........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................";
+        lab.text = @"...........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................";
         [_tableView addSubview:lab];
     }
     return _tableView;

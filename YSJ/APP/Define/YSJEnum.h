@@ -22,6 +22,24 @@ typedef enum
 
 typedef enum
 {
+   OrderTypeBuy = 0,//买到管理
+   OrderTypeSell,//卖出管理
+   OrderTypePublish,//我的发布
+}YSJOrderType;
+
+typedef enum
+{
+    MyPublishTypeFindTeacher = 0,//
+    MyPublishTypeFindCompany,//
+    MyPublishTypeTeacherCourse ,//
+    MyPublishTypeTeacherRequement,//
+    MyPublishTypeCompanyFamous ,//
+    MyPublishTypeCompanyJingPin,//
+    MyPublishTypeCompanyFree,
+}YSJMyPublishType;
+
+typedef enum
+{
     /** 系统自带的textfiled*/
     CellPopNormal = 0,//
     /** 自定义的textView */

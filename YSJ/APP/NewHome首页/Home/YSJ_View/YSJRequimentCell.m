@@ -68,6 +68,7 @@
     [self.contentView addSubview:_name];
     
     _introduction = [[UILabel alloc]initWithFrame:CGRectMake(0, imgH+40, imgWid, 20)];
+    _introduction.textAlignment = NSTextAlignmentCenter;
     _introduction.font = font(11);
     _introduction.textColor = gray999999;
     _introduction.backgroundColor = [UIColor whiteColor];
@@ -83,17 +84,11 @@
     xuqiu.titleLabel.font = font(12);
     [self addSubview:xuqiu];
     [xuqiu mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.offset(0);
+        make.centerX.offset(0);
         make.height.offset(20);
         make.top.equalTo(_introduction.mas_bottom).offset(8);
     }];
     
-//    _price = [[UILabel alloc]initWithFrame:CGRectMake(50, imgH+70, 60, 20)];
-//    _price.font = font(11);
-//    _price.textAlignment = NSTextAlignmentCenter;
-//    _price.textColor = yellowEE9900;
-//    _price.backgroundColor = KWhiteColor;
-//    [self.contentView addSubview:_price];
 }
 
 -(void)setModel:(YSJRequimentModel *)model{
@@ -105,13 +100,7 @@
     _name.text = model.nickname;
      _introduction.text = [NSString stringWithFormat:@"%@ | %@ ",model.coursetype,model.coursetypes];
     [xuqiu setTitle:[NSString stringWithFormat:@" %@",model.title] forState:0];
-    
-//    _price.text = [NSString stringWithFormat:@"¥%u起",model.price];
-    
-    
-    //    xuqiu.selected = userModel.gender;
-    //
-    //    [_constellation setTitle:model.realname forState:0];
+
 }
 
 @end

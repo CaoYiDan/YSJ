@@ -8,7 +8,6 @@
  */
 #define cb_cellArr @"cellArr"
 
-
 /*
  标题
  */
@@ -54,7 +53,6 @@
  发送通知
  */
 #define CB_NSNotification @"CB_NSNotification"
-
 /*
  附加的信息
  */

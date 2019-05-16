@@ -134,10 +134,12 @@ animation.calculationMode = kCAAnimationCubic;
 }
 
 +(UILabel*)noDataLabelWithText:(NSString *)text frame:(CGRect)frame{
+    
     UILabel * noDataLab = [UILabel labelWithFont:font(15) textColor:[UIColor lightGrayColor] numberOfLines:0 textAlignment:NSTextAlignmentCenter];
     noDataLab.frame = frame;
     noDataLab.text = text;
     return noDataLab;
+    
 }
 
 /**
@@ -153,6 +155,7 @@ animation.calculationMode = kCAAnimationCubic;
 {
     
     if (maxSize <= 0.0) maxSize = 1024.0;
+    
     if (maxImageSize <= 0.0) maxImageSize = 1024.0;
     
     //先调整分辨率
@@ -192,14 +195,16 @@ animation.calculationMode = kCAAnimationCubic;
  @param view 被设置阴影的View
  */
 +(void)setShaowForView:(UIView *)view{
+    
     view.backgroundColor = KWhiteColor;
     view.layer.shadowOffset = CGSizeMake(1, 1);
     view.layer.shadowOpacity = 0.2;
     view.layer.shadowColor = [UIColor hexColor:@"27347d"].CGColor;
     view.layer.cornerRadius = 8;
+    
 }
+
 /**
- 
  @param m 输入的数据
  @return 如果大于1000m, 将 m 转化为km， 小于1000m ,返回原数据
  
@@ -213,7 +218,9 @@ animation.calculationMode = kCAAnimationCubic;
 }
 
 #pragma mark - 弹出编辑框
+
 +(void)creatAlertControllerTitle:(NSString*) title subTitle:(NSString *)subTitle _alertSure:(void (^)(NSString *text)) resultText{
+    
     //跟上面的流程差不多，记得要把preferredStyle换成UIAlertControllerStyleAlert
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:[NSString stringWithFormat:@"请输入%@",title] preferredStyle:UIAlertControllerStyleAlert];
     
@@ -234,10 +241,12 @@ animation.calculationMode = kCAAnimationCubic;
     }];
     
     [alert addAction:action1];
+    
     [alert addAction:action2];
     
     [[self getCurrentVC] presentViewController:alert animated:YES completion:nil];
 }
+
 #pragma mark - 弹出编辑框
 +(void)creatAlertControllerTitle:(NSString*) title subTitle:(NSString *)subTitle _alertSure:(void (^)(NSString *text)) resultText keyBoard:(UIKeyboardType)keyBoard{
     //跟上面的流程差不多，记得要把preferredStyle换成UIAlertControllerStyleAlert
@@ -271,4 +280,27 @@ animation.calculationMode = kCAAnimationCubic;
     
     [[self getCurrentVC] presentViewController:alert animated:YES completion:nil];
 }
+
+#pragma mark ---- 将时间戳转换成时间
+
++(NSString *)getTimeFromTimestamp:(NSInteger)time{
+    
+        //将对象类型的时间转换为NSDate类型
+    
+        NSDate * myDate=[NSDate dateWithTimeIntervalSince1970:time];
+    
+        //设置时间格式
+    
+        NSDateFormatter * formatter=[[NSDateFormatter alloc]init];
+    
+        [formatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+    
+        //将时间转换为字符串
+    
+      NSString *timeStr=[formatter stringFromDate:myDate];
+    
+        return timeStr;
+    
+}
+
 @end

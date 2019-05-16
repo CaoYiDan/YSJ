@@ -20,8 +20,8 @@
         //字体大小
         self.font_size = 30;
         //颜色
-        self.full_color = RGBCOLOR(248, 29, 86);
-        self.empty_color = [UIColor lightGrayColor];
+        self.full_color = [UIColor hexColor:@"FFBA49"];
+        self.empty_color = [UIColor hexColor:@"D8D8D8"];
     }
     return self;
 }

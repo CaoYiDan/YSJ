@@ -80,3 +80,11 @@
 
 #define YPublishCompany  YUrlBase_YSJ@"/publish/company/course"
 
+#pragma mark - 买到管理
+#define YCourseUserBuy  YUrlBase_YSJ@"/course/user/buy"
+#define YCourseUserBuyDeatil  YUrlBase_YSJ@"/course/user/buy_detail"
+#define YCourseLabels  YUrlBase_YSJ@"/course/label"
+
+#define YCourseEvaluation  YUrlBase_YSJ@"/course/evaluation"
+
+#define YMyFindAll  YUrlBase_YSJ@"/course/findall"

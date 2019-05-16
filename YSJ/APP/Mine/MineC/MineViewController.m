@@ -53,6 +53,7 @@
 
 @property(nonatomic,copy) NSString *topRightGoodStr;//点赞数
 @property(nonatomic,copy) NSString * headImageStr;
+
 @property(nonatomic,strong) UILabel * nickNameLab;
 
 @property(nonatomic,strong) UIImageView * headIV;
@@ -64,12 +65,12 @@
 @property (nonatomic,copy)NSString * gender;//性别
 @property(nonatomic,strong)SPShareView *shareView;
 //@property(nonatomic,assign)int praiseNum;//点赞数
-
 //主页面
 @property(nonatomic,strong)UITableView*tableView;
 @property(nonatomic,strong)UIView * headView;
 //分享的图片image
 @property(nonatomic,strong) UIImage * shareImage;
+
 @end
 
 @implementation MineViewController
@@ -81,7 +82,6 @@
     [self createUI];
     
 }
-
 
 - (void)viewWillAppear:(BOOL)animated{
     
