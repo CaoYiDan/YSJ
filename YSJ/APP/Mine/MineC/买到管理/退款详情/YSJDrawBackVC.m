@@ -139,6 +139,25 @@
 
 -(void)next{
     
+    if (isEmptyString(self.textView.text)||isEmptyString(self.caurseCell.rightSubTitle)) {
+        Toast(@"请填写完整信息");
+        return;
+    }
+    //网络请求
+    NSMutableDictionary *dic = @{}.mutableCopy;
+    [dic setObject:[StorageUtil getId] forKey:@"token"];
+    [dic setObject:self.textView.text forKey:@"describe"];
+    [dic setObject:self.caurseCell.rightSubTitle forKey:@"cause"];
+    [dic setObject:self.model.orderId forKey:@"order_id"];
+    [[HttpRequest sharedClient]httpRequestPOST:YInformation parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+        
+        Toast(@"已提交");
+        
+        [self.navigationController popToRootViewControllerAnimated:YES];
+       
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        
+    }];
 }
 
 @end

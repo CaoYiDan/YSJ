@@ -76,7 +76,10 @@
 }
 
 - (void)setDic:(NSDictionary *)dic{
+    
     _dic = dic;
+   
+    
     [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,dic[@"photo"]]]placeholderImage:[UIImage imageNamed:@"placeholder2"]];
     
     _name.text = dic[@"name"];

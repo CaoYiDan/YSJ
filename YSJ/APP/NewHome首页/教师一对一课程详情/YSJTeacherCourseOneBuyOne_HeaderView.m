@@ -136,16 +136,15 @@
     
     _model = model;
     
-    
     [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.pic_url2[0]]]placeholderImage:[UIImage imageNamed:@"placeholder2"]];
     
     [_dealCount setTitle:[NSString stringWithFormat:@"已售%@",model.dealcount] forState:0];
     
     _name.text = model.title;
     
-    _price.text = model.price;
+    _price.text = [NSString stringWithFormat:@"¥%@",model.price];
     
-    _oldPrice.text = model.old_price;
+    _oldPrice.text = [NSString stringWithFormat:@"¥%@",model.old_price];
     [_oldPrice addMiddleLine];
     
     _location.text = model.address;

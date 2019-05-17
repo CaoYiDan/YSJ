@@ -27,3 +27,6 @@ NSString* const NotificationCategorySelected =@"NotificationCategorySelected";
 
 NSString* const NotificationJumpToHome =@"Notification_JumpToHome";
 
+NSString* const NotificationMoreBtnFinishOption
+ =@"Notification_MoreBtnFinishOption";
+

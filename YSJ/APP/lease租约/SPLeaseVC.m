@@ -183,12 +183,13 @@
 -(void)getLeaseData{
     
     _page=1;
+    
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     NSMutableDictionary *dic = [[NSMutableDictionary alloc]init];
     [dic setObject:@(_page) forKey:@"pageNum"];
     [dic setObject:@(15) forKey:@"pageSize"];
-    [dic setObject:[SPCommon getLoncationDic][@"longitude"] forKey:@"sendx"];
-    [dic setObject:[SPCommon getLoncationDic][@"latitude"] forKey:@"sendy"];
+    [dic setObject:[SPCommon getLonDic][@"longitude"] forKey:@"sendx"];
+    [dic setObject:[SPCommon getLonDic][@"latitude"] forKey:@"sendy"];
     
     if ([self.leaseType isEqualToString:@"应邀广场"]) {
         if (!isEmptyString(_siftingDic[@"gender"])) {

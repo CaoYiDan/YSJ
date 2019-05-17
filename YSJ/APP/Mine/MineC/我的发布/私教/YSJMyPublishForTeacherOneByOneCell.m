@@ -28,6 +28,8 @@
     UILabel *_price;
     
     UILabel *_oldPrice;
+    
+    YSJBottomMoreButtonView *_bottomBtnView;
 }
 
 #pragma mark - init
@@ -54,23 +56,13 @@
     [self.contentView addSubview:_img];
     
     _name = [[UILabel alloc]init];
-    _name.font = Font(15);
+    _name.font = Font(16);
     _name.backgroundColor = [UIColor whiteColor];
     [self.contentView addSubview:_name];
     [_name mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(_img.mas_right).offset(10);
-        make.height.offset(20);
+        make.height.offset(16);
         make.top.equalTo(_img).offset(0);
-    }];
-    
-    UIImageView *xuImg =[[UIImageView alloc]init];
-    xuImg.image = [UIImage imageNamed:@"xu"];
-    [self addSubview:xuImg];
-    [xuImg mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(_name).offset(0);
-        
-        make.height.offset(14);
-        make.width.offset(14); make.top.equalTo(_name.mas_bottom).offset(7);
     }];
     
     xuqiu = [[UILabel alloc]init];
@@ -79,14 +71,15 @@
     xuqiu.font = font(12);
     [self addSubview:xuqiu];
     [xuqiu mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(xuImg.mas_right).offset(5);
+        make.left.equalTo(_name).offset(0);
         
         make.height.offset(14);
-        make.right.offset(-kMargin); make.top.equalTo(_name.mas_bottom).offset(7);
+        make.right.offset(-kMargin);
+        make.top.equalTo(_name.mas_bottom).offset(10);
     }];
     
     _price = [[UILabel alloc]init];
-    _price.font = font(16);
+    _price.font = font(18);
     _price.textColor = yellowEE9900;
     _price.backgroundColor = [UIColor whiteColor];
     [self.contentView addSubview:_price];
@@ -99,20 +92,20 @@
     
     _oldPrice = [[UILabel alloc]init];
     _oldPrice.font = font(12);
-    _oldPrice.textAlignment = NSTextAlignmentRight;
     _oldPrice.textColor = gray999999;
     _oldPrice.backgroundColor = KWhiteColor;
     [self.contentView addSubview:_oldPrice];
     [_oldPrice mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(_price.mas_right).offset(10);
-        make.centerY.equalTo(_price).offset(0);
-        //        make.height.offset(30);
+        make.left.offset(150);
+         make.centerY.equalTo(_price).offset(0);
+            make.height.offset(30);
     }];
     
     YSJBottomMoreButtonView *bottomView = [[YSJBottomMoreButtonView alloc]init];
-    bottomView.btnTextArr = @[@"删除",@"查看",@"编辑"];
+    bottomView.btnTextArr = @[@"删除",@"查看"];
     [self.contentView addSubview:bottomView];
     bottomView.delegate = self;
+    _bottomBtnView = bottomView;
     [bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(0);
         make.width.offset(kWindowW);
@@ -125,16 +118,21 @@
     
     _model = model;
     
-    [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.pic_url2[0]]]placeholderImage:[UIImage imageNamed:@"placeholder2"]];
+    if (model.pic_url2.count>0) {
+        
+         [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.pic_url2[0]]]placeholderImage:[UIImage imageNamed:@"placeholder2"]];
+    }
+    NSLog(@"%@",[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.pic_url2[0]]);
+    _name.text = model.title;
     
-    _name.text = model.times;
+    xuqiu.text = [NSString stringWithFormat:@"%@ | %@ ",model.coursetype,model.coursetypes];
+    _price.text = [NSString stringWithFormat:@"¥%@",model.price];
     
-    xuqiu.text = [NSString stringWithFormat:@" %@",model.title];
-    _price.text = [NSString stringWithFormat:@"¥%@/h",model.price];
-    
-    _oldPrice.text = model.old_price;
+    _oldPrice.text = [NSString stringWithFormat:@"¥%@",model.old_price];
     [_oldPrice addMiddleLine];
     
+    _bottomBtnView.courseModel = model;
+    _bottomBtnView.orderType = OrderTypePublish;
 }
 /**
  底部点击按钮事件

@@ -370,7 +370,7 @@
     
     //@"随时退",@"过期自动退"
     if (section==2) {
-        NSArray *arr = @[@"过期自动退",@"随时退"];
+        NSArray *arr = @[@" 过期自动退",@" 随时退"];
         int i=0;
         for (NSString *str in arr) {
             UIButton *btn = [[UIButton alloc]init];
@@ -530,7 +530,8 @@
 {
     if (!_tableView )
     {
-        _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0,0, SCREEN_W, SCREEN_H-60-KBottomHeight) style:UITableViewStyleGrouped];
+        _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0,0, SCREEN_W, SCREEN_H) style:UITableViewStyleGrouped];
+        _tableView.contentInset = UIEdgeInsetsMake(0, 0, 60+KBottomHeight, 0);
         _tableView.delegate = self;
         _tableView.dataSource = self;
         _tableView.backgroundColor = [UIColor hexColor:@"F0F0F0"];

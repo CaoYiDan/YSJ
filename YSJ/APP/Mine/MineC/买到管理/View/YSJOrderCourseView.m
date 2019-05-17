@@ -13,7 +13,7 @@
     UIImageView *_img;
     UILabel *_name;
     UILabel *_introduction;
-    UILabel *_price;
+    
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -59,6 +59,20 @@
         make.top.equalTo(_name.mas_bottom).offset(7);
     }];
     
+    _price = [[UILabel alloc]init];
+    _price.font = font(16);
+    _price.textColor = yellowEE9900;
+    _price.backgroundColor = [UIColor whiteColor];
+    [self addSubview:_price];
+    [_price mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(_name).offset(0);
+        
+        make.height.offset(14);
+        make.right.offset(-kMargin); make.top.equalTo(_introduction.mas_bottom).offset(7);
+    }];
+    _price.hidden = YES;
+    
+    
     UIView *bottomLine = [[UIView alloc]init];
     bottomLine.backgroundColor = grayF2F2F2;
     [self addSubview:bottomLine];
@@ -78,7 +92,7 @@
     
     _name.text = self.model.title;
     
-    _introduction.text = [NSString stringWithFormat:@" %@",self.model.title];
+    _introduction.text = [NSString stringWithFormat:@" %@ | %@",self.model.coursetype,self.model.coursetypes];
     _price.text = [NSString stringWithFormat:@"¥%.2f",self.model.real_amount];
 }
 @end

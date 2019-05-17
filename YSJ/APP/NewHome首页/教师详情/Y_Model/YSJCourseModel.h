@@ -22,7 +22,7 @@
 //old_price = 699
 
 @interface YSJCourseModel : NSObject
-
+@property (nonatomic,copy) NSString *corseId;
 @property (nonatomic,assign)double reputation;
 @property (nonatomic,strong) NSMutableArray *teacherArr;
 @property (nonatomic,copy) NSString *coursetypes;

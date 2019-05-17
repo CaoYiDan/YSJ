@@ -104,6 +104,16 @@ animation.calculationMode = kCAAnimationCubic;
     return vc;
 }
 
++(NSDictionary *)getLonDic{
+    
+    NSMutableDictionary *dic  = @{}.mutableCopy;
+  
+    [dic setObject:@"39.030928" forKey:@"latitude"];
+    [dic setObject:@"117.279395" forKey:@"longitude"];
+    return  dic;
+
+}
+
 +(NSDictionary *)getLoncationDic{
     
     NSMutableDictionary *dic  = @{}.mutableCopy;

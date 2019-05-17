@@ -111,25 +111,15 @@
     
     NSString *gridId = @"identifer";
     gridId =  [NSString stringWithFormat:@"%ld---identifier",pageIndex];
-    if (pageIndex == 0) {
-        YSJChilderVCForBuyManager *viewController = [magicView dequeueReusablePageWithIdentifier:gridId];
-        if (!viewController) {
-            viewController = [[YSJChilderVCForBuyManager alloc] init];
-        }
-        
-        return viewController;
-    }else if (pageIndex == 1){
-        YSJChilderVCForBuyManager *viewController = [magicView dequeueReusablePageWithIdentifier:gridId];
-        if (!viewController) {
-            viewController = [[YSJChilderVCForBuyManager alloc] init];
-            
-             viewController.orderType = OrderTypeSell;
-        }
-        
-        return viewController;
-    }
     
-    return [[UIViewController alloc]init];
+    YSJChilderVCForBuyManager *viewController = [magicView dequeueReusablePageWithIdentifier:gridId];
+    if (!viewController) {
+        viewController = [[YSJChilderVCForBuyManager alloc] init];
+        viewController.orderType = OrderTypeSell;
+    }
+    viewController.type = pageIndex;
+    return viewController;
+
     
 }
 

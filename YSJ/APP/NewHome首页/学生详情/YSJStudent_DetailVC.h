@@ -14,6 +14,11 @@ typedef void(^profileBlock) (NSDictionary *profileDic);
 
 @interface YSJStudent_DetailVC : BaseViewController
 
+/**
+ 0 普通进入 1 查看自己的发布
+ */
+@property (nonatomic,assign) NSInteger vcType;
+
 /**<##>teacherID*/
 @property(nonatomic,copy)NSString *studentID;
 

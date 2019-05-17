@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface YSJOrderModel : NSObject
 
 @property (nonatomic, copy) NSString *orderId;
+@property (nonatomic, copy) NSString *order_id;
 
 @property (nonatomic,strong) NSArray *pic_url;
 

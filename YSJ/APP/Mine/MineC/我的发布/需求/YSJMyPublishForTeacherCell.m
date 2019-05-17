@@ -96,7 +96,7 @@
     }];
     
     YSJBottomMoreButtonView *bottomView = [[YSJBottomMoreButtonView alloc]init];
-    bottomView.btnTextArr = @[@"删除",@"查看",@"编辑"];
+    bottomView.btnTextArr = @[@"删除",@"查看"];
     [self.contentView addSubview:bottomView];
     bottomView.delegate = self;
     [bottomView mas_makeConstraints:^(MASConstraintMaker *make) {

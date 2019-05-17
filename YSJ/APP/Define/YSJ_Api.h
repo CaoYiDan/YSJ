@@ -70,6 +70,8 @@
 
 #define YPublishDemands YUrlBase_YSJ@"/publish/user/demands"
 
+#define YCancelPublish YUrlBase_YSJ@"/course/release/drop"
+
 #define YLables YUrlBase_YSJ@"/lables"
 
 #define YPublishTeacherCourse  YUrlBase_YSJ@"/publish/teacher/course"
@@ -82,9 +84,12 @@
 
 #pragma mark - 买到管理
 #define YCourseUserBuy  YUrlBase_YSJ@"/course/user/buy"
+#define YCourseUserSale  YUrlBase_YSJ@"/course/user/sale"
 #define YCourseUserBuyDeatil  YUrlBase_YSJ@"/course/user/buy_detail"
 #define YCourseLabels  YUrlBase_YSJ@"/course/label"
 
 #define YCourseEvaluation  YUrlBase_YSJ@"/course/evaluation"
 
 #define YMyFindAll  YUrlBase_YSJ@"/course/findall"
+//查看退款进度
+#define YCourseQuery  YUrlBase_YSJ@"/course/drop/query"

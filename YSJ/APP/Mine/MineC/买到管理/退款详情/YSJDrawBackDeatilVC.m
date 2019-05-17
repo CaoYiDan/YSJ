@@ -4,6 +4,7 @@
 //
 //  Created by xujf on 2019/4/17.
 //  Copyright © 2019年 lisen. All rights reserved.
+#import "YSJDrawBackModel.h"
 #import "YSJCommonSwitchView.h"
 #import "YSJPopTextFiledView.h"
 #import "YSJApplication_SecondVC.h"
@@ -16,7 +17,7 @@
 #import "YSJOrderCourseView.h"
 
 @interface YSJDrawBackDeatilVC ()<YSJBottomMoreButtonViewDelegate>
-
+@property (nonatomic,strong) YSJDrawBackModel *drawModel;
 @end
 
 @implementation YSJDrawBackDeatilVC
@@ -42,7 +43,7 @@
     
     [super viewDidLoad];
     
-    self.title = @"订单详情";
+    self.title = @"退款详情";
     
     [self getListRequestisScu:^(BOOL isScu) {
         [self initUI];
@@ -51,6 +52,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
@@ -59,10 +61,10 @@
 
 -(void)getListRequestisScu:(void(^)(BOOL isScu))requestisScu{
     
-    [[HttpRequest sharedClient]httpRequestPOST:YCourseUserBuyDeatil parameters:@{@"token":@"MTU1ODA4NTMzMy40MTUyMzU1OjA0YWI2ZTBkNzIyYmZkODRhYjIxNzIzMGQ1ZmRmNGQ0MmFkOGYxNzI=",@"id":self.model.orderId} progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+    [[HttpRequest sharedClient]httpRequestPOST:YCourseQuery parameters:@{@"token":@"MTU1ODU5OTg2MS4xMTEwMTk0OmM4Y2E4ODBiMGQ1NTY3ZjY5YWQ0OTc5MjMwZjg5MjY3ODhkNTNjODg=",@"order_id":self.model.order_id} progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         //        requestisScu(YES);
         NSLog(@"%@",responseObject);
-        self.model = [YSJOrderModel mj_objectWithKeyValues:responseObject];
+        self.drawModel = [YSJDrawBackModel mj_objectWithKeyValues:responseObject[@"courses"]];
         requestisScu(YES);
         
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -87,7 +89,6 @@
 -(void)setBaseView{
     
     _scroll = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, kWindowH)];
-    _scroll.bounces = NO;
     _scroll.backgroundColor = KWhiteColor;
     _scroll.showsVerticalScrollIndicator = NO;
     _scroll.showsHorizontalScrollIndicator = NO;
@@ -95,34 +96,87 @@
     [self.view addSubview:_scroll];
 }
 
-
 -(void)topView{
     
     UIImageView *topImg = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, 110)];
     topImg.backgroundColor = [UIColor hexColor:@"FF6960"];
     [_scroll addSubview:topImg];
     
-    UILabel *status = [[UILabel alloc]initWithFrame:CGRectMake(34, 20, 100, 30)];
+    UILabel *status = [[UILabel alloc]initWithFrame:CGRectMake(34, 20, kWindowW-40, 30)];
     status.font = font(16);
-    status.text = @"退款成功";
     status.textColor =KWhiteColor;
     [topImg addSubview:status];
     
-    
     UILabel *time = [[UILabel alloc]initWithFrame:CGRectMake(34, 50, 100, 30)];
     time.font = font(12);
-    time.text = @"2015-32-10";
     time.textColor =KWhiteColor;
     [topImg addSubview:time];
     
-    YSJRightYellowCell *backMoney = [[YSJRightYellowCell alloc]initWithFrame:CGRectMake(0, 110, kWindowW, 74) cellH:74 title:@"退款金额" rightText:[NSString stringWithFormat:@"¥%.2f",self.model.real_amount]];
-    [_scroll addSubview:backMoney];
+    if ([self.drawModel.drop_status isEqualToString:@"待处"]) {
+        
+        status.text = @"请等待私教处理";
+        time.text = @"";
+        
+        UILabel *tip1 = [[UILabel alloc]init];
+        tip1.text = @"您已成功发起退款申请，请耐心等待私教处理。";
+        tip1.font = font(14);
+        tip1.textColor = KBlack333333;
+        
+        [_scroll addSubview:tip1];
+        [tip1 mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.offset(kMargin);
+            make.width.offset(kWindowW-20);
+            make.height.offset(58);
+            make.top.equalTo(topImg.mas_bottom).offset(0);
+        }];
+        
+        UIView *bottomLine = [[UIView alloc]init];
+        bottomLine.backgroundColor = grayF2F2F2;
+        [_scroll addSubview:bottomLine];
+        [bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.offset(10);
+            make.width.offset(kWindowW);
+            make.height.offset(1);
+            make.bottom.equalTo(tip1).offset(0);
+        }];
+        
+        UILabel *tip2 = [[UILabel alloc]init];
+        tip2.numberOfLines = 2;
+        tip2.text = @"私教同意或者超时未处理，系统将退款给您\n如果商家拒绝，您可以再次发起退款。";
+        tip2.font = font(14);
+        tip2.textColor = gray999999;
+        
+        [_scroll addSubview:tip2];
+        [tip2 mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.offset(kMargin);
+            make.width.offset(kWindowW-20);
+            make.height.offset(92);
+            make.top.equalTo(bottomLine.mas_bottom).offset(0);
+        }];
+        
+        
+        _tag = tip2;
+        
+    }else if([self.drawModel.drop_status isEqualToString:@"待处理"]) {
+        status.text = @"退款成功";
+         time.text = @"";
+        
+        YSJRightYellowCell *backMoney = [[YSJRightYellowCell alloc]initWithFrame:CGRectMake(0, 110, kWindowW, 74) cellH:74 title:@"退款金额" rightText:[NSString stringWithFormat:@"¥%.2f",self.model.real_amount]];
+        [_scroll addSubview:backMoney];
+        
+        //退款方式
+        YSJRightGrayCell *backType = [[YSJRightGrayCell alloc]initWithFrame:CGRectMake(0, 110+74, kWindowW, 74) cellH:74 title:@"退款路径" rightText:[NSString stringWithFormat:@"%@",self.model.checktype]];
+        [_scroll addSubview:backType];
+        
+        _tag = backType;
+        
+    }else if([self.drawModel.drop_status isEqualToString:@"退款失败"]) {
+        status.text = @"退款失败";
+        time.text = @"对方拒绝退款";
+    }
     
-    //退款方式
-    YSJRightGrayCell *backType = [[YSJRightGrayCell alloc]initWithFrame:CGRectMake(0, 110+74, kWindowW, 74) cellH:74 title:@"退款路径" rightText:[NSString stringWithFormat:@"%@",self.model.checktype]];
-    [_scroll addSubview:backType];
     
-    _tag = backType;
+  
 }
 
 -(void)setMiddleView{
@@ -168,8 +222,8 @@
     
     int i = 0;
     NSArray *arr = @[@"退款原因",@"退款金额",@"买家账号",@"订单编号",@"支付方式",@"退款时间"];
-    
-    NSArray *contentArr = @[[NSString stringWithFormat:@"¥%d",self.model.amount],[NSString stringWithFormat:@"%d节课",self.model.times],@"0",[NSString stringWithFormat:@"¥%d",self.model.amount],[NSString stringWithFormat:@"%d节课",self.model.times],@"0"];
+    NSLog(@"%@",self.model.checktype);
+    NSArray *contentArr = @[self.drawModel.cause,[NSString stringWithFormat:@"¥%.2f",self.model.real_amount],self.model.phone,self.model.order_id,@"支付宝",[SPCommon getTimeFromTimestamp:self.drawModel.time]];
     
     for (NSString *str in arr) {
         
@@ -194,10 +248,10 @@
         lab2.backgroundColor = [UIColor whiteColor];
         [_scroll addSubview:lab2];
         [lab2 mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.offset(kWindowW-112);
+            make.left.offset(kWindowW-212);
             
             make.height.offset(30);
-            make.width.offset(100); make.centerY.equalTo(lab);
+            make.width.offset(200); make.centerY.equalTo(lab);
         }];
         
         _tag = lab;
@@ -214,7 +268,6 @@
         make.height.offset(1);
         make.bottom.equalTo(_tag).offset(10);
     }];
-    
     
 }
 

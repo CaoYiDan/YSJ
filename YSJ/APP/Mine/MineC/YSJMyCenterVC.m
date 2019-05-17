@@ -159,9 +159,9 @@
         if (index==0) {
             
             YSJMyPublish_RequimentVC *vc = [[YSJMyPublish_RequimentVC alloc]init];
-            vc.identifier = User_Teacher;
+            vc.identifier = User_Normal;
             [self.navigationController pushViewController:vc animated:YES];
-//
+            
         }else if (index==1){
             YSJBuyManagerVC* vc = [[YSJBuyManagerVC alloc]init];
             [self.navigationController pushViewController:vc animated:YES];
@@ -172,8 +172,6 @@
             YSJOrderDeatilVC* vc = [[YSJOrderDeatilVC alloc]init];
             [self.navigationController pushViewController:vc animated:YES];
         }
-        
-//
 //
     }else if ([type isEqualToString:@"application"]){
         

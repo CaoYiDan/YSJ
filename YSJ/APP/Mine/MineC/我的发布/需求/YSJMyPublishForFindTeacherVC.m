@@ -5,11 +5,13 @@
 //  Created by tanyang on 15/3/22.
 //  Copyright (c) 2015年 tanyang. All rights reserved.
 //
-
+#import "YSJCompanyCourse_FreeDetailVC.h"
+#import "YSJTeacherCourse_OneByOneVC.h"
 #import "YSJStudent_DetailVC.h"
 #import "YSJTeacher_DetailVC.h"
 #import "YSJCompany_DetailVC.h"
 #import "YSJTeacherModel.h"
+#import "YSJCompanyCourseVC.h"
 #import "YSJMyPublishForCompanyFreeCell.h"
 #import "YSJMyPublishForTeacherOneByOneCell.h"
 #import "YSJMyPublishForFindTeacherVC.h"
@@ -47,6 +49,12 @@
     
     //加载tableView
     [self.view addSubview:self.tableView];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(reloadTableView) name:NotificationMoreBtnFinishOption object:nil];
+}
+
+-(void)reloadTableView{
+    [self.tableView.mj_header beginRefreshing];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -54,13 +62,12 @@
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
+}
 #pragma mark - 初始化请求dic
 -(void)configSiftingDic{
-    
-    _siftingDic = @{}.mutableCopy;
-    
-    
-    [_siftingDic setObject:@"MTU1ODA4NTMzMy40MTUyMzU1OjA0YWI2ZTBkNzIyYmZkODRhYjIxNzIzMGQ1ZmRmNGQ0MmFkOGYxNzI=" forKey:@"token"];
     
     
     NSLog(@"%@",_siftingDic);
@@ -70,6 +77,12 @@
 -(void)getListRequestisScu:(void(^)(BOOL isScu))requestisScu{
     
     _page = 0;
+    
+    
+    _siftingDic = @{}.mutableCopy;
+    
+    [_siftingDic setObject:[StorageUtil getId] forKey:@"token"];
+    
     
     [_siftingDic setObject:@(_page) forKey:@"page"];
     
@@ -96,23 +109,9 @@
         //requestisScu(YES);
         NSLog(@"%@",responseObject);
         
-        if (self.cellType == MyPublishTypeFindTeacher) {
-            self.dataArr  = [YSJRequimentModel mj_objectArrayWithKeyValuesArray:responseObject[@"user_course"]];
-        }else if (self.cellType == MyPublishTypeFindCompany){
-            self.dataArr  = [YSJRequimentModel mj_objectArrayWithKeyValuesArray:responseObject[@"user_course"]];
-        }else if (self.cellType == MyPublishTypeTeacherCourse){
-            self.dataArr  = [YSJCourseModel mj_objectArrayWithKeyValuesArray:responseObject[@"teacher_course"]];
-        }else if (self.cellType == MyPublishTypeTeacherRequement) {
-            self.dataArr  = [YSJRequimentModel mj_objectArrayWithKeyValuesArray:responseObject[@"user_course"]];
-        }else if (self.cellType == MyPublishTypeCompanyFamous){
-            self.dataArr  = [YSJCourseModel mj_objectArrayWithKeyValuesArray:responseObject[@"company_course"]];
-        }else if (self.cellType == MyPublishTypeCompanyJingPin){
-            self.dataArr  = [YSJCourseModel mj_objectArrayWithKeyValuesArray:responseObject[@"company_course"]];
-        }else if (self.cellType == MyPublishTypeCompanyFree){
-            self.dataArr  = [YSJCourseModel mj_objectArrayWithKeyValuesArray:responseObject[@"company_course"]];
-        }
+        self.dataArr = [self getMyDataArrWithResponseObject:responseObject];
         
-        if (self.dataArr.count<3) {
+        if (self.dataArr.count<5) {
             
             self.tableView.mj_footer.hidden = YES;
             
@@ -128,6 +127,34 @@
     }];
 }
 
+#pragma mark  将获取的数据转化为数组
+
+-(NSMutableArray *)getMyDataArrWithResponseObject:(id)responseObject{
+    
+    NSMutableArray *arr = @[].mutableCopy;
+    
+    if (self.cellType == MyPublishTypeFindTeacher) {
+        
+        arr  = [YSJRequimentModel mj_objectArrayWithKeyValuesArray:responseObject[@"user_course"]];
+        
+    }else if (self.cellType == MyPublishTypeFindCompany){
+        arr  = [YSJRequimentModel mj_objectArrayWithKeyValuesArray:responseObject[@"user_course"]];
+    }else if (self.cellType == MyPublishTypeTeacherCourse){
+        arr  = [YSJCourseModel mj_objectArrayWithKeyValuesArray:responseObject[@"teacher_course"]];
+    }else if (self.cellType == MyPublishTypeTeacherRequement) {
+        arr  = [YSJRequimentModel mj_objectArrayWithKeyValuesArray:responseObject[@"user_course"]];
+    }else if (self.cellType == MyPublishTypeCompanyFamous){
+        arr  = [YSJCourseModel mj_objectArrayWithKeyValuesArray:responseObject[@"company_course"]];
+        
+    }else if (self.cellType == MyPublishTypeCompanyJingPin){
+        arr  = [YSJCourseModel mj_objectArrayWithKeyValuesArray:responseObject[@"company_course"]];
+    }else if (self.cellType == MyPublishTypeCompanyFree){
+        arr  = [YSJCourseModel mj_objectArrayWithKeyValuesArray:responseObject[@"company_course"]];
+    }
+    
+    return  arr;
+}
+
 #pragma mark 加载更多
 -(void)loadMore{
     
@@ -135,35 +162,21 @@
     
     [_siftingDic setObject:@(_page) forKey:@"page"];
     
-    NSString *url = @"";
     
-    if (self.cellType == HomeCellTeacher) {
-        url = YHomeTeachercourses;
-        
-    }else if (self.cellType == HomeCellCompany){
-        url = YHomefindCompanys;
-        
-    }else if (self.cellType == HomeCellRequiment){
-        url = YHomeDemands;
-    }
     NSLog(@"%@",_siftingDic);
-    
-    [[HttpRequest sharedClient]httpRequestPOST:url parameters:_siftingDic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
-        //        requestisScu(YES);
+    [[HttpRequest sharedClient]httpRequestPOST:YMyFindAll parameters:_siftingDic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+        
         NSLog(@"%@",responseObject);
-        NSMutableArray *newArr = @[].mutableCopy;
-        if (self.cellType == HomeCellTeacher) {
-            newArr = [YSJTeacherModel mj_objectArrayWithKeyValuesArray:responseObject[teachers]];
-        }else if (self.cellType == HomeCellCompany){
-            newArr = [YSJCompanysModel mj_objectArrayWithKeyValuesArray:responseObject[companys]];
-        }else if (self.cellType == HomeCellRequiment){
-            newArr = [YSJRequimentModel mj_objectArrayWithKeyValuesArray:responseObject[@"user_courses"]];
-        }
+        
+        NSMutableArray *newArr = [self getMyDataArrWithResponseObject:responseObject];
+        
         if (newArr.count==0) {
             Toast(@"没有更多了");
             
             self.tableView.mj_footer.hidden = YES;
+            
         }else{
+            
             [self.dataArr addObjectsFromArray:newArr];
             
             [self.tableView.mj_footer endRefreshing];
@@ -191,13 +204,14 @@
         return cell;
         //私教发布的课程
     }else if (self.cellType == MyPublishTypeTeacherCourse){
+        
         YSJMyPublishForTeacherOneByOneCell *cell = [YSJMyPublishForTeacherOneByOneCell loadCode:tableView];
         cell.model = self.dataArr[indexPath.row];
         return cell;
         
         //机构发布的明星课程 精品课程
-    }else if (self.cellType == MyPublishTypeCompanyJingPin || self.cellType == MyPublishTypeCompanyJingPin){
-        YSJMyPublishForTeacherCell *cell = [YSJMyPublishForTeacherCell loadCode:tableView];
+    }else if (self.cellType == MyPublishTypeCompanyJingPin || self.cellType == MyPublishTypeCompanyFamous){
+        YSJMyPublishForTeacherOneByOneCell *cell = [YSJMyPublishForTeacherOneByOneCell loadCode:tableView];
         cell.model = self.dataArr[indexPath.row];
         return cell;
         ///机构发布的试听课
@@ -239,21 +253,40 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    if (self.cellType==HomeCellTeacher) {
-       
-        YSJTeacherModel *model  = self.dataArr[indexPath.row];
-        YSJTeacher_DetailVC *vc = [[YSJTeacher_DetailVC alloc]init];
-        vc.teacherID = model.teacherID;
-        [self.navigationController pushViewController:vc animated:YES];
-    }else if (self.cellType == HomeCellCompany){
-        YSJCompanysModel *model  = self.dataArr[indexPath.row];
-        YSJCompany_DetailVC *vc = [[YSJCompany_DetailVC alloc]init];
-        vc.companyID = model.companyID;
-        [self.navigationController pushViewController:vc animated:YES];
-    }else{
+    if (self.cellType==MyPublishTypeFindTeacher || self.cellType== MyPublishTypeFindCompany) {
+        
         YSJRequimentModel *model  = self.dataArr[indexPath.row];
+        
         YSJStudent_DetailVC *vc = [[YSJStudent_DetailVC alloc]init];
+        vc.vcType = 1;
         vc.model = model;
+        
+        vc.studentID = model.requimentID;
+        
+        [self.navigationController  pushViewController:vc animated:YES];
+        
+    }else if (self.cellType == MyPublishTypeTeacherCourse){
+        
+        YSJCourseModel *model  = self.dataArr[indexPath.row];
+        
+        YSJTeacherCourse_OneByOneVC *vc = [[YSJTeacherCourse_OneByOneVC alloc]init];
+        vc.vcType = 1;
+        vc.M = model;
+        
+        [self.navigationController  pushViewController:vc animated:YES];
+        
+    }else if(self.cellType == MyPublishTypeCompanyFamous || self.cellType == MyPublishTypeCompanyJingPin){
+        YSJCourseModel *model  = self.dataArr[indexPath.row];
+        
+        YSJCompanyCourseVC *vc = [[YSJCompanyCourseVC alloc]init];
+        vc.M = model;
+        vc.courseID = model.code;
+        [self.navigationController pushViewController:vc animated:YES];
+    }else if (self.cellType == MyPublishTypeCompanyFree){
+        YSJCourseModel *model  = self.dataArr[indexPath.row];
+        YSJCompanyCourse_FreeDetailVC * vc = [[YSJCompanyCourse_FreeDetailVC alloc]init];
+        vc.M = model;
+        vc.courseID = model.code;
         [self.navigationController pushViewController:vc animated:YES];
     }
 }

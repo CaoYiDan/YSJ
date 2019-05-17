@@ -11,6 +11,8 @@
 #import "YSJOrderModel.h"
 #import "YSJDrawBackVC.h"
 #import "YSJDrawBackDeatilVC.h"
+#import "YSJRequimentModel.h"
+#import "YSJCourseModel.h"
 
 @implementation YSJBottomMoreButtonView
 
@@ -57,6 +59,9 @@
     for (NSString *str in btnTextArr) {
         
         UIButton *btn = [FactoryUI createButtonWithtitle:str titleColor:[UIColor hexColor:@"666666"] imageName:nil backgroundImageName:nil target:self selector:@selector(btnClick:)];
+        if([str isEqualToString:@"查看"]){
+            btn.userInteractionEnabled = NO;
+        }
         btn.layer.cornerRadius = 11;
         btn.clipsToBounds = YES;
         btn.layer.borderColor = [UIColor hexColor:@"E6E6E6"].CGColor;
@@ -105,7 +110,9 @@
         btn = [FactoryUI createButtonWithtitle:title titleColor:textColorArr[type] imageName:nil backgroundImageName:nil target:self selector:@selector(btnClick:)];
         UIColor *borderColor = borderColorArr[type];
         btn.layer.borderColor = borderColor.CGColor;
-        
+        if([title isEqualToString:@"查看"]){
+            btn.userInteractionEnabled = NO;
+        }
         btn.layer.cornerRadius = 11;
         btn.clipsToBounds = YES;
         
@@ -134,15 +141,15 @@
 
 -(void)btnClick:(UIButton *)btn{
     
-    YSJDrawBackVC *vc = [[YSJDrawBackVC alloc]init];
-    vc.model = self.model;
-    [[SPCommon getCurrentVC].navigationController pushViewController:vc animated:YES];
-    return;
+//    YSJDrawBackVC *vc = [[YSJDrawBackVC alloc]init];
+//    vc.model = self.model;
+//    [[SPCommon getCurrentVC].navigationController pushViewController:vc animated:YES];
+//    return;
     
 //    YSJEvaluateVC *vc = [[YSJEvaluateVC alloc]init];
 //    vc.orderId = self.model.orderId;
 //    [[SPCommon getCurrentVC].navigationController pushViewController:vc animated:YES];
-    return;
+//    return;
     
     NSString *title = btn.titleLabel.text;
     if ([title isEqualToString:@"评价"]) {
@@ -151,10 +158,12 @@
     }else if ([title isEqualToString:@"查看"]){
         
         if ([self.model.order_status containsString:@"退款"]) {
+            //查看退款详情
             YSJDrawBackDeatilVC *vc = [[YSJDrawBackDeatilVC alloc]init];
             vc.model = self.model;
             [[SPCommon getCurrentVC].navigationController pushViewController:vc animated:YES];
         }else{
+            //查看订单详情
            YSJOrderDeatilVC *vc = [[YSJOrderDeatilVC alloc]init];
           vc.model = self.model;
           [[SPCommon getCurrentVC].navigationController pushViewController:vc animated:YES];
@@ -176,8 +185,9 @@
 - (void)popAlterViewWithTitle:(NSString *)title
 {
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"%@？",title]
-                                                                   message:@""
-                                                            preferredStyle:UIAlertControllerStyleAlert];
+      
+       message:@""
+   preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault
           handler:^(UIAlertAction * action) {
@@ -196,10 +206,32 @@
 }
 
 -(void)readyTodoSomething:(NSString *)title{
+    
     if ([title isEqualToString:@"删除"] || [title isEqualToString:@"取消订单"]) {
+        [self cancel];
         
     }else if ([title isEqualToString:@"确认授课完成"]){
         
+    }
+}
+#pragma mark - 删除
+
+-(void)cancel{
+    
+    if (self.orderType == OrderTypePublish) {
+        //网络请求
+        NSMutableDictionary *dic = @{}.mutableCopy;
+        [dic setObject:[StorageUtil getId] forKey:@"token"];
+        [dic setObject:self.courseModel.code forKey:@"id"];
+        [[HttpRequest sharedClient]httpRequestPOST:YCancelPublish parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+            Toast(@"操作完成");
+            NSLog(@"%@",responseObject);
+            //发送通知刷新界面
+            [[NSNotificationCenter defaultCenter]postNotificationName:NotificationMoreBtnFinishOption object:nil];
+            
+        } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            
+        }];
     }
 }
 @end

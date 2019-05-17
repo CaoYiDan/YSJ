@@ -60,7 +60,7 @@
 
 -(void)getListRequestisScu:(void(^)(BOOL isScu))requestisScu{
     
-    [[HttpRequest sharedClient]httpRequestPOST:YCourseUserBuyDeatil parameters:@{@"token":@"MTU1ODA4NTMzMy40MTUyMzU1OjA0YWI2ZTBkNzIyYmZkODRhYjIxNzIzMGQ1ZmRmNGQ0MmFkOGYxNzI=",@"id":self.model.orderId} progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+    [[HttpRequest sharedClient]httpRequestPOST:YCourseUserBuyDeatil parameters:@{@"token":@"MTU1ODU5OTg2MS4xMTEwMTk0OmM4Y2E4ODBiMGQ1NTY3ZjY5YWQ0OTc5MjMwZjg5MjY3ODhkNTNjODg=",@"id":self.model.orderId} progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         //        requestisScu(YES);
         NSLog(@"%@",responseObject);
         self.model = [YSJOrderModel mj_objectWithKeyValues:responseObject];

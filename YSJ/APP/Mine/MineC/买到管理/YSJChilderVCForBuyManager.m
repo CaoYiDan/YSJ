@@ -57,15 +57,6 @@
 
 #pragma mark - 初始化请求dic
 -(void)configSiftingDic{
-    
-    NSArray *arr = @[@"全部",@"待付款",@"待授课",@"待评价",@"退款"];
-    
-    _siftingDic = @{}.mutableCopy;
-    
-    [_siftingDic setObject:arr[self.type] forKey:@"filter"];
-    
-    [_siftingDic setObject:@"MTU1ODA4NTMzMy40MTUyMzU1OjA0YWI2ZTBkNzIyYmZkODRhYjIxNzIzMGQ1ZmRmNGQ0MmFkOGYxNzI=" forKey:@"token"];
-    
    
 }
 
@@ -74,9 +65,26 @@
     
     _page = 0;
     
+    NSArray *arr = @[@"全部",@"待付款",@"待授课",@"待评价",@"退款"];
+    
+    _siftingDic = @{}.mutableCopy;
+    
+    [_siftingDic setObject:arr[self.type] forKey:@"filter"];
+    
+    [_siftingDic setObject:@"MTU1ODU5OTg2MS4xMTEwMTk0OmM4Y2E4ODBiMGQ1NTY3ZjY5YWQ0OTc5MjMwZjg5MjY3ODhkNTNjODg=" forKey:@"token"];
+    
     [_siftingDic setObject:@(_page) forKey:@"page"];
     
-    NSString *url = YCourseUserBuy;
+    NSString *url = @"";
+    
+    if (self.orderType == OrderTypeBuy) {
+        url = YCourseUserBuy;
+        
+    }else{
+        
+        url = YCourseUserSale;
+        
+    }
     
      NSLog(@"%@",_siftingDic);
     
@@ -162,9 +170,11 @@
     YSJOrderModel *model = self.dataArr[indexPath.row];
     
     if ([model.order_status containsString:@"退款"]) {
+        
         YSJDrawBackDeatilVC *vc = [[YSJDrawBackDeatilVC alloc]init];
         vc.model = model;
         [[SPCommon getCurrentVC].navigationController pushViewController:vc animated:YES];
+        
     }else{
         YSJOrderDeatilVC *vc = [[YSJOrderDeatilVC alloc]init];
         vc.model = model;

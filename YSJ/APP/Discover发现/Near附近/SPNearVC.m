@@ -153,7 +153,7 @@ static CGFloat maxImgWid = 80;
 
     [dic setObject:isEmptyString([StorageUtil getUserAddresssDict][@"city"])?@"":[StorageUtil getUserAddresssDict][@"city"] forKey:@"city"];
     
-    [dic setObject:[SPCommon getLoncationDic] forKey:@"location"];
+    [dic setObject:[SPCommon getLonDic] forKey:@"location"];
 
     [dic setObject:@"1" forKey:@"pageNum"];
     [dic setObject:@"40" forKey:@"pageSize"];

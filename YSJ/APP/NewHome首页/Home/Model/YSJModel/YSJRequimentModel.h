@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface YSJRequimentModel : NSObject
+
 @property (nonatomic, copy) NSString *gender;
 
 @property (nonatomic, copy) NSString *sex;

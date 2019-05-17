@@ -19,6 +19,12 @@ typedef void(^profileBlock) (NSDictionary *profileDic);
 @property (nonatomic,strong) YSJCourseModel *M;
 /**<##>courseID*/
 @property(nonatomic,copy)NSString *courseID;
+/**
+ 0 普通进入 1 查看自己的发布
+ */
+
+@property (nonatomic,assign) NSInteger vcType;
+
 /**block*/
 @property(nonatomic,copy)profileBlock  block;
 @end

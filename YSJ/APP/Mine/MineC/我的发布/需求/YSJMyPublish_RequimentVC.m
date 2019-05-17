@@ -121,15 +121,17 @@
         }
     }else if ([self.identifier isEqualToString:User_Teacher]) {
         if (pageIndex==0) {
-            viewController.cellType = MyPublishTypeFindTeacher;
+            viewController.cellType = MyPublishTypeTeacherCourse;
         }else if (pageIndex==1){
-            viewController.cellType = MyPublishTypeFindCompany;
+            viewController.cellType = MyPublishTypeTeacherRequement;
         }
     }else if ([self.identifier isEqualToString:User_Company]) {
         if (pageIndex==0) {
-            viewController.cellType = MyPublishTypeFindTeacher;
+            viewController.cellType = MyPublishTypeCompanyFamous;
         }else if (pageIndex==1){
-            viewController.cellType = MyPublishTypeFindCompany;
+            viewController.cellType = MyPublishTypeCompanyJingPin;
+        }else{
+            viewController.cellType = MyPublishTypeCompanyFree;
         }
     }
     
@@ -184,7 +186,6 @@
 //设置我的账户
 -(void)setMyAccount{
     NSLog(@"我的账户点击");
-  
 }
 
 - (void)integrateComponents {

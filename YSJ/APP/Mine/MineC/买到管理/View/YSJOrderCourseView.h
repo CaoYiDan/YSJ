@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface YSJOrderCourseView : UIView
 
 @property (nonatomic,strong) YSJOrderModel *model;
-
+@property (nonatomic,strong) UILabel *price; 
 @end
 
 NS_ASSUME_NONNULL_END

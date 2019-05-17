@@ -25,7 +25,7 @@
     
     UILabel *xuqiu;
     
-    UILabel *_price;
+    UILabel *_dealCount;
 }
 
 #pragma mark - init
@@ -61,34 +61,25 @@
         make.top.equalTo(_img).offset(0);
     }];
     
-    UIImageView *xuImg =[[UIImageView alloc]init];
-    xuImg.image = [UIImage imageNamed:@"xu"];
-    [self addSubview:xuImg];
-    [xuImg mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(_name).offset(0);
-        
-        make.height.offset(14);
-        make.width.offset(14); make.top.equalTo(_name.mas_bottom).offset(7);
-    }];
-    
     xuqiu = [[UILabel alloc]init];
     xuqiu.backgroundColor = KWhiteColor;
     xuqiu.textColor = gray9B9B9B;
     xuqiu.font = font(12);
     [self addSubview:xuqiu];
     [xuqiu mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(xuImg.mas_right).offset(5);
+        make.left.equalTo(_name).offset(0);
         
         make.height.offset(14);
-        make.right.offset(-kMargin); make.top.equalTo(_name.mas_bottom).offset(7);
+        make.right.offset(-kMargin);
+        make.top.equalTo(_name.mas_bottom).offset(10);
     }];
     
-    _price = [[UILabel alloc]init];
-    _price.font = font(16);
-    _price.textColor = yellowEE9900;
-    _price.backgroundColor = [UIColor whiteColor];
-    [self.contentView addSubview:_price];
-    [_price mas_makeConstraints:^(MASConstraintMaker *make) {
+    _dealCount = [[UILabel alloc]init];
+    _dealCount.font = font(11);
+    _dealCount.textColor = gray999999;
+    _dealCount.backgroundColor = [UIColor whiteColor];
+    [self.contentView addSubview:_dealCount];
+    [_dealCount mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(_name).offset(0);
         
         make.height.offset(14);
@@ -96,7 +87,7 @@
     }];
     
     YSJBottomMoreButtonView *bottomView = [[YSJBottomMoreButtonView alloc]init];
-    bottomView.btnTextArr = @[@"删除",@"查看",@"编辑"];
+    bottomView.btnTextArr = @[@"删除",@"查看"];
     [self.contentView addSubview:bottomView];
     bottomView.delegate = self;
     [bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -113,10 +104,10 @@
     
     [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.pic_url2[0]]]placeholderImage:[UIImage imageNamed:@"placeholder2"]];
     
-    _name.text = model.times;
+    _name.text = model.title;
     
-    xuqiu.text = [NSString stringWithFormat:@" %@",model.title];
-    _price.text = [NSString stringWithFormat:@"¥%@/h",model.price];
+    xuqiu.text = [NSString stringWithFormat:@"%@ | %@ ",model.coursetype,model.coursetypes];;
+    _dealCount.text = [NSString stringWithFormat:@"%@人试听过",model.dealcount];
 }
 
 /**

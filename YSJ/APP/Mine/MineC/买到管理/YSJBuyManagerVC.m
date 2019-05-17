@@ -105,8 +105,7 @@
 
 - (UIViewController *)magicView:(VTMagicView *)magicView viewControllerAtPage:(NSUInteger)pageIndex {
     
-    MenuInfo *menuInfo = _menuList[pageIndex];
-    
+   
     NSString *gridId = @"identifer";
     gridId =  [NSString stringWithFormat:@"%ld---identifier",pageIndex];
   

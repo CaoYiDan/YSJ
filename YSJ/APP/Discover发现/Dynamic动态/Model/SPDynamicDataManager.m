@@ -129,7 +129,7 @@
         [dict setObject:[StorageUtil getCity] forKey:@"city"];
     }
     
-    [dict setObject:[SPCommon getLoncationDic] forKey:@"location"];
+    [dict setObject:[SPCommon getLonDic] forKey:@"location"];
     
     NSLog(@"%@",dict);
     

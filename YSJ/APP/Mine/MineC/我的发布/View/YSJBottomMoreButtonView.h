@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-@class  YSJOrderModel;
+@class  YSJOrderModel,YSJCourseModel,YSJRequimentModel;
 @protocol YSJBottomMoreButtonViewDelegate <NSObject>
 
 
@@ -30,6 +30,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic,strong) YSJOrderModel *model;
 
+@property (nonatomic,strong) YSJCourseModel *courseModel;
+
+@property (nonatomic,strong) YSJRequimentModel *requementModel;
 /**
  单一灰色设置数组（）
  */

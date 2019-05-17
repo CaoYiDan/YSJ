@@ -323,14 +323,15 @@
     if (indexPath.section==0) {
         
         CGSize size =[self.M.feaatures sizeWithFont:font(13) maxW:kWindowW-100];
-        return size.height+20;
+        return size.height+30;
     }else if (indexPath.section==1) {
         
         return 120;
+        
     }else if (indexPath.section==4) {
         
         CGSize size =[self.M.describe sizeWithFont:font(13) maxW:kWindowW-100];
-        return size.height;
+        return size.height+40;
     }else if(indexPath.section==5){
         return _commentModel.cellHeight;
 
@@ -354,13 +355,18 @@
     if (section==5) {
         return 120;
     }
-    return 50;
+    
+    if (section==3 || section==4) {
+        return 40;
+    }else{
+        return 50;
+    }
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     
-    NSArray *arr = @[@" 课程特色",@" 商家信息",@" 课程详情",@" 上课时间",@" 课程介绍",@" 用户评价"];
+    NSArray *arr = @[@" 课程特色",@" 商家信息",@" 课程详情",@"上课时间",@"课程介绍",@" 用户评价"];
     NSArray *imgArr = @[@"kechengtese",@"shangjiaxinxi",@"kechengxiangqing",@"",@"",@"yonghupingjia"];
     UIView *base = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, 50)];
     base.backgroundColor = KWhiteColor;
@@ -387,7 +393,7 @@
     
     //@"随时退",@"过期自动退"
     if (section==2) {
-        NSArray *arr = @[@"过期自动退",@"随时退"];
+        NSArray *arr = @[@" 过期自动退",@" 随时退"];
         int i=0;
         for (NSString *str in arr) {
             UIButton *btn = [[UIButton alloc]init];
@@ -397,8 +403,8 @@
             btn.titleLabel.font= font(12);
             [base addSubview:btn];
             [btn mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.right.offset(-kMargin-80*i);
-                make.width.offset(80);
+                make.right.offset(-kMargin-90*i);
+                make.width.offset(90);
                 make.height.offset(20);
                 make.centerY.equalTo(title).offset(0);
                 
@@ -551,7 +557,8 @@
 {
     if (!_tableView )
     {
-        _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0,0, SCREEN_W, SCREEN_H-60-KBottomHeight) style:UITableViewStyleGrouped];
+        _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0,0, SCREEN_W, SCREEN_H) style:UITableViewStyleGrouped];
+        _tableView.contentInset = UIEdgeInsetsMake(0, 0, 60+KBottomHeight, 0);
         _tableView.delegate = self;
         _tableView.dataSource = self;
         _tableView.backgroundColor = [UIColor hexColor:@"F0F0F0"];
@@ -588,6 +595,10 @@
 }
 
 -(void)setBottomView{
+    
+    if (self.vcType==1) {
+        return;
+    }
     
     UIButton *connectBtn = [[UIButton alloc]init];
     connectBtn.backgroundColor = KMainColor;

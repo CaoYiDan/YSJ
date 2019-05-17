@@ -29,3 +29,6 @@ extern NSString*const NotificationCategorySelected;
 
 //发布成功 跳转到首页
 extern NSString*const NotificationJumpToHome;
+
+//底部多状态按钮操作完成 需要刷新界面
+extern NSString*const NotificationMoreBtnFinishOption;
