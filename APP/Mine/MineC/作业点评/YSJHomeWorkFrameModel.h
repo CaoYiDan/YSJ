@@ -8,12 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
-@class YSJCommentsModel;
+@class YSJOrderModel;
 
 @interface YSJHomeWorkFrameModel : NSObject
 
 /**<##>模型*/
-@property (nonatomic, strong) YSJCommentsModel *status;
+@property (nonatomic, strong) YSJOrderModel *status;
+
+/**<##>模型*/
+@property (nonatomic, strong) YSJOrderModel *studentWorkModel;
 
 /** 上部分View */
 @property (nonatomic, assign) CGRect topViewF;
@@ -43,5 +46,8 @@
 
 /** cell的高度 */
 @property (nonatomic, assign) CGFloat cellHeight;
+
+/** cell的高度 */
+@property (nonatomic, assign) CGFloat studentCellHeight;
 
 @end

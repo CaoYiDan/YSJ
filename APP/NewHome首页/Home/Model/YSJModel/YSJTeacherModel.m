@@ -14,4 +14,7 @@
     return @{@"teacherID":@"id"};
 }
 
++(NSDictionary *)mj_objectClassInArray{
+    return @{@"red_packet":@"YSJGBModel"};
+}
 @end

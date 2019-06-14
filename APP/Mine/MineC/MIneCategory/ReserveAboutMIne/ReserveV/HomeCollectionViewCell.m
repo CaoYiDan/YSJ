@@ -82,7 +82,7 @@
 //    }
     
     //self.timeLab.text = model.startTime;
-    [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.avatar] placeholderImage:[UIImage imageNamed:@"bg"]];
+    [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.avatar] placeholderImage:[UIImage imageNamed:@"120"]];
     
 }
 @end

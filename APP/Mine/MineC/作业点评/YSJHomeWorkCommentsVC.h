@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface YSJHomeWorkCommentsVC : BaseViewController
 
+@property (nonatomic,copy) NSString *identifier;
+
 @end
 
 NS_ASSUME_NONNULL_END

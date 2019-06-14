@@ -24,9 +24,13 @@
 #define kScreenW [UIScreen mainScreen].bounds.size.width
 #define kScreenH [UIScreen mainScreen].bounds.size.height
 
+#define NIMMyAccount   @"16a4769977ede97cf210caf8198a4906"
+#define NIMMyToken     @"5beee952013fb6a1bad3ced419705fbb"
+#define NIMSDKAppKey @"8fc95f505b6cbaedf613677c8e08fc0b"
 
 #define kScrollViewBeginTopInset 240
 
+#import "YSJAFNPostImgManager.h"
 #import "SPLZSHeader.h"
 #import "SPApi.h"
 #import "LGTextView.h"

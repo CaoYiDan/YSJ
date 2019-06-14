@@ -74,7 +74,7 @@
     
     NSMutableDictionary *dic = @{}.mutableCopy;
     [dic setObject:[StorageUtil getId] forKey:@"token"];
-    [dic setObject:User_Normal forKey:@"type"];
+    [dic setObject:[StorageUtil getRole] forKey:@"type"];
     [[HttpRequest  sharedClient]httpRequestPOST:YInformation parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         
         NSLog(@"%@",responseObject);

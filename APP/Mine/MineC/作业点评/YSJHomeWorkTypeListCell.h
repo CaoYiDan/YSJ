@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface YSJHomeWorkTypeListCell : UITableViewCell
 -(void)setDic:(NSDictionary *)dic;
 @property (nonatomic,copy) NSString *subText;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -24,6 +24,7 @@
 }
 
 #pragma mark - Lifecycle
+
 - (void)viewDidLoad {
     
     [super viewDidLoad];
@@ -50,8 +51,9 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+   
     [super viewDidAppear:animated];
-
+    
 }
 
 - (void)dealloc {
@@ -59,12 +61,15 @@
 }
 
 #pragma mark - NSNotification
+
 - (void)addNotification {
+    
     [self removeNotification];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(statusBarOrientationChange:)
-                                                 name:UIApplicationDidChangeStatusBarOrientationNotification
-                                               object:nil];
+     selector:@selector(statusBarOrientationChange:)
+         name:UIApplicationDidChangeStatusBarOrientationNotification
+       object:nil];
 }
 
 - (void)removeNotification {

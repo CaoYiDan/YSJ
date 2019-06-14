@@ -1,6 +1,6 @@
 #import <UIKit/UIKit.h>
 #import "YSJBaseForDetailView.h"
-#define  profileHeight 230
+#define  profileHeight 230+32
 
 @class YSJCompanysModel,YSJCommonBottomView;
 

@@ -10,6 +10,8 @@
 #import "XHStarRateView.h"
 #import "YSJCompanyInfoView.h"
 #import "YSJCommonBottomView.h"
+#import "YSJGBModel.h"
+#import "YSJShowHongBaoView.h"
 
 @implementation YSJCompany_DetailHeaderView
 {
@@ -27,6 +29,9 @@
     UILabel *_companyType;//上门服务
     UILabel *_studentCount;//学生数
     UILabel *_getCount;//接单量
+    
+    UIImageView *_hbImg;
+    UILabel *_hbPrice;
 }
 
 #pragma mark - init
@@ -87,7 +92,46 @@
         make.centerY.equalTo(_starRateView).offset(0);
     }];
     
+    UIImageView *hongBao = [[UIImageView alloc]init];
+    hongBao.userInteractionEnabled = YES;
+    hongBao.image = [UIImage imageNamed:@"个人-领取"];
+    _hbImg = hongBao;
+    [self.profileV addSubview:hongBao];
+    [hongBao mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(_name).offset(0);
+        make.width.offset(75);
+        make.height.offset(22);
+        make.top.equalTo(_score.mas_bottom).offset(10);
+    }];
     
+    
+    UILabel *hongBPrice = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 45, 22)];
+    //    hongBPrice.userInteractionEnabled = NO;
+    hongBPrice.font = font(12);
+    hongBPrice.textColor = KWhiteColor;
+    _hbPrice = hongBPrice;
+    hongBPrice.textAlignment = NSTextAlignmentCenter;
+    [hongBao addSubview:hongBPrice];
+    
+    UILabel *hongBLing = [[UILabel alloc]initWithFrame:CGRectMake(45, 0, 30, 22)];
+    //    hongBLing.userInteractionEnabled = NO;
+    hongBLing.font = font(12);
+    hongBLing.textColor = KWhiteColor;
+    hongBLing.text = @"领";
+    hongBLing.textAlignment = NSTextAlignmentCenter;
+    [hongBao addSubview:hongBLing];
+    
+    UIButton *btn = [[UIButton alloc]init];
+    btn.frame = CGRectMake(0,0,75,22);
+    btn.backgroundColor = [UIColor clearColor];
+    [hongBao addSubview:btn];
+    [btn addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
+        YSJShowHongBaoView*infoView = [[YSJShowHongBaoView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, kWindowH)];
+        infoView.model = self.model;
+        [[SPCommon getCurrentVC].view addSubview:infoView];
+    }];
+    
+    [hongBao addSubview:btn];
     
     UIButton *more = [[UIButton alloc]init];
     [more setTitle:@"查看更多" forState:0];
@@ -115,7 +159,7 @@
     [_location mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(30);
         make.width.offset(kWindowW-30-kMargin-50);
-        make.top.equalTo(_img.mas_bottom).offset(23);
+        make.top.equalTo(hongBao.mas_bottom).offset(13);
     }];
     
     UIImageView *locationImg = [[UIImageView alloc]init];
@@ -156,7 +200,7 @@
     
     _model = model;
     
-    [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.venue_pic]]placeholderImage:[UIImage imageNamed:@"bg"]];
+    [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.venue_pic]]placeholderImage:[UIImage imageNamed:@"120"]];
     
     _name.text = model.name;
     
@@ -165,6 +209,18 @@
     [_starRateView setStarLeave:model.reputation];
     
     _distance.text = [NSString stringWithFormat:@"%ukm",model.distance];
+    
+    if (_model.red_packet.count==0) {
+        
+        _hbImg.hidden = YES;
+        
+    }else{
+        
+        YSJGBModel *hBModel = _model.red_packet[0];
+        
+        _hbPrice.text = [NSString stringWithFormat:@"¥%@",hBModel.amount];
+    }
+    
     
     _location.text = model.address;
     

@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic,assign) YSJCellType orderType;
 
+@property (nonatomic,copy) NSString *identifier;
+
 @property (nonatomic,assign) NSInteger type;
 
 @end

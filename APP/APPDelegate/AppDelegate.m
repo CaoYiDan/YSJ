@@ -10,6 +10,10 @@
 #define MAS_SHORTHAND_GLOBALS
 #import "SPBaseNavigationController.h"
 #import "AppDelegate.h"
+#import "TestDataProvider.h"
+#import <NIMSDK/NIMSDK.h>
+#import <NIMKit/NIMKit.h>
+#import "NIMSessionViewController.h"
 #import <AlipaySDK/AlipaySDK.h>
 #import "MyTabbarController.h"//tabbar
 #import "IQKeyboardManager.h"
@@ -43,6 +47,10 @@
     
     [self IQKeyBoardSet];
   
+    
+    [self registWYIM];
+    [self loginNIM];
+    [self sendMessage];
     //登录IM
 //    [self loginIM];
     
@@ -65,6 +73,44 @@
     return YES;
 }
 
+#pragma mark -注册网易云信
+-(void)registWYIM{
+    //推荐在程序启动的时候初始化 NIMSDK
+    NSString *appKey        = @"18ea2dc0f6dd29f0136f3ce1e1653f32";
+//    NIMSDKOption *option    = [NIMSDKOption optionWithAppKey:appKey];
+//    option.apnsCername      = @"your APNs cer name";
+//    option.pkCername        = @"your pushkit cer name";
+//    [[NIMSDK sharedSDK] registerWithOption:option];
+    
+     [[NIMSDK sharedSDK] registerWithAppID:appKey cerName:nil];
+}
+
+#pragma mark -登录网易云信
+
+-(void)loginNIM{
+    
+    [[[NIMSDK sharedSDK] loginManager] login:NIMMyAccount token:NIMMyToken completion:^(NSError * _Nullable error) {
+        NSLog(@"%@",error);
+    }];
+    
+    //注入自定义的 dataProvider
+    [NIMKit sharedKit].provider = [[TestDataProvider alloc]init];
+}
+
+-(void)sendMessage{
+    // 构造出具体会话
+//    NIMSession *session = [NIMSession session:@"user" type:NIMSessionTypeP2P];
+//    // 构造出具体消息
+//    NIMMessage *message = [[NIMMessage alloc] init];
+//    message.text        = @"hello";
+//    // 错误反馈对象
+//    NSError *error = nil;
+//    // 发送消息
+//    [[NIMSDK sharedSDK].chatManager sendMessage:message toSession:session error:&error];
+    
+    
+   
+}
 //键盘第三方IQKeyboardManager设置
 -(void)IQKeyBoardSet{
     //键盘第三方IQKeyboardManager设置

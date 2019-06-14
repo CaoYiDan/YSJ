@@ -11,9 +11,20 @@
 
 @interface StorageUtil : NSObject
 
+//存储用户头像和name信息
++ (void)savedHaveLearnMethd:(NSDictionary*)dic;
+
++ (NSMutableArray*)getHaveLearnArr;
+
++(NSDictionary *)getUserPhotoAndNameByUserId:(NSString *)userId;
+
 //保存用户地理信息
 +(void)saveUserAddressDict:(NSDictionary*)dict;
 +(NSDictionary*)getUserAddresssDict;
+
+//用户身份
++ (void)saveIdentifier:(NSString *)ide;
++ (NSString *)getIdentifier;
 
 //存储城市信息
 + (void)saveCity:(NSString *)city;

@@ -214,7 +214,7 @@
 -(void)setUser:(SPSelectionCategoryModel *)user{
     _user = user;
     NSLog(@"%@%@%@",user.avatar,user.domain,user.experience);
-    [_headerImg sd_setImageWithURL:[NSURL URLWithString:user.avatar] placeholderImage:[UIImage imageNamed:@"bg"]];
+    [_headerImg sd_setImageWithURL:[NSURL URLWithString:user.avatar] placeholderImage:[UIImage imageNamed:@"120"]];
     //_headerImg.image = [UIImage imageNamed:@"pic3"];
     _name.text = user.nickName;
     

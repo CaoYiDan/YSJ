@@ -68,6 +68,6 @@
 
 -(void)setSubText:(NSString *)subText{
     _subText = subText;
-    _introduction.text = subText;
+    _introduction.text = @"";
 }
 @end

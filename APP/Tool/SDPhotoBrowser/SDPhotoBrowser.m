@@ -159,8 +159,18 @@
     SDBrowserImageView *imageView = _scrollView.subviews[index];
     self.currentImageIndex = index;
     if (imageView.hasLoadedImage) return;
-    if ([self highQualityImageURLForIndex:index]) {
-        [imageView setImageWithURL:[self highQualityImageURLForIndex:index] placeholderImage:[self placeholderImageForIndex:index]];
+    NSURL *url = [self highQualityImageURLForIndex:index];
+    NSString *strUrl = [self.delegate photoBrowser:self stringUrlForIndex:index];
+    if (url) {
+        
+        if ([strUrl containsString:@".mp4"]) {
+            imageView.webView.hidden = NO;
+            imageView.videoUrl = strUrl;
+            [imageView loadWeb];
+        }else{
+             imageView.webView.hidden = YES;
+          [imageView setImageWithURL:[self highQualityImageURLForIndex:index] placeholderImage:[self placeholderImageForIndex:index]];
+        }
     } else {
         imageView.image = [self placeholderImageForIndex:index];
     }
@@ -257,7 +267,7 @@
     }
     
     _indexLabel.center = CGPointMake(self.bounds.size.width * 0.5, 35);
-    _saveButton.frame = CGRectMake(30, self.bounds.size.height - 70, 50, 25);
+    _saveButton.frame = CGRectMake(kWindowW-30-60, self.bounds.size.height -30, 50, 25);
 }
 
 - (void)show

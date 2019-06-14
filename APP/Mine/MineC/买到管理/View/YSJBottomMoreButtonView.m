@@ -7,7 +7,7 @@
 //
 
 #import "YSJHomeWorkCommentVC.h"
-
+#import "YSJHomeWorkCommentVC.h"
 #import "YSJEvaluateVC.h"
 #import "YSJPublishHomeWorkVC.h"
 #import "YSJCheckCommentVC.h"
@@ -185,11 +185,37 @@
         [[SPCommon getCurrentVC].navigationController pushViewController:vc animated:nil];
     }else if ([title isEqualToString:@"确认退款"]){
         
-    }else if ([title isEqualToString:@"布置作业"]){
+    }else if ([title isEqualToString:@"布置作业"] || [title isEqualToString:@"重新布置作业"]){
+        
         YSJPublishHomeWorkVC *vc= [[ YSJPublishHomeWorkVC alloc]init];
+        vc.orderModel = self.model;
         [[SPCommon getCurrentVC].navigationController pushViewController:vc animated:YES];
     }else if ([title isEqualToString:@"点评作业"]){
         YSJHomeWorkCommentVC *vc= [[YSJHomeWorkCommentVC alloc]init];
+        vc.homeWorkDetailType = HomeWorkDetailWaitComment;
+        vc.orderModel = self.model;
+        [[SPCommon getCurrentVC].navigationController pushViewController:vc animated:YES];
+    }else if ([title isEqualToString:@"查看作业"]){
+        
+        YSJHomeWorkCommentVC *vc= [[YSJHomeWorkCommentVC alloc]init];
+        if (!isEmptyString(self.model.student_describe)) {
+            vc.homeWorkDetailType = HomeWorkDetailCheckCommit;
+        }else{
+            vc.homeWorkDetailType = HomeWorkDetailCheckMyPublish;
+        }
+        vc.orderModel = self.model;
+        [[SPCommon getCurrentVC].navigationController pushViewController:vc animated:YES];
+    }else if ([title isEqualToString:@"查看点评"]){
+        
+        YSJHomeWorkCommentVC *vc= [[YSJHomeWorkCommentVC alloc]init];
+        vc.homeWorkDetailType = HomeWorkDetailCheckComment;
+        vc.orderModel = self.model;
+        [[SPCommon getCurrentVC].navigationController pushViewController:vc animated:YES];
+    }else if ([title isEqualToString:@"提交作业"] || [title isEqualToString:@"重新提交"]){
+        
+        YSJHomeWorkCommentVC *vc= [[YSJHomeWorkCommentVC alloc]init];
+        vc.homeWorkDetailType = HomeWorkDetailWaitCommit;
+        vc.orderModel = self.model;
         [[SPCommon getCurrentVC].navigationController pushViewController:vc animated:YES];
     }
    

@@ -112,7 +112,7 @@ typedef NS_ENUM(NSInteger,DynamicCellType)
 #pragma mark - -------------->StorageUser  start
 #define kStorageUserDict          @"userDict"
 #define kStorageUserAddressDict          @"userAddressDict"
-
+#define KLearnArrKey @"KLearnArrKey0"
 #define kStorageCity          @"city"
 
 #define kStorageLat          @"lat"
@@ -131,6 +131,7 @@ typedef NS_ENUM(NSInteger,DynamicCellType)
 
 #define kStorageUserMobile      @"userMobile"
 #define kStorageUserName        @"userName"
+#define kIdentifier       @"iden"
 #define kRole        @"role"
 #define kTel       @"telphone"
 

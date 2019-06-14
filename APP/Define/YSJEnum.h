@@ -45,6 +45,16 @@ typedef enum
 
 typedef enum
 {
+    HBTypeGet = 0,//已领到（立即使用）
+    HBTypeOut,//已失效
+    HBTypeCreate,//已创建
+    HBTypeDiscover,//发现红包
+    HBTypeOnlyGet,//已领到，不可点击跳转
+    HBTypeUse,//使用
+}HBType;
+
+typedef enum
+{
     MyPublishTypeFindTeacher = 0,//
     MyPublishTypeFindCompany,//
     MyPublishTypeTeacherCourse ,//
@@ -75,6 +85,10 @@ typedef enum
     CellPopLine,//
     /** 展示多个textFiled */
     CellPopMoreTextFiledView,
+    /** 选择有效日期 */
+    CellPopYouXiaoView,
+    /** 门槛 满 ..适用 */
+    CellPopMenKanView,
 }YSJCellPopViewType;
 
 /** 进入支付的对象 */

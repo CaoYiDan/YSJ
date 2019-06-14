@@ -79,7 +79,7 @@
     
     _dic = dic;
    
-    [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,dic[@"photo"]]]placeholderImage:[UIImage imageNamed:@"bg"]];
+    [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,dic[@"photo"]]]placeholderImage:[UIImage imageNamed:@"120"]];
     
     _name.text = dic[@"name"];
     

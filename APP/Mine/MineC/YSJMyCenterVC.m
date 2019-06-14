@@ -1,8 +1,8 @@
-
+#import "YSJHBListVC.h"
 #import "SPMineIdentifiDetailVC.h"
 #import "YSJUserModel.h"
 #import "YSJMyCenterVC.h"
-
+#import "YSJHomeWorkVC.h"
 #import "YSJMineHeaderView.h"
 #import "GTBProfileVC.h"
 #import "YSJCompanyProfileVC.h"
@@ -61,8 +61,8 @@
     
     NSMutableDictionary *dic = @{}.mutableCopy;
     [dic setObject:[StorageUtil getId] forKey:@"token"];
-    
-    [[HttpRequest sharedClient]httpRequestPOST:YInformation parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+    [dic setObject:[StorageUtil getRole] forKey:@"type"];
+     [[HttpRequest sharedClient]httpRequestPOST:YInformation parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         NSLog(@"%@",responseObject);
         
           if (isEmptyString(responseObject[@"status"])) {
@@ -144,7 +144,7 @@
     if (indexPath.row==0) {
         
         YSJProfile *vc = [[YSJProfile alloc]init];
-        vc.identifier = User_Normal;
+        vc.identifier = User_Company;
         [self.navigationController pushViewController:vc animated:YES];
     }else if (indexPath.row == 1){
      
@@ -166,6 +166,7 @@
     NSLog(@"%@",type);
     
     if ([type isEqualToString:@"set"]) {
+        [StorageUtil saveId:@""];
         
     }else if ([type isEqualToString:@"insert"]){
         
@@ -187,8 +188,9 @@
             vc.identifier = User_Normal;
             [self.navigationController pushViewController:vc animated:YES];
         }else if (index==3){
-            
-           
+            YSJHBListVC *vc = [[YSJHBListVC alloc]init];
+            vc.identifier = User_Teacher;
+            [self.navigationController pushViewController:vc animated:YES];
         }
 
     }else if ([type isEqualToString:@"middle"]){
@@ -200,16 +202,29 @@
             [self.navigationController pushViewController:vc animated:YES];
             
         }else if (index==1){
+            
             YSJBuyManagerVC* vc = [[YSJBuyManagerVC alloc]init];
             [self.navigationController pushViewController:vc animated:YES];
+            
         }else if (index==2){
+            
             YSJSellManagerVC* vc = [[YSJSellManagerVC alloc]init];
             [self.navigationController pushViewController:vc animated:YES];
+            
         }else if (index==3){
-            
+            if (![[StorageUtil getRole] isEqualToString:User_Normal]) {
+                YSJHomeWorkVC *vc = [[YSJHomeWorkVC alloc]init];
+                vc.homeWorkType = HomeWorkCommit;
+                
+                vc.identifier = [StorageUtil getRole];
+                
+                [self.navigationController pushViewController:vc animated:YES];
+            }else{
+               
             YSJHomeWorkCommentsVC *vc = [[YSJHomeWorkCommentsVC alloc]init];
-            
+            vc.identifier = [StorageUtil getRole];
             [self.navigationController pushViewController:vc animated:YES];
+            }
         }else if (index==4){
             
          }

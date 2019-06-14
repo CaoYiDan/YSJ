@@ -82,7 +82,7 @@ static NSString *const ID = @"YSJSpellCell";
     [self refreshTimeWithModel:self.timeModel];
     
     
-    [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,self.timeModel.creater.photo]]placeholderImage:[UIImage imageNamed:@"bg"]];
+    [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,self.timeModel.creater.photo]]placeholderImage:[UIImage imageNamed:@"120"]];
 
     _name.text = self.timeModel.creater.nickname;
 

@@ -5,6 +5,8 @@
 #import "YSJMulticourseModel.h"
 #import "YSJCompany_DetailVC.h"
 #import "SPUser.h"
+#import <NIMSDK/NIMSDK.h>
+#import "YSJIMMessageVC.h"
 #import "YSJCompanyCourse_FreeDetailVC.h"
 #import "YSJCommentBaseVC.h"
 #import "YSJCourseModel.h"
@@ -470,7 +472,14 @@
 
 #pragma  mark - --------- -action -----------------
 -(void)connect{
+  
+    NSString *accid =[SPCommon md5WithStr:self.M.phone];
+  
+    [StorageUtil savedHaveLearnMethd:@{accid:[NSString stringWithFormat:@"%@lisen%@",imgPinJieUrl(self.M.site_photo),self.M.name]}];
     
+    NIMSession *session = [NIMSession session:accid type:NIMSessionTypeP2P];
+    YSJIMMessageVC *vc = [[YSJIMMessageVC alloc] initWithSession:session];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 -(void)share{

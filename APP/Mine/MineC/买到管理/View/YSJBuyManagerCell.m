@@ -52,6 +52,7 @@
     _iconImg.backgroundColor = grayF2F2F2;
     _iconImg.layer.cornerRadius =  12;
     _iconImg.clipsToBounds = YES;
+    _iconImg.contentMode = UIViewContentModeScaleAspectFill;
     [self.contentView addSubview:_iconImg];
     
     _userName = [[UILabel alloc]init];
@@ -148,7 +149,7 @@
     
     if (courseModel.pic_url2.count!=0) {
         
-        [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,courseModel.pic_url2[0]]]placeholderImage:[UIImage imageNamed:@"bg"]];
+        [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,courseModel.pic_url2[0]]]placeholderImage:[UIImage imageNamed:@"120"]];
     }
     
  _iconImg.image = [UIImage imageNamed:@"sijiaologo"];
@@ -177,7 +178,7 @@
     
     if (model.pic_url.count!=0) {
         
-         [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.pic_url[0]]]placeholderImage:[UIImage imageNamed:@"bg"]];
+         [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.pic_url[0]]]placeholderImage:[UIImage imageNamed:@"120"]];
     }
    
     if (self.orderType == OrderTypeBuy) {
@@ -190,12 +191,21 @@
         
     }else{
         
-     [_iconImg sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.photo]]placeholderImage:[UIImage imageNamed:@"bg"]];
+     [_iconImg sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.photo]]placeholderImage:[UIImage imageNamed:@"120"]];
     }
+    
     _userName.text = !isEmptyString(model.name)?model.name:model.nickname;
     
-    _status.text = model.order_status;
-    
+    if (self.orderType==HomeWorkPublish || self.orderType==HomeWorkComment || self.orderType==HomeWorkCommit) {
+        
+        _status.text = model.work_status;
+        
+    }else{
+        
+        _status.text = model.order_status;
+        
+    }
+  
     _name.text = model.title;
     
     _introduction.text = [NSString stringWithFormat:@" %@ | %@",model.coursetype,model.coursetypes];
@@ -231,12 +241,12 @@
     
     NSArray *arr = @[];
     
-    if ([self.model.order_status isEqualToString:@"待布置"]) {
+    if ([self.model.work_status isEqualToString:@"待布置"]) {
         arr = @[@{@"title":@"布置作业",@"type":@(1)}];
-    }else if ([self.model.order_status isEqualToString:@"已布置"]) {
-        arr = @[@{@"title":@"查看作业",@"type":@(1)},@{@"title":@"重写布置作业",@"type":@(0)}];
+    }else if ([self.model.work_status isEqualToString:@"待提交"]) {
+        arr = @[@{@"title":@"查看作业",@"type":@(1)},@{@"title":@"重新布置作业",@"type":@(0)}];
     }else{
-         arr = @[@{@"title":@"布置作业",@"type":@(1)},@{@"title":@"查看作业",@"type":@(1)},@{@"title":@"重写布置作业",@"type":@(0)},@{@"title":@"点评作业",@"type":@(1)},@{@"title":@"重写布置作业",@"type":@(0)}];
+         arr = @[@{@"title":@"布置作业",@"type":@(1)},@{@"title":@"查看作业",@"type":@(1)},@{@"title":@"重新布置作业",@"type":@(0)},@{@"title":@"点评作业",@"type":@(1)},@{@"title":@"重新布置作业",@"type":@(0)}];
     }
     
     return arr;
@@ -246,11 +256,11 @@
     
     NSArray *arr = @[];
     
-    if ([self.model.order_status isEqualToString:@"待提交"]) {
+    if ([self.model.work_status isEqualToString:@"待提交"]) {
         arr = @[@{@"title":@"提交作业",@"type":@(1)},@{@"title":@"联系老师",@"type":@(0)}];
-    }else if ([self.model.order_status isEqualToString:@"待点评"]) {
-        arr = @[@{@"title":@"重写提交",@"type":@(1)},@{@"title":@"查看作业",@"type":@(0)},@{@"title":@"联系老师",@"type":@(0)}];
-    }else if ([self.model.order_status isEqualToString:@"已点评"]) {
+    }else if ([self.model.work_status isEqualToString:@"待点评"]) {
+        arr = @[@{@"title":@"重新提交",@"type":@(1)},@{@"title":@"查看作业",@"type":@(0)},@{@"title":@"联系老师",@"type":@(0)}];
+    }else if ([self.model.work_status isEqualToString:@"已点评"]) {
         arr = @[@{@"title":@"联系老师",@"type":@(1)},@{@"title":@"查看点评",@"type":@(0)}];
     }
     
@@ -261,11 +271,11 @@
     
     NSArray *arr = @[];
     
-    if ([self.model.order_status isEqualToString:@"待提交"]) {
+    if ([self.model.work_status isEqualToString:@"待提交"]) {
         arr = @[@{@"title":@"联系学生",@"type":@(1)}];
-    }else if ([self.model.order_status isEqualToString:@"待点评"]) {
+    }else if ([self.model.work_status isEqualToString:@"待点评"]) {
         arr = @[@{@"title":@"点评作业",@"type":@(1)},@{@"title":@"联系学生",@"type":@(0)}];
-    }else if ([self.model.order_status isEqualToString:@"已点评"]) {
+    }else if ([self.model.work_status isEqualToString:@"已点评"]) {
         arr = @[@{@"title":@"查看点评",@"type":@(1)},@{@"title":@"联系学生",@"type":@(0)}];
     }
     

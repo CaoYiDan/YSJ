@@ -19,7 +19,7 @@
 @property (nonatomic, copy) NSString *lables;
 @property (nonatomic,strong) NSMutableArray *teacherArr;
 @property (nonatomic, copy) NSString *companyID;
-
+@property (nonatomic,strong) NSArray *red_packet;
 @property (nonatomic, copy) NSString *site_photo;
 
 @property (nonatomic, copy) NSString *venue_pic;

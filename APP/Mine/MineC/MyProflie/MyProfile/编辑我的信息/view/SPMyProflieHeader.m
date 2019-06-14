@@ -189,7 +189,7 @@
 -(void)setUser:(SPUser *)user{
     _user = user;
     
-    [_headerImg sd_setImageWithURL:[NSURL URLWithString:user.avatar] placeholderImage:[UIImage imageNamed:@"bg"]];
+    [_headerImg sd_setImageWithURL:[NSURL URLWithString:user.avatar] placeholderImage:[UIImage imageNamed:@"120"]];
     
     _name.text = user.nickName;
     

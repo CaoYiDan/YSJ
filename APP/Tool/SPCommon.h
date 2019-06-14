@@ -64,4 +64,9 @@
 #pragma mark ---- 将时间戳转换成时间
 
 +(NSString *)getTimeFromTimestamp:(NSInteger)time;
+
++ (UIImage*)thumbnailImageForVideo:(NSURL *)videoURL atTime:(NSTimeInterval)time;
+
++(NSString *)md5WithStr:(NSString *)str;
+
 @end

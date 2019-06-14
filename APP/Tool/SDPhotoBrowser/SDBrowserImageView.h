@@ -18,10 +18,16 @@
 
 - (void)eliminateScale; // 清除缩放
 
+@property (nonatomic,strong) UIWebView *webView;
+
 - (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder;
 
 - (void)doubleTapToZommWithScale:(CGFloat)scale;
 
 - (void)clear;
 
+@property (nonatomic,copy) NSString *videoUrl;
+
+//让浏览器加载指定的字符串
+- (void)loadWeb;
 @end

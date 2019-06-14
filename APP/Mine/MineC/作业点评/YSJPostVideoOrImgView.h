@@ -7,18 +7,23 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "ZLPhotoActionSheet.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface YSJPostVideoOrImgView : UIView<UICollectionViewDataSource,UICollectionViewDelegate>
-
 
 /**
  不能选择视频
  */
 @property (nonatomic,assign) BOOL canNotSelectedVideo;
+
 //@property (nonatomic,copy) NSString *title;
 //@property (nonatomic,copy) NSString *placeHolder;
+
+-(NSMutableArray *)getPhotoImgs;
+
+
+@property (nonatomic, strong) NSMutableArray<PHAsset *> *lastSelectAssets;
 
 @end
 

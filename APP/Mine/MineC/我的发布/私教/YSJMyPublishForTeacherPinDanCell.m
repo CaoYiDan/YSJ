@@ -131,7 +131,7 @@
     
     if (model.pic_url2.count>0) {
         
-        [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.pic_url2[0]]]placeholderImage:[UIImage imageNamed:@"bg"]];
+        [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.pic_url2[0]]]placeholderImage:[UIImage imageNamed:@"120"]];
     }
     NSLog(@"%@",[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.pic_url2[0]]);
     _name.text = model.title;

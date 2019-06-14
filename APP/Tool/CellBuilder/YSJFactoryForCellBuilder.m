@@ -4,7 +4,8 @@
 //
 //  Created by xujf on 2019/4/19.
 //  Copyright © 2019年 lisen. All rights reserved.
-
+#import "YSJPopMenKanView.h"
+#import "YSJPopYouXiaoDateView.h"
 #import "YSJPopTextFiledView.h"
 #import "YSJPopTextViewView.h"
 #import "YSJPopSheetView.h"
@@ -72,6 +73,12 @@
             
             [self p_addView:arrow];
             
+        }else if (type == CellPopYouXiaoView){
+            
+            YSJPopYouXiaoDateView *arrow =[[YSJPopYouXiaoDateView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
+            
+            [self p_addView:arrow];
+            
         }else if (type == CellPopCouserChosed){
             
             YSJPopCourserCellView  *arrow =[[YSJPopCourserCellView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
@@ -90,6 +97,12 @@
         }else if (type ==CellSwitch) {
             
             YSJCommonSwitchView *arrow = [[YSJCommonSwitchView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] selected:YES];
+            
+            [self p_addView:arrow];
+            
+        }else if (type ==CellPopMenKanView) {
+            
+            YSJPopMenKanView *arrow =[[YSJPopMenKanView alloc]initWithFrame:CGRectMake(0, orY, kWindowW, cellH) withTitle:cellDic[@"title"] subTitle:@""];
             
             [self p_addView:arrow];
             

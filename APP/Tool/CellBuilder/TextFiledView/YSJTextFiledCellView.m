@@ -32,7 +32,7 @@
         }];
         
         UITextField *identifierFiled = [[UITextField alloc]init];
-        identifierFiled.keyboardType = UIKeyboardTypeNumberPad;
+        identifierFiled.keyboardType = UIKeyboardTypeDefault                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ;
         _textFiled = identifierFiled;
         identifierFiled.backgroundColor = KWhiteColor;
         identifierFiled.placeholder = placeholder;

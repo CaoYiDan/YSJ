@@ -13,7 +13,7 @@
 @property (nonatomic, copy) NSString *teacherID;
 
 @property (nonatomic, assign) int is_auth;
-
+@property (nonatomic,strong) NSArray *red_packet;
 @property (nonatomic, assign) int dealcount;
 
 @property (nonatomic, copy) NSString *sex;

@@ -1,7 +1,7 @@
 #import <UIKit/UIKit.h>
 #import "YSJBaseForDetailView.h"
 
-#define  profileHeight 195
+#define  profileHeight 195+32
 
 typedef  void(^profileHeaderBlock) (NSString *action);
 

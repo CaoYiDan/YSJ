@@ -19,6 +19,53 @@
     NSDictionary *obj = [defaults objectForKey:kStorageUserAddressDict];
     return   obj;
 }
+
+
+
+//存储已学习数组
++ (void)savedHaveLearnMethd:(NSDictionary*)dic;
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *key = KLearnArrKey;
+    NSMutableArray *haveLearnSet = (NSMutableArray *)[self getHaveLearnArr];
+    
+    if (![haveLearnSet containsObject:dic]) {
+        [haveLearnSet addObject:dic];
+    }
+    NSLog(@"%@",haveLearnSet);
+    
+    [defaults setObject:haveLearnSet forKey:key];
+    [defaults synchronize];//把数据持
+}
+
++ (NSMutableArray *)getHaveLearnArr{
+    NSString *key = KLearnArrKey;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableArray *obj = [defaults objectForKey:key];
+    
+    if (!obj) return @[].mutableCopy;
+    
+    return  [[NSMutableArray alloc] initWithArray:obj];;
+}
+
++(NSDictionary *)getUserPhotoAndNameByUserId:(NSString *)userId{
+    NSMutableArray *haveLearnSet = (NSMutableArray *)[self getHaveLearnArr];
+    NSDictionary *resultDic = @{};
+    
+    for (NSDictionary *dic in haveLearnSet) {
+        NSLog(@"%@",dic);
+        NSLog(@"%@",userId);
+        if( [dic.allKeys[0] isEqualToString:userId]){
+            
+            resultDic = dic;
+        
+            break;
+        }
+    }
+    
+    return resultDic;
+}
+
 //存储城市信息
 + (void)saveCity:(NSString *)city{
 [self saveObject:city forKey:kStorageCity];
@@ -85,7 +132,7 @@ return [self getObjectByKey:KStorageLon];
 }
 + (NSString *)getId
 {
-    //return @"3";
+
     return [self getObjectByKey:kStorageUserId];
 }
 
@@ -99,6 +146,8 @@ return [self getObjectByKey:KStorageLon];
     NSString *obj = [defaults objectForKey:KStorageUserCode];
     
     if (!obj) return @"";
+    
+    return @"c6b76b206825c52d3f0f47e0e78d43e6";
     
     return obj;
 
@@ -182,6 +231,14 @@ return [self getObjectByKey:KStorageLon];
   return [self getObjectByKey:kStorageUserName];
 }
 
+//用户身份
++ (void)saveIdentifier:(NSString *)ide{
+    [self saveObject:ide forKey:kIdentifier];
+}
+
++ (NSString *)getIdentifier{
+    return [self getObjectByKey:kIdentifier];
+}
 
 //用户手机号
 + (void)saveTel:(NSString *)tel{

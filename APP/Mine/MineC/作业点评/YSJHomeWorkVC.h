@@ -14,4 +14,6 @@
 
 @property (nonatomic,assign) YSJCellType homeWorkType;
 
+@property (nonatomic,copy) NSString *identifier;
+
 @end

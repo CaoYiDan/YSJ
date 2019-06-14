@@ -5,7 +5,7 @@
 //  Created by 融合互联-------lisen on 17/4/25.
 //  Copyright © 2017年 XJS_oxpc. All rights reserved.
 //
-
+#import "YSJPostVideoOrImgView.h"
 #import "ImageCell.h"
 #import <AVFoundation/AVFoundation.h>
 #import <Photos/Photos.h>
@@ -19,7 +19,7 @@
 #import "ZLPhotoActionSheet.h"
 #import "YSJCourseModel.h"
 #import "SPCommon.h"
-
+#import "YSJOrderModel.h"
 #import "YSJPostVideoOrImgView.h"
 
 //定位服务
@@ -28,6 +28,8 @@
 @interface YSJPublishHomeWorkVC ()<UITextViewDelegate,UICollectionViewDataSource,UICollectionViewDelegate>
 
 @property (nonatomic,strong) UICollectionView *collectionView;
+
+@property (nonatomic,strong) YSJPostVideoOrImgView *photoView;
 
 @property (nonatomic, strong) NSMutableArray<UIImage *> *lastSelectPhotos;
 @property (nonatomic, strong) NSMutableArray<PHAsset *> *lastSelectAssets;
@@ -40,8 +42,6 @@
 @property (nonatomic, strong) UIView *topView;
 @property (nonatomic, strong) UIView *middleView;
 @property (nonatomic, strong) UIView *bottomView;
-
-@property(nonatomic,weak)LGComposePhotosView *photoView;
 
 @property(nonatomic,weak)LGTextView *textView;
 
@@ -61,8 +61,6 @@
 @end
 
 @implementation YSJPublishHomeWorkVC
-
-
 
 - (void)viewDidLoad {
     
@@ -106,6 +104,7 @@
 - (UIView *)topView{
     
     if (!_topView) {
+        
         _topView =[[UIView alloc]initWithFrame:CGRectMake(0,0, SCREEN_W, 156+200)];
         _topView.backgroundColor = [UIColor whiteColor];
         [self topUI];
@@ -116,7 +115,7 @@
 - (void)topUI{
     //课程评价
     YSJOrderCourseView *view = [[YSJOrderCourseView alloc]initWithFrame:CGRectMake(0, 200, kWindowW, 102)];
-//    view.model = self.model;
+    view.model = self.orderModel;
     [self.topView addSubview:view];
     [view mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(0);
@@ -187,9 +186,9 @@
 - (void)middleUI{
     
     YSJPostVideoOrImgView *view = [[YSJPostVideoOrImgView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, 300)];
+    self.photoView = view;
     [self.middleView addSubview:view];
 }
-
 
 //下部分视图创建
 -(UIView *)bottomView{
@@ -223,7 +222,76 @@
     
 }
 
-
+-(void)save{
+    
+    NSMutableDictionary *dic = @{}.mutableCopy;
+    [dic setObject:[StorageUtil getId] forKey:@"token"];
+    NSString *url = @"";
+    if ([[StorageUtil getRole] isEqualToString:User_Company]) {
+        url = YHomeworkCompanyArrange;
+        
+        [dic setObject:self.orderModel.course_id forKey:@"course_id"];
+    }else{
+        
+        url = YHomeworkTeacherArrange;
+         [dic setObject:self.orderModel.sub_order_id forKey:@"sub_order_id"];
+    }
+   
+     [dic setObject:self.textView.text forKey:@"describe"];
+    NSLog(@"%@",dic);
+    
+    _imgArr = [self.photoView getPhotoImgs];
+    
+    AFHTTPSessionManager *manager = [[[YSJAFNPostImgManager alloc]init] getManager];
+    
+    [manager POST:url parameters:dic constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        
+        // formData: 专门用于拼接需要上传的数据,在此位置生成一个要上传的数据体
+        // 这里的_photoArr是你存放图片的数组
+        for (int i = 0; i < _imgArr.count; i++) {
+            
+            UIImage *image = _imgArr[i];
+            NSData *imageData = UIImageJPEGRepresentation(image, 0.5);
+            
+            // 在网络开发中，上传文件时，是文件不允许被覆盖，文件重名
+            // 要解决此问题，
+            // 可以在上传时使用当前的系统事件作为文件名
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            // 设置时间格式
+            [formatter setDateFormat:@"yyyyMMddHHmmss"];
+            NSString *dateString = [formatter stringFromDate:[NSDate date]];
+            NSString *fileName = [NSString  stringWithFormat:@"%@_%d.jpg", dateString,i];
+            NSLog(@"%@",fileName);
+       
+            [formData appendPartWithFileData:imageData name:fileName fileName:fileName mimeType:@"image/jpeg"]; //
+        }
+        
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        NSLog(@"%@",responseObject);
+        
+        //将二进制转为字符串
+        NSString *result2 = [[NSString alloc] initWithData:responseObject  encoding:NSUTF8StringEncoding];
+        //字符串转字典
+        NSDictionary*dict=[result2 stringChangeToDictionary];
+        
+        NSLog(@"%@",dict);
+        
+        if ([dict[@"status"] integerValue]==200) {
+            Toast(@"发布成功");
+            [self.navigationController popViewControllerAnimated:YES];
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"publishFinish" object:nil];
+            
+        }else{
+            Toast(@"错误格式");
+        }
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"%@",error);
+    }];
+}
 
 //添加取消按钮->
 -(void)addCancelBtn{

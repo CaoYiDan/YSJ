@@ -12,7 +12,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface YSJOrderModel : NSObject
 
+@property (nonatomic,copy) NSString *work_status;
+@property (nonatomic,copy) NSString *mark;
+@property (nonatomic,copy) NSString *mark_point;
+
+@property (nonatomic,copy) NSString *student_describe;
+@property (nonatomic,strong) NSArray *mark_pic;
+@property (nonatomic,strong) NSArray *teacher_despics;
+@property (nonatomic,strong) NSArray *student_despics;
+
+@property (nonatomic,copy) NSString *teacher_describe;
 @property (nonatomic, copy) NSString *orderId;
+
 @property (nonatomic, copy) NSString *order_id;
 @property (nonatomic,copy) NSString *sub_status;
 @property (nonatomic,strong) NSArray *pic_url;
@@ -50,6 +61,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *course_id;
 
 @property (nonatomic, copy) NSString *checktype;
+
+@property (nonatomic,assign) NSInteger hw_time;
 
 @end
 

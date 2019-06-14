@@ -13,6 +13,7 @@
 #import "SPProfileDynamicToolView.h"
 #import "SPPhotosView.h"
 #import "SPProfileVC.h"
+#import "YSJOrderModel.h"
 
 @interface YSJCommentCell ()
 
@@ -122,6 +123,7 @@
 }
 
 -(SPPhotosView *)photosView{
+    
     if (!_photosView) {
         _photosView = [[SPPhotosView alloc] init];
         _photosView.backgroundColor = [UIColor whiteColor];
@@ -129,9 +131,69 @@
     return _photosView;
 }
 
+-(void)setForOrderF:(YSJCommentFrameModel *)statusFrame{
+    
+    //头像
+    _iconImg.frame = statusFrame.iconViewF;
+    [_iconImg sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,statusFrame.orderModel.photo]]placeholderImage:[UIImage imageNamed:@"logo_placeholder"]];
+    
+    //昵称
+    _nameLabel.frame = statusFrame.nameLabelF;
+    _nameLabel.text = statusFrame.orderModel.title;
+    
+    //评分
+    _startView.frame = statusFrame.starF;
+    [_startView setStarLeave:[statusFrame.orderModel.mark_point doubleValue]];
+    
+    //时间
+//    _timeLab.frame= statusFrame.timeF;
+//    _timeLab.text = statusFrame.orderModel.create_time;
+    
+    //正文
+    _contentLabel.frame = statusFrame.contentLabelF;
+    _contentLabel.text = statusFrame.orderModel.mark;
+    
+   
+    //分割线
+    UIView *line  =[[UIView alloc]init];
+    line.backgroundColor = HomeBaseColor;
+    [self.contentView addSubview:line];
+    [line mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_offset(CGSizeMake(SCREEN_W-20, 0.6));
+        make.bottom.equalTo(self).offset(0);
+        make.left.offset(10);
+    }];
+    
+    //上部分baseView
+    _topView.frame = statusFrame.topViewF;
+    
+    
+    if (!isEmptyString(statusFrame.orderModel.mark_pic)) {
+        //图片
+        NSArray *photoArr = statusFrame.orderModel.mark_pic;
+        NSMutableArray *photoA = @[].mutableCopy;
+        for (NSString *url in photoArr) {
+            [photoA addObject:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,url]];
+        }
+        _photosView.frame = statusFrame.photosViewF;
+        [_photosView setImgArr:photoA];
+    }else{
+        _photosView.frameHeight = 0;
+    }
+}
+
 -(void)setStatusFrame:(YSJCommentFrameModel *)statusFrame{
+    
     _statusFrame = statusFrame;
+    
     _statue = statusFrame.status;
+    
+    if (!isNull(statusFrame.orderModel)) {
+        [self setForOrderF:statusFrame];
+        _orderModel = statusFrame.orderModel;
+        
+        return;
+    }
     
     //头像
     _iconImg.frame = statusFrame.iconViewF;
@@ -190,6 +252,11 @@
     }
    
     
+    
+}
+
+- (void)setOrderModel:(YSJOrderModel *)orderModel{
+    _orderModel = orderModel;
     
 }
 

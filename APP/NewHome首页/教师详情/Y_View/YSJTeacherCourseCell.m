@@ -153,7 +153,7 @@
     
     _model = model;
     
-    [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.pic_url2[0]]]placeholderImage:[UIImage imageNamed:@"bg"]];
+    [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.pic_url2[0]]]placeholderImage:[UIImage imageNamed:@"120"]];
 //    _distance.text = [SPCommon changeKm:model.distance];
     [_starRateView setStarLeave:model.reputation];
     _name.text = model.title;

@@ -8,13 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-@class YSJCommentsModel;
+@class YSJCommentsModel,YSJOrderModel;
 
 @interface YSJCommentFrameModel : NSObject
 
 /**<##>模型*/
 @property (nonatomic, strong) YSJCommentsModel *status;
 
+@property (nonatomic,strong) YSJOrderModel *orderModel;
 /** 上部分View */
 @property (nonatomic, assign) CGRect topViewF;
 /** 配图 */
@@ -43,5 +44,6 @@
 
 /** cell的高度 */
 @property (nonatomic, assign) CGFloat cellHeight;
-
+/** cell的高度 */
+@property (nonatomic, assign) CGFloat orderCellHeight;
 @end

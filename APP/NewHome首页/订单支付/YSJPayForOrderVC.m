@@ -6,12 +6,15 @@
 //  Copyright © 2019年 lisen. All rights reserved.
 //
 #import "WXApi.h"
+#import "YSJShowHongBaoView.h"
 #import "YSJFinshedPayShareVC.h"
 #import "YSJTagLabel.h"
 #import "YSJSpellListModel.h"
 #import "YSJCourseModel.h"
 #import "YSJPayForOrderVC.h"
 #import <AlipaySDK/AlipaySDK.h>
+#import "YSJGBModel.h"
+
 @interface YSJPayForOrderVC ()<WXApiDelegate,UITextFieldDelegate>
 
 @end
@@ -49,6 +52,10 @@
     UIImageView *_zhiImg;
     UIImageView *_weiImg;
     NSString *_payType;
+    
+    NSMutableArray *_hBList;
+    UILabel *_hbLabel;
+    YSJGBModel *_selectedModel;
 }
 
 #pragma mark life cycle
@@ -56,7 +63,7 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    
+    _hBList = @[].mutableCopy;
     self.title = @"订单支付";
     
     _singlePrice = [self.model.multi_price doubleValue];
@@ -110,11 +117,7 @@
         make.top.equalTo(_section2View.mas_bottom).offset(0);
     }];
     
-    [self setSection0];
-    [self setSection1];
-    [self setSection2];
-    [self setSection3];
-    [self setPayBtn];
+    [self getCanUseHongBaoList];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -200,7 +203,7 @@
     }];
     
    
-    [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,self.model.pic_url2[0]]]placeholderImage:[UIImage imageNamed:@"bg"]];
+    [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,self.model.pic_url2[0]]]placeholderImage:[UIImage imageNamed:@"120"]];
     
     _name.text = self.model.title;
     
@@ -356,10 +359,7 @@
     
    _countTextFiled.text = intToStringFormar(count);
     
-    _orderPrice.text = [NSString stringWithFormat:@"¥%.1f",_singlePrice * count];
-    _needPayPrice.text = [NSString stringWithFormat:@"¥%.1f",_singlePrice * count];
-    _resultNeedPay.text = [NSString stringWithFormat:@"实付款: ¥%.1f",_singlePrice * count];
-    [_resultNeedPay setAttributeTextWithString:_resultNeedPay.text range:NSMakeRange(0, 4) WithColour:black666666 andFont:12];
+   [self changePrice];
 }
 
 -(void)minus{
@@ -378,13 +378,20 @@
         return;
     }
     
-    int count = [_countTextFiled.text integerValue]-1;
+    NSInteger count = [_countTextFiled.text integerValue]-1;
     
      _countTextFiled.text = intToStringFormar(count);
     
+    [self changePrice];
+}
+
+-(void)changePrice{
+    
+    NSInteger count = [_countTextFiled.text integerValue];
+    
     _orderPrice.text = [NSString stringWithFormat:@"¥%.1f",_singlePrice * count];
-    _needPayPrice.text = [NSString stringWithFormat:@"¥%.1f",_singlePrice * count];
-    _resultNeedPay.text = [NSString stringWithFormat:@"实付款: ¥%.1f",_singlePrice * count];
+    _needPayPrice.text = [NSString stringWithFormat:@"¥%.1f",_singlePrice * count-[_selectedModel.amount doubleValue]];
+    _resultNeedPay.text = [NSString stringWithFormat:@"实付款: ¥%.1f",_singlePrice * count-[_selectedModel.amount doubleValue]];
     [_resultNeedPay setAttributeTextWithString:_resultNeedPay.text range:NSMakeRange(0, 4) WithColour:black666666 andFont:12];
 }
 
@@ -402,9 +409,21 @@
     _rightText.textAlignment = NSTextAlignmentRight;
     _rightText.textColor = gray999999;
     _rightText.font = font(14);
-    _rightText.text = @"暂无可用";
+        
+    _rightText.text = _hBList.count==0?@"暂无可用":@"选取红包";
+    if (_hBList.count !=0) {
+            YSJGBModel *model = _hBList[0];
+            _selectedModel = model;
+            _rightText.text = model.amount;
+    }
+    _hbLabel = _rightText;
+        _rightText.userInteractionEnabled = YES;
     [_section2View addSubview:_rightText];
-    
+        
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(getHongaBao)];
+    tap.numberOfTouchesRequired = 1; //手指数
+    tap.numberOfTapsRequired = 1; //tap次数
+    [_rightText addGestureRecognizer:tap];
     
     UIView *bottomLine0 = [[UIView alloc]init];
     bottomLine0.backgroundColor = grayF2F2F2;
@@ -431,9 +450,9 @@
         _rightText.font = font(16);
         
         if (self.payForType == YSJPayForCompanyCourse) {
-            _rightText.text = [NSString stringWithFormat:@"¥%.1f",_singlePrice * [self.model.times integerValue]];
+            _rightText.text = [NSString stringWithFormat:@"¥%.1f",_singlePrice * [self.model.times integerValue]-[_selectedModel.amount doubleValue]];
         }else{
-            _rightText.text = [NSString stringWithFormat:@"¥%.1f",_singlePrice * [self.model.min_times integerValue]];
+            _rightText.text = [NSString stringWithFormat:@"¥%.1f",_singlePrice * [self.model.min_times integerValue]-[_selectedModel.amount doubleValue]];
         }
         [_section2View addSubview:_rightText];
         
@@ -577,9 +596,9 @@
     UILabel *resultNeedPay = [[UILabel alloc]init];
     
     if (self.payForType == YSJPayForCompanyCourse) {
-        resultNeedPay.text = [NSString stringWithFormat:@"实付款: ¥%.1f",_singlePrice * [self.model.times integerValue]];
+        resultNeedPay.text = [NSString stringWithFormat:@"实付款: ¥%.1f",_singlePrice * [self.model.times integerValue]-[_selectedModel.amount doubleValue]];
     }else{
-        resultNeedPay.text = [NSString stringWithFormat:@"实付款: ¥%.1f",_singlePrice * [self.model.min_times integerValue]];
+        resultNeedPay.text = [NSString stringWithFormat:@"实付款: ¥%.1f",_singlePrice * [self.model.min_times integerValue]-[_selectedModel.amount doubleValue]];
     }
     resultNeedPay.font = font(18);
     _resultNeedPay = resultNeedPay;
@@ -608,14 +627,27 @@
     [dic setObject:self.model.title forKey:@"cname"];
     [dic setObject:self.model.saleId forKey:@"teacherID"];
     [dic setObject:_phoneTextFiled.text forKey:@"reserve_phone"];
-//    [dic setObject:_countTextFiled.text forKey:@"times"];
-//    [dic setObject:self.model.multi_price forKey:@"price"];
-     [dic setObject:@(200) forKey:@"price"];
-    [dic setObject:@(4) forKey:@"times"];
-    
+    [dic setObject:_countTextFiled.text forKey:@"times"];
+    [dic setObject:self.model.multi_price forKey:@"price"];
+//     [dic setObject:@(200) forKey:@"price"];
+//    [dic setObject:@(4) forKey:@"times"];
+//
     
     [dic setObject:@"" forKey:@"red_packets_id"];
-
+    
+    NSString *url = @"";
+    
+    if (self.payForType == YSJPayForCompanyCourse) {
+        
+        url = YBuyCompanyOrderCreate;
+        
+    }else{
+        
+        url =  YBuyTeacerOrderCreate;
+        //私教课程购买需多加此字段
+        [dic setObject:@"" forKey:@"sub_order_id"];
+    }
+   
     [dic setObject:@(_singlePrice* [_countTextFiled.text integerValue]) forKey:@"amount"];
 //    [dic setObject:@"" forKey:@"red_packets_id"];
    
@@ -623,7 +655,7 @@
      [dic setObject:@"支付宝" forKey:@"checktype"];
     NSLog(@"%@",dic);
     
-    [[HttpRequest sharedClient]httpRequestPOST:YBuyCompanyOrderCreate parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+    [[HttpRequest sharedClient]httpRequestPOST:YBuyTeacerOrderCreate parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         NSLog(@"%@",responseObject);
         Toast(@"订单已生成");
 //        [[AlipaySDK defaultService] payOrder:responseObject[@"order_string"] fromScheme:@"smallpigalipay" callback:^(NSDictionary *resultDic)
@@ -722,4 +754,46 @@
         }
     }
 }
+
+-(void)getCanUseHongBaoList{
+    //网络请求
+    NSMutableDictionary *dic = @{}.mutableCopy;
+    [dic setObject:[StorageUtil getId] forKey:@"token"];
+    [dic setObject:self.model.courseId forKey:@"course_id"];
+    NSLog(@"%@",dic);
+    [[HttpRequest sharedClient]httpRequestPOST:Yredpacketorder_use parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
+        
+        NSLog(@"%@",responseObject);
+        _hBList= [YSJGBModel mj_objectArrayWithKeyValuesArray:responseObject];
+        
+        [self setSection0];
+        [self setSection1];
+        [self setSection2];
+        [self setSection3];
+        [self setPayBtn];
+        
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        
+    }];
+}
+
+-(void)getHongaBao{
+    
+    YSJShowHongBaoView*infoView = [[YSJShowHongBaoView alloc]initWithFrame:CGRectMake(0, 0, kWindowW, kWindowH-50)];
+    infoView.hbArr =_hBList;
+    infoView.type = 1;
+    [[SPCommon getCurrentVC].view addSubview:infoView];
+    infoView.block = ^(NSInteger indexRow) {
+        
+    
+        YSJGBModel *model = _hBList[indexRow];
+        _selectedModel = model;
+        _hbLabel.text = model.amount;
+        [self changePrice];
+        
+    };
+}
+
 @end
+
+

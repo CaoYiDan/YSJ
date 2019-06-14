@@ -41,8 +41,6 @@
     //初始化首次进入默认的请求字典
     [self configSiftingDic];
     
-    WeakSelf;
-    
     //获取私教list数据
     [self.tableView.mj_header beginRefreshing];
     
@@ -59,6 +57,9 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:NO];
 }
 
 - (void)dealloc
@@ -84,11 +85,36 @@
         url = YCourseUserBuy;
         arr = @[@"全部",@"待付款",@"待授课",@"交易完成",@"退款"];
         
-    }else{
+    }else if(self.orderType== OrderTypeSale){
         
         url = YCourseUserSale;
         
         arr = @[@"全部",@"待授课",@"已完成",@"退款"];
+        
+    }else if(self.orderType==HomeWorkPublish || self.orderType==HomeWorkComment || self.orderType==HomeWorkCommit){
+        
+        if ([self.identifier isEqualToString:User_Company]) {
+            url = Yhomeworkcompanystatus;
+            
+            if (self.orderType == HomeWorkPublish
+                ) {
+                arr = @[@"待布置",@"待提交"];
+            }else if (self.orderType == HomeWorkComment){
+                arr = @[@"待提交",@"待点评",@"已点评"];
+            }
+        }else{
+            url = YHomeworkStatus;
+            
+            if (self.orderType == HomeWorkPublish
+                ) {
+                arr = @[@"待布置",@"待提交"];
+            }else if (self.orderType == HomeWorkCommit){
+                url = YCstatus;
+                arr = @[@"待提交",@"待点评",@"已点评"];
+            }else if (self.orderType == HomeWorkComment){
+                arr = @[@"待提交",@"待点评",@"已点评"];
+            }
+        }
         
     }
     
@@ -100,15 +126,31 @@
     
     [_siftingDic setObject:@(_page) forKey:@"page"];
     
-   
-     NSLog(@"%@",_siftingDic);
+    NSLog(@"%@  %@",_siftingDic,url);
     
     [[HttpRequest sharedClient]httpRequestPOST:url parameters:_siftingDic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         //        requestisScu(YES);
         NSLog(@"%@",responseObject);
+        if (self.orderType==HomeWorkPublish || self.orderType ==HomeWorkComment) {
+            
+            
+            if ([self.identifier isEqualToString:User_Company]) {
+                
+                 self.dataArr = [YSJOrderModel mj_objectArrayWithKeyValuesArray:responseObject[@"company"]];
+            }else{
+                
+              self.dataArr = [YSJOrderModel mj_objectArrayWithKeyValuesArray:responseObject[@"order_teacher"]];
+            }
+            
+        }else if (self.orderType==HomeWorkCommit) {
+            
+            self.dataArr = [YSJOrderModel mj_objectArrayWithKeyValuesArray:responseObject[@"order_all"]];
+            
+        }else{
+            
+            self.dataArr  = [YSJOrderModel mj_objectArrayWithKeyValuesArray:responseObject[@"order_all"]];
+        }
         
-     self.dataArr  = [YSJOrderModel mj_objectArrayWithKeyValuesArray:responseObject[@"order_all"]];
-      
       if (self.dataArr.count<=3) {
             
             self.tableView.mj_footer.hidden = YES;
@@ -118,8 +160,10 @@
             self.tableView.mj_footer.hidden = NO;
             
         }
+        
         [self.tableView.mj_header endRefreshing];
         [self.tableView reloadData];
+        
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         
     }];
@@ -181,6 +225,10 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if (self.orderType == HomeWorkCommit || self.orderType == HomeWorkComment || self.orderType == HomeWorkPublish) {
+        return;
+    }
     
     YSJOrderModel *model = self.dataArr[indexPath.row];
     

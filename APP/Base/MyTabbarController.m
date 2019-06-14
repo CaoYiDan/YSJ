@@ -6,8 +6,10 @@
 
 #import "MyTabbarController.h"
 #import "SelectionViewController.h"
+#import <NIMSDK/NIMSDK.h>
+#import <NIMKit.h>
+#import "YSJDiscoverVC.h"
 
-#import "SPLeaseVC.h"
 #import "YSJMyCenterVC.h"
 #import "YSJFastLoginVC.h"
 #import "SPBaseNavigationController.h"
@@ -30,6 +32,7 @@
 @implementation MyTabbarController
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
     
     [self createViewControllers];
@@ -38,6 +41,7 @@
     
     [self AFNReachability];
 }
+
 #pragma mark - ************************************ 网络监听状态 ************************************
 
 - (void)AFNReachability
@@ -47,23 +51,7 @@
     //1.创建网络监听管理者
     
     AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager sharedManager];
-    
-    
-    
-    //2.监听网络状态的改变
-    
-    /*
-     
-     AFNetworkReachabilityStatusUnknown             = 未知
-     
-     AFNetworkReachabilityStatusNotReachable        = 没有网络
-     
-     AFNetworkReachabilityStatusReachableViaWWAN    = 3G
-     
-     AFNetworkReachabilityStatusReachableViaWiFi    = WIFI
-     
-     */
-    
+  
     [manager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
         
         switch (status) {
@@ -107,14 +95,10 @@
                 
         }
         
-        
-        
-        if (status != AFNetworkReachabilityStatusNotReachable) {// 有网了的情况下通知 bookShelf 检测 banner 是否存在
+        if (status != AFNetworkReachabilityStatusNotReachable) {
             
             NSLog(@"有网络了");
-            
-            //            [kNotificationCenter postNotificationName:@"NoticeBookShelfCheckBanner" object:nil];
-            
+      
         }
         
     }];
@@ -177,31 +161,21 @@
     SPBaseNavigationController * homeNav = [[SPBaseNavigationController alloc]initWithRootViewController:homeVC];
     _homeNav = homeNav;
     
-    
-    SPBaseDiscover * discoverVC =[[SPBaseDiscover alloc]init];
+    //创建会话列表页
+    NIMSessionListViewController *discoverVC = [[NIMSessionListViewController alloc] init];
+    discoverVC.navigationItem.title = @"消息";
     SPBaseNavigationController * discoverNav = [[SPBaseNavigationController alloc]initWithRootViewController:discoverVC];
     
-    SPLeaseVC * leaseVC = [[SPLeaseVC alloc]init];
+    YSJDiscoverVC * leaseVC = [[YSJDiscoverVC alloc]init];
     SPBaseNavigationController * leaseNav = [[SPBaseNavigationController alloc]initWithRootViewController:leaseVC];
     
     YSJMyCenterVC * mineVC = [[YSJMyCenterVC alloc]init];
     SPBaseNavigationController * mineNav = [[SPBaseNavigationController alloc]initWithRootViewController:mineVC];
     
     self.viewControllers = @[homeNav,discoverNav,[self getThirdTabbar],leaseNav,mineNav];
-    
-    //    self.viewControllers = @[homeNav];
-    
-    
-    // 会话列表页面
-    
-    //    ShoppingCartViewController * cartVC = [[ShoppingCartViewController alloc]init];
-    //    UINavigationController * cartNav = [[UINavigationController alloc]initWithRootViewController:cartVC];
-    
+
     
     self.delegate = self;
-    
-    //    self.tabBar.tintColor = BasePrinkColor;
-    //    self.tabBar.translucent = NO;
     
 }
 
@@ -349,7 +323,7 @@
 //代理方法,这个方法是来判断当点击某个tabBarItem时是否要点击下去,
 //其实你可以这样理解:就是是否要点击这个tabBarItem.
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController{
-    NSLog(@"dsdsdsd");
+   
     if ([viewController.tabBarItem.title isEqualToString:@"首页"]) {
         return YES;
     }else if ([viewController.tabBarItem.title isEqualToString:@"发布"])

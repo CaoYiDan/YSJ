@@ -7,13 +7,51 @@
 //
 
 #import "YSJCommentFrameModel.h"
-
+#import "YSJOrderModel.h"
 #import "YSJCommentsModel.h"
 
 #import "NSString+getSize.h"
 
 #define  iconW  60.0
 @implementation YSJCommentFrameModel
+
+- (void)setOrderModel:(YSJOrderModel *)orderModel{
+    _orderModel = orderModel;
+    
+    [self sTopF];
+    [self sMiddleForOrder];
+}
+
+
+-(void)sMiddleForOrder{
+    
+    CGFloat contentX = iconW+kMargin +kMargin;
+    
+    CGFloat maxW = SCREEN_W - (iconW+kMargin +kMargin+kMargin);
+    CGSize contentSize = [self.orderModel.mark sizeWithFont:font(13) maxW:maxW];
+    NSInteger H = contentSize.height+5;
+    self.contentLabelF = CGRectMake(contentX, CGRectGetMaxY(self.starF)+10, maxW, H);
+    
+    CGFloat tagY =  CGRectGetMaxY(self.contentLabelF)+10;
+    
+    self.tagLabelF = CGRectMake(contentX, tagY, kWindowW-50, 30);
+    
+    NSArray *photoArr = self.orderModel.mark_pic;
+    
+    /** 有配图 */
+    if (self.orderModel.mark_pic.count!=0) {
+        self.photosViewF = (CGRect){{contentX,  CGRectGetMaxY(self.tagLabelF)}, CGSizeMake(SCREEN_W-contentX-kMargin,[self heigtForPhoto:photoArr.count])};
+       
+    } else { // 没配图
+        
+        self.photosViewF = (CGRect){{0, CGRectGetMaxY(self.tagLabelF)}, CGSizeMake(SCREEN_W,0)};
+    }
+    
+    self.topViewF= CGRectMake(0, 0, SCREEN_W, CGRectGetMaxY(self.photosViewF));
+    
+    self.orderCellHeight = self.topViewF.size.height+10;
+}
+
 
 -(void)setStatus:(YSJCommentsModel*)status{
     _status = status;
@@ -78,9 +116,11 @@
         
     }else {
         
-        return (SCREEN_W-kMargin*3-iconW)/3;
+        return (SCREEN_W-kMargin*3-iconW)/3 *(count/3+1);
+        
     }
     return 0;
 }
+
 @end
 

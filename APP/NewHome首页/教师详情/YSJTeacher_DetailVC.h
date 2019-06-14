@@ -21,4 +21,5 @@ typedef void(^profileBlock) (NSDictionary *profileDic);
 @property(nonatomic,copy)profileBlock  block;
 
 @property (nonatomic,strong) YSJTeacherModel *M;
+
 @end

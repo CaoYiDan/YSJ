@@ -7,7 +7,7 @@
 //
 
 #import "BaseViewController.h"
-@class  YSJCourseModel;
+@class  YSJCourseModel,YSJOrderModel;
 NS_ASSUME_NONNULL_BEGIN
 
 @interface YSJPublishHomeWorkVC : BaseViewController
@@ -15,6 +15,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,copy) NSString *order_Id;
 
 @property (nonatomic,strong) YSJCourseModel *model;
+
+@property (nonatomic,strong) YSJOrderModel *orderModel;
+
+@property (nonatomic,copy) NSString *identifier;
 
 @end
 

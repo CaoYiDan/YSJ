@@ -77,7 +77,9 @@
 
 #pragma mark - tableViewDelegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    
+    if ([self.identifier isEqualToString:User_Company]) {
+        return 2;
+    }
     return self.titleArr.count;
     
 }
@@ -120,6 +122,9 @@
     
     YSJHomeWorkVC *vc = [[YSJHomeWorkVC alloc]init];
     vc.homeWorkType = type;
+    
+    vc.identifier = self.identifier;
+    
     [self.navigationController pushViewController:vc animated:YES];
 }
 

@@ -74,7 +74,7 @@
 -(void)setUserModel:(SPUser *)userModel{
     _userModel = userModel;
     NSLog(@"%@",userModel.avatar);
-    [_img sd_setImageWithURL:[NSURL URLWithString:userModel.avatar]placeholderImage:[UIImage imageNamed:@"bg"]];
+    [_img sd_setImageWithURL:[NSURL URLWithString:userModel.avatar]placeholderImage:[UIImage imageNamed:@"120"]];
     _name.text = userModel.nickName;
     
     [_age setTitle:[NSString stringWithFormat:@"%d岁",userModel.age] forState:0];

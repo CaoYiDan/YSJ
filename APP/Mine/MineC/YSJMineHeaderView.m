@@ -2,14 +2,13 @@
 //  SPNewDynamicHeaderView.m
 //  SmallPig
 
-
 #import "YSJMineHeaderView.h"
 #import "SPDynamicCategoryCell.h"
 #import "YSJActivityCell.h"
 #import "YSJUserModel.h"
+
 @interface YSJMineHeaderView ()
 
-//
 @property(nonatomic,strong)NSMutableArray *categoryArr;
 //
 @property(nonatomic,strong)UIView *topView;

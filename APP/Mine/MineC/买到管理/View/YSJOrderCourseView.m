@@ -87,7 +87,7 @@
 -(void)setModel:(YSJOrderModel *)model{
     _model = model;
     if (self.model.pic_url.count!=0) {
-        [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,self.model.pic_url[0]]]placeholderImage:[UIImage imageNamed:@"bg"]];
+        [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,self.model.pic_url[0]]]placeholderImage:[UIImage imageNamed:@"120"]];
     }
     
     _name.text = self.model.title;

@@ -33,9 +33,10 @@
         ) {
         self.title = @"布置作业";
     }else if (self.homeWorkType == HomeWorkCommit){
-        self.title = @"作业点评";
+        self.title = @"作业提交";
+        
     }else if (self.homeWorkType == HomeWorkComment){
-       self.title = @"作业提交";
+       self.title = @"作业点评";
     }
     [self setMyMarginView];
     
@@ -67,7 +68,9 @@
 
 #pragma mark - NSNotification
 - (void)addNotification {
+    
     [self removeNotification];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
  selector:@selector(statusBarOrientationChange:)
      name:UIApplicationDidChangeStatusBarOrientationNotification
@@ -110,6 +113,7 @@
     //    menuItem.titleLabel.adjustsFontSizeToFitWidth = YES;
     //    [menuItem setTitle:arr[itemIndex] forState:UIControlStateSelected];
     return menuItem;
+//    [StorageUtil getId]
 }
 
 - (UIViewController *)magicView:(VTMagicView *)magicView viewControllerAtPage:(NSUInteger)pageIndex {
@@ -125,6 +129,7 @@
         
     }
     viewController.orderType = self.homeWorkType;
+    viewController.identifier = self.identifier;
     viewController.type = pageIndex;
     return viewController;
     

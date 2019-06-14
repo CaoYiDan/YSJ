@@ -245,8 +245,8 @@
 
 - (void)nextClick{
     
-    
-    
+    [self postLogin];
+    return;
     if (![self checkTel:self.phoneTF.text]) {
         return;
     }
@@ -281,11 +281,16 @@
     [[HttpRequest sharedClient]httpRequestPOST:YRegister parameters:dic progress:nil
     sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         
+        NSLog(@"%@",responseObject);
+        
         [StorageUtil saveId:responseObject[@"token"]];
+        [StorageUtil saveUserMobile:_phoneTF.text];
         
         [StorageUtil saveNickName:responseObject[@"nickname"]];
         
         [StorageUtil saveRole:responseObject[@"role"]];
+        
+        [StorageUtil saveCode:[SPCommon md5WithStr:_phoneTF.text]];
         
         [StorageUtil savePhoto:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,responseObject[@"photo"]]];
         

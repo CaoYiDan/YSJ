@@ -7,8 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-@class YSJCommentsModel,YSJCommentFrameModel;
+@class YSJCommentsModel,YSJCommentFrameModel,YSJOrderModel;
 @interface YSJCommentCell : UITableViewCell
 @property (nonatomic,strong) YSJCommentFrameModel *statusFrame;
+@property (nonatomic,assign) NSInteger type;
 @property (nonatomic,strong) YSJCommentsModel *statue;
+
+@property (nonatomic,strong) YSJOrderModel *orderModel;
+
 @end

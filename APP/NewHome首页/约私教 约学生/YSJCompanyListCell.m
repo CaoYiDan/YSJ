@@ -166,7 +166,7 @@
     
     _model = model;
     
-    [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.site_photo]]placeholderImage:[UIImage imageNamed:@"bg"]];
+    [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.site_photo]]placeholderImage:[UIImage imageNamed:@"120"]];
     _distance.text = [NSString stringWithFormat:@"%dm",model.distance];
     _name.text = model.name;
     _introduction.text = [NSString stringWithFormat:@"%@ | %@ ",model.coursetype,model.coursetypes];

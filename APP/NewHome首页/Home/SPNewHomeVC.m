@@ -3,8 +3,15 @@
 //  SmallPig
 //  Created by 李智帅 on 2017/5/31.
 //  Copyright © 2017年 李智帅. All rights reserved.
+
+#import <CommonCrypto/CommonDigest.h>
+#import <SMS_SDK/SMSSDK.h>
+
 #import "SPNewHomeVC.h"
 #import "SPSearchVC.h"
+#import <NIMSDK/NIMSDK.h>
+#import  <NIMKit.h>
+#import "YSJIMMessageVC.h"
 #import "YSJHomeTableViewCell.h"
 #import "SPSkillListModel.h"
 #import "UITabBar+SPTabbarBadge.h"
@@ -41,7 +48,6 @@
 #import "YSJRequimentModel.h"
 #import "YSJCompanysModel.h"
 #import "YSJSearchTeacherOrStudentVC.h"
-
 
 @interface SPNewHomeVC ()<UITableViewDelegate,UITableViewDataSource,SPNewDynamicHeaderViewDelegate,SPHomeNavViewDelegate,SPHomeSifingVCDelegate,SLCityListViewControllerDelegate>
 
@@ -88,7 +94,7 @@
     
     [super viewDidLoad];
     
-//    [StorageUtil saveId:@""];
+    //[StorageUtil saveId:@""];
     
     _locationCity  = @"北京市";
     
@@ -122,13 +128,11 @@
      selector:@selector(jumpToHome)
          name:NotificationJumpToHome
        object:nil];
-    
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     
     [super viewWillAppear:animated];
-    
     
     [self.navigationController setNavigationBarHidden:YES animated:YES];
     
@@ -146,6 +150,8 @@
         //        [self getUReadCountForPush];
     }
     
+//
+    
     if ([[[NSUserDefaults standardUserDefaults]objectForKey:@"firstStatus"]boolValue]) {
         
         UIImageView * imageIV = [[UIImageView alloc]initWithFrame:self.view.bounds];
@@ -161,6 +167,8 @@
         [[NSUserDefaults standardUserDefaults]setObject:@0 forKey:@"firstStatus"];
         
     }
+    
+    
 }
 
 -(void)viewDidDisappear:(BOOL)animated

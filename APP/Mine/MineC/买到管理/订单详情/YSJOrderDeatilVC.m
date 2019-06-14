@@ -318,7 +318,7 @@
     
     if (self.model.pic_url.count!=0) {
         
-        [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,self.model.pic_url[0]]]placeholderImage:[UIImage imageNamed:@"bg"]];
+        [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,self.model.pic_url[0]]]placeholderImage:[UIImage imageNamed:@"120"]];
     }
     
     if (self.orderType == OrderTypeBuy) {
@@ -330,7 +330,7 @@
         }
     }else{
         
-        [_iconImg sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,self.model.photo]]placeholderImage:[UIImage imageNamed:@"bg"]];
+        [_iconImg sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,self.model.photo]]placeholderImage:[UIImage imageNamed:@"120"]];
     }
     
     _userName.text = !isEmptyString(self.model.name)?self.model.name:self.model.nickname;

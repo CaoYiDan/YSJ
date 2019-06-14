@@ -4,7 +4,6 @@
 //
 //  Created by xujf on 2019/5/28.
 //  Copyright © 2019年 lisen. All rights reserved.
-//
 
 #import "YSJPostVideoOrImgView.h"
 
@@ -21,7 +20,7 @@
 @property (nonatomic,strong) UICollectionView *collectionView;
 
 @property (nonatomic, strong) NSMutableArray<UIImage *> *lastSelectPhotos;
-@property (nonatomic, strong) NSMutableArray<PHAsset *> *lastSelectAssets;
+
 
 @property (nonatomic, strong) NSArray *arrDataSources;
 
@@ -36,10 +35,10 @@
     if (self) {
         [self setAV];
         [self initCollectionView];
+        [self setPickImgView];
     }
     return self;
 }
-
 
 -(void)setAV{
     //设置外放
@@ -54,7 +53,6 @@
                              sizeof (audioRouteOverride),
                              &audioRouteOverride);
 }
-
 
 - (void)initCollectionView
 {
@@ -73,10 +71,16 @@
     [self.collectionView registerClass:NSClassFromString(@"ImageCell") forCellWithReuseIdentifier:@"ImageCell"];
 }
 
+-(void)setPickImgView{
+   
+    
+}
+
 - (ZLPhotoActionSheet *)getPas
 {
+
     ZLPhotoActionSheet *actionSheet = [[ZLPhotoActionSheet alloc] init];
-    actionSheet.allowSelectVideo = !_canNotSelectedVideo;
+    actionSheet.allowSelectVideo = NO;
 #pragma mark - 参数配置 optional，可直接使用 defaultPhotoConfiguration
     
     //以下参数为自定义参数，均可不设置，有默认值
@@ -143,8 +147,9 @@
     actionSheet.sender = [SPCommon getCurrentVC];
     //记录上次选择的图片
     actionSheet.arrSelectedAssets = self.lastSelectAssets;
-    
+
     WeakSelf;
+    
     [actionSheet setSelectImageBlock:^(NSArray<UIImage *> * _Nonnull images, NSArray<PHAsset *> * _Nonnull assets, BOOL isOriginal) {
         
         self.arrDataSources = images;
@@ -152,7 +157,8 @@
         self.lastSelectAssets = assets.mutableCopy;
         self.lastSelectPhotos = images.mutableCopy;
         [self.collectionView reloadData];
-        NSLog(@"image:%@", images);
+        PHAsset *ass = assets[0];
+        NSLog(@"image:%@", ass.burstIdentifier);
         //解析图片
         [self anialysisAssets:assets original:isOriginal];
     }];
@@ -191,7 +197,7 @@
 {
     ImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ImageCell" forIndexPath:indexPath];
     if (indexPath.row==_arrDataSources.count) {
-        cell.imageView.image = [UIImage imageNamed:@"add7"];
+        cell.imageView.image = [UIImage imageNamed:@"add8"];
         cell.playImageView.hidden = YES;
     }else{
         cell.imageView.image = _arrDataSources[indexPath.row];
@@ -224,6 +230,7 @@
     }else{
         
         [[self getPas]previewSelectedPhotos:self.lastSelectPhotos assets:self.lastSelectAssets index:indexPath.row];
+//        [[self getPas]previewPhotos:self.lastSelectPhotos index:indexPath.row hideToolBar:NO complete:nil];
         
     }
 }
@@ -232,4 +239,10 @@
     _canNotSelectedVideo = canNotSelectedVideo;
     
 }
+
+-(NSMutableArray *)getPhotoImgs{
+    
+    return self.arrDataSources.mutableCopy;
+}
+
 @end

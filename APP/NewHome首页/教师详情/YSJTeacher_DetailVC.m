@@ -5,6 +5,8 @@
 #import "YSJCourseModel.h"
 #import "YSJTeacher_DetailVC.h"
 #import "SPUser.h"
+#import <NIMSDK/NIMSDK.h>
+#import "YSJIMMessageVC.h"
 #import "YSJCourseModel.h"
 #import "YSJTeacherCourse_OneByOneVC.h"
 #import "YSJSpellListDetailVC.h"
@@ -231,6 +233,8 @@
     [dic setObject:isEmptyString([StorageUtil getId])?@"":[StorageUtil getId] forKey:@"token"];
     [dic setObject:[SPCommon getLoncationDic] forKey:@"locate"];
     [dic setObject:self.teacherID forKey:@"teacherID"];
+    NSLog(@"%@",dic);
+    
     
     [[HttpRequest sharedClient]httpRequestPOST:YTeachercourseinfo parameters:dic progress:nil sucess:^(NSURLSessionDataTask *task, id responseObject, ResponseObject *obj) {
         
@@ -447,6 +451,13 @@
 #pragma  mark - --------- -action -----------------
 -(void)connect{
     
+    NSString *accid =[SPCommon md5WithStr:self.M.teacherID];
+    
+    [StorageUtil savedHaveLearnMethd:@{accid:[NSString stringWithFormat:@"%@lisen%@",imgPinJieUrl(self.M.photo),self.M.realname]}];
+    
+    NIMSession *session = [NIMSession session:accid type:NIMSessionTypeP2P];
+    YSJIMMessageVC *vc = [[YSJIMMessageVC alloc] initWithSession:session];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 -(void)share{

@@ -171,7 +171,7 @@
     
     _model = model;
 
-    [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.pic_url2[0]]]placeholderImage:[UIImage imageNamed:@"bg"]];
+    [_img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YUrlBase_YSJ,model.pic_url2[0]]]placeholderImage:[UIImage imageNamed:@"120"]];
     _leftCount.text = [NSString stringWithFormat:@"已拼%ld单",(long)model.success];
     [_leftCount setAttributeTextWithString:_leftCount.text range:NSMakeRange(2,[NSString stringWithFormat:@"%ld",(long)model.success].length+1) WithColour:KMainColor andFont:12];
     
